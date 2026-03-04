@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,32 +13,33 @@ import { Plus, Edit, Trash2 } from "lucide-react";
 interface Category { id: string; name: string; slug: string; image_url: string | null; parent_id: string | null; is_active: boolean; display_order: number; }
 
 const AdminCategories = () => {
-  const { toast } = useToast();
   const [categories, setCategories] = useState<Category[]>([]);
   const [editing, setEditing] = useState<Partial<Category> | null>(null);
 
-  const fetch = async () => {
+  const fetchData = async () => {
     const { data } = await supabase.from("categories").select("*").order("display_order");
     setCategories((data as Category[]) || []);
   };
-  useEffect(() => { fetch(); }, []);
+  useEffect(() => { fetchData(); }, []);
 
   const save = async () => {
     if (!editing) return;
     const slug = editing.slug || editing.name?.toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-") || "";
     if (!editing.id) {
       const { error } = await supabase.from("categories").insert({ ...editing, id: crypto.randomUUID(), slug } as any);
-      if (error) { toast({ title: "ত্রুটি", description: error.message, variant: "destructive" }); return; }
+      if (error) { toast.error(error.message); return; }
+      toast.success("ক্যাটাগরি তৈরি হয়েছে");
     } else {
       const { error } = await supabase.from("categories").update({ ...editing, slug } as any).eq("id", editing.id);
-      if (error) { toast({ title: "ত্রুটি", description: error.message, variant: "destructive" }); return; }
+      if (error) { toast.error(error.message); return; }
+      toast.success("ক্যাটাগরি আপডেট হয়েছে");
     }
-    toast({ title: "সংরক্ষিত" }); setEditing(null); fetch();
+    setEditing(null); fetchData();
   };
 
   const del = async (id: string) => {
     await supabase.from("categories").delete().eq("id", id);
-    toast({ title: "মুছে ফেলা হয়েছে" }); fetch();
+    toast.success("মুছে ফেলা হয়েছে"); fetchData();
   };
 
   return (
@@ -62,7 +63,7 @@ const AdminCategories = () => {
                 <td className="p-3 font-medium text-foreground">{c.name}</td>
                 <td className="p-3 text-muted-foreground">{c.slug}</td>
                 <td className="p-3">{c.display_order}</td>
-                <td className="p-3"><span className={`text-xs px-2 py-0.5 rounded-full ${c.is_active ? "bg-green-100 text-green-700" : "bg-secondary text-muted-foreground"}`}>{c.is_active ? "সক্রিয়" : "নিষ্ক্রিয়"}</span></td>
+                <td className="p-3"><span className={`text-xs px-2 py-0.5 rounded-full ${c.is_active ? "bg-success/10 text-success" : "bg-secondary text-muted-foreground"}`}>{c.is_active ? "সক্রিয়" : "নিষ্ক্রিয়"}</span></td>
                 <td className="p-3"><div className="flex gap-1">
                   <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(c)}><Edit className="h-3.5 w-3.5" /></Button>
                   <AlertDialog><AlertDialogTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button></AlertDialogTrigger>

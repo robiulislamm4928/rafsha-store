@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,29 +12,30 @@ import { Plus, Edit, Trash2 } from "lucide-react";
 interface Zone { id: string; zone_name: string; delivery_charge: number; is_active: boolean; }
 
 const AdminShipping = () => {
-  const { toast } = useToast();
   const [zones, setZones] = useState<Zone[]>([]);
   const [editing, setEditing] = useState<Partial<Zone> | null>(null);
 
-  const fetch = async () => {
+  const fetchData = async () => {
     const { data } = await supabase.from("shipping_zones").select("*").order("zone_name");
     setZones((data as Zone[]) || []);
   };
-  useEffect(() => { fetch(); }, []);
+  useEffect(() => { fetchData(); }, []);
 
   const save = async () => {
     if (!editing) return;
     if (!editing.id) {
       await supabase.from("shipping_zones").insert({ ...editing, id: crypto.randomUUID() } as any);
+      toast.success("শিপিং জোন তৈরি হয়েছে");
     } else {
       await supabase.from("shipping_zones").update(editing as any).eq("id", editing.id);
+      toast.success("শিপিং জোন আপডেট হয়েছে");
     }
-    toast({ title: "সংরক্ষিত" }); setEditing(null); fetch();
+    setEditing(null); fetchData();
   };
 
   const del = async (id: string) => {
     await supabase.from("shipping_zones").delete().eq("id", id);
-    toast({ title: "মুছে ফেলা হয়েছে" }); fetch();
+    toast.success("মুছে ফেলা হয়েছে"); fetchData();
   };
 
   return (
@@ -56,7 +57,7 @@ const AdminShipping = () => {
               <tr key={z.id} className="border-b border-border last:border-0 hover:bg-muted/30">
                 <td className="p-3 font-medium text-foreground">{z.zone_name}</td>
                 <td className="p-3">৳{z.delivery_charge}</td>
-                <td className="p-3"><span className={`text-xs px-2 py-0.5 rounded-full ${z.is_active ? "bg-green-100 text-green-700" : "bg-secondary text-muted-foreground"}`}>{z.is_active ? "সক্রিয়" : "নিষ্ক্রিয়"}</span></td>
+                <td className="p-3"><span className={`text-xs px-2 py-0.5 rounded-full ${z.is_active ? "bg-success/10 text-success" : "bg-secondary text-muted-foreground"}`}>{z.is_active ? "সক্রিয়" : "নিষ্ক্রিয়"}</span></td>
                 <td className="p-3"><div className="flex gap-1">
                   <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setEditing(z)}><Edit className="h-3.5 w-3.5" /></Button>
                   <AlertDialog><AlertDialogTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button></AlertDialogTrigger>

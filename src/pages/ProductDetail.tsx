@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ShoppingCart, Minus, Plus, Star, ChevronLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ShoppingCart, Minus, Plus, Star, ChevronLeft, MessageSquare } from "lucide-react";
 import { z } from "zod";
 import Header from "@/components/store/Header";
 import TopBar from "@/components/store/TopBar";
@@ -61,7 +61,6 @@ const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { addItem } = useCart();
   const { user } = useAuth();
-  const { toast } = useToast();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [images, setImages] = useState<ProductImage[]>([]);
@@ -72,7 +71,6 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
 
-  // Review form
   const [reviewName, setReviewName] = useState("");
   const [reviewLocation, setReviewLocation] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
@@ -82,42 +80,38 @@ const ProductDetail = () => {
   useEffect(() => {
     if (!slug) return;
     setLoading(true);
-
     const fetchProduct = async () => {
-      const { data: prod } = await supabase
-        .from("products")
-        .select("id, name, slug, short_description, full_description, regular_price, sale_price, stock_quantity, sku")
-        .eq("slug", slug)
-        .eq("is_active", true)
-        .single();
-
-      if (!prod) {
-        setLoading(false);
-        return;
-      }
+      const { data: prod } = await supabase.from("products").select("id, name, slug, short_description, full_description, regular_price, sale_price, stock_quantity, sku").eq("slug", slug).eq("is_active", true).single();
+      if (!prod) { setLoading(false); return; }
       setProduct(prod);
-
       const [imgRes, varRes, revRes] = await Promise.all([
         supabase.from("product_images").select("*").eq("product_id", prod.id).order("display_order"),
         supabase.from("product_variants").select("*").eq("product_id", prod.id).eq("is_active", true),
-        supabase.from("reviews").select("*").eq("product_id", prod.id).eq("is_approved", true).order("created_at", { ascending: false }),
+        supabase.from("reviews").select("*").eq("product_id", prod.id).eq("is_approved", true).order("created_at", { ascending: false }).limit(50),
       ]);
-
       setImages((imgRes.data as ProductImage[]) || []);
       setVariants((varRes.data as Variant[]) || []);
       setReviews((revRes.data as Review[]) || []);
       setLoading(false);
     };
-
     fetchProduct();
   }, [slug]);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <TopBar />
-        <Header />
-        <div className="container py-20 text-center text-muted-foreground">লোড হচ্ছে...</div>
+        <TopBar /><Header />
+        <div className="container py-6 md:py-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Skeleton className="aspect-square rounded-xl" />
+            <div className="space-y-4">
+              <Skeleton className="h-8 w-3/4" />
+              <Skeleton className="h-6 w-1/3" />
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-12 w-full" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -125,11 +119,10 @@ const ProductDetail = () => {
   if (!product) {
     return (
       <div className="min-h-screen bg-background">
-        <TopBar />
-        <Header />
+        <TopBar /><Header />
         <div className="container py-20 text-center">
           <h2 className="text-2xl font-bold text-foreground">পণ্য পাওয়া যায়নি</h2>
-          <Link to="/products" className="text-primary underline mt-4 inline-block">পণ্যসমূহে ফিরে যান</Link>
+          <Link to="/" className="text-primary underline mt-4 inline-block">হোমে ফিরে যান</Link>
         </div>
         <Footer />
       </div>
@@ -143,52 +136,20 @@ const ProductDetail = () => {
   const mainImage = images[selectedImage]?.image_url;
 
   const handleAddToCart = () => {
-    addItem(
-      {
-        productId: product.id,
-        productName: product.name,
-        variantLabel: activeVariant?.variant_label,
-        price: finalPrice,
-        image: images[0]?.image_url,
-      },
-      quantity
-    );
-    toast({ title: "কার্টে যোগ করা হয়েছে!", description: `${product.name} × ${quantity}` });
+    addItem({ productId: product.id, productName: product.name, variantLabel: activeVariant?.variant_label, price: finalPrice, image: images[0]?.image_url }, quantity);
+    toast.success(`${product.name} কার্টে যোগ করা হয়েছে`);
   };
 
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsed = reviewSchema.safeParse({
-      reviewer_name: reviewName,
-      reviewer_location: reviewLocation || undefined,
-      rating: reviewRating,
-      review_text: reviewText || undefined,
-    });
-
-    if (!parsed.success) {
-      toast({ title: "ত্রুটি", description: parsed.error.errors[0]?.message, variant: "destructive" });
-      return;
-    }
-
+    const parsed = reviewSchema.safeParse({ reviewer_name: reviewName, reviewer_location: reviewLocation || undefined, rating: reviewRating, review_text: reviewText || undefined });
+    if (!parsed.success) { toast.error(parsed.error.errors[0]?.message); return; }
     setSubmitting(true);
-    const { error } = await supabase.from("reviews").insert({
-      product_id: product.id,
-      user_id: user?.id || null,
-      reviewer_name: parsed.data.reviewer_name,
-      reviewer_location: parsed.data.reviewer_location || null,
-      rating: parsed.data.rating,
-      review_text: parsed.data.review_text || null,
-    });
+    const { error } = await supabase.from("reviews").insert({ product_id: product.id, user_id: user?.id || null, reviewer_name: parsed.data.reviewer_name, reviewer_location: parsed.data.reviewer_location || null, rating: parsed.data.rating, review_text: parsed.data.review_text || null });
     setSubmitting(false);
-
-    if (error) {
-      toast({ title: "ত্রুটি", description: "রিভিউ জমা দিতে সমস্যা হয়েছে", variant: "destructive" });
-    } else {
-      toast({ title: "ধন্যবাদ!", description: "আপনার রিভিউ অনুমোদনের পর প্রকাশিত হবে।" });
-      setReviewName("");
-      setReviewLocation("");
-      setReviewRating(5);
-      setReviewText("");
+    if (error) { toast.error("রিভিউ জমা দিতে সমস্যা হয়েছে"); } else {
+      toast.success("আপনার রিভিউ অনুমোদনের পর প্রকাশিত হবে");
+      setReviewName(""); setReviewLocation(""); setReviewRating(5); setReviewText("");
     }
   };
 
@@ -196,208 +157,113 @@ const ProductDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <TopBar />
-      <Header />
-
-      <div className="container py-6 md:py-10">
-        {/* Breadcrumb */}
-        <Link to="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6">
-          <ChevronLeft className="h-4 w-4 mr-1" /> হোমে ফিরুন
-        </Link>
+      <TopBar /><Header />
+      <main className="container py-6 md:py-10">
+        <Link to="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6"><ChevronLeft className="h-4 w-4 mr-1" /> হোমে ফিরুন</Link>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-          {/* Image Gallery */}
           <div className="space-y-4">
             <div className="aspect-square rounded-xl overflow-hidden bg-secondary border border-border">
-              {mainImage ? (
-                <img src={mainImage} alt={product.name} className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full honey-gradient-subtle flex items-center justify-center text-8xl">🍯</div>
-              )}
+              {mainImage ? <img src={mainImage} alt={product.name} className="w-full h-full object-cover" loading="lazy" /> : <div className="w-full h-full honey-gradient-subtle flex items-center justify-center text-8xl">🍯</div>}
             </div>
             {images.length > 1 && (
               <div className="flex gap-3 overflow-x-auto pb-2">
                 {images.map((img, i) => (
-                  <button
-                    key={img.id}
-                    onClick={() => setSelectedImage(i)}
-                    className={`shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                      i === selectedImage ? "border-primary shadow-md" : "border-border opacity-70 hover:opacity-100"
-                    }`}
-                  >
-                    <img src={img.image_url} alt="" className="w-full h-full object-cover" />
+                  <button key={img.id} onClick={() => setSelectedImage(i)} className={`shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition-all ${i === selectedImage ? "border-primary shadow-md" : "border-border opacity-70 hover:opacity-100"}`}>
+                    <img src={img.image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
                   </button>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Product Info */}
           <div className="space-y-5">
             <div>
               <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground">{product.name}</h1>
               {product.sku && <p className="text-xs text-muted-foreground mt-1">SKU: {product.sku}</p>}
             </div>
-
-            {/* Rating summary */}
             {reviews.length > 0 && (
               <div className="flex items-center gap-2">
-                <div className="flex gap-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className={`h-4 w-4 ${i < Math.round(avgRating) ? "text-honey-gold fill-honey-gold" : "text-border"}`} />
-                  ))}
-                </div>
+                <div className="flex gap-0.5">{[...Array(5)].map((_, i) => <Star key={i} className={`h-4 w-4 ${i < Math.round(avgRating) ? "text-honey-gold fill-honey-gold" : "text-border"}`} />)}</div>
                 <span className="text-sm text-muted-foreground">({reviews.length} রিভিউ)</span>
               </div>
             )}
-
-            {/* Price */}
             <div className="flex items-baseline gap-3">
               <span className="text-3xl font-bold text-primary">৳{finalPrice}</span>
-              {hasDiscount && (
-                <span className="text-lg text-muted-foreground line-through">৳{product.regular_price + (activeVariant?.price_adjustment ?? 0)}</span>
-              )}
-              {hasDiscount && (
-                <span className="bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded-md">
-                  {Math.round(((product.regular_price - product.sale_price!) / product.regular_price) * 100)}% ছাড়
-                </span>
-              )}
+              {hasDiscount && <span className="text-lg text-muted-foreground line-through">৳{product.regular_price + (activeVariant?.price_adjustment ?? 0)}</span>}
+              {hasDiscount && <span className="bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded-md">{Math.round(((product.regular_price - product.sale_price!) / product.regular_price) * 100)}% ছাড়</span>}
             </div>
-
-            {product.short_description && (
-              <p className="text-foreground/80 leading-relaxed">{product.short_description}</p>
-            )}
-
-            {/* Variant selector */}
+            {product.short_description && <p className="text-foreground/80 leading-relaxed">{product.short_description}</p>}
             {variants.length > 0 && (
               <div className="space-y-2">
                 <Label className="text-sm font-medium">ভ্যারিয়েন্ট নির্বাচন করুন</Label>
                 <Select value={selectedVariant} onValueChange={setSelectedVariant}>
-                  <SelectTrigger className="w-full max-w-xs">
-                    <SelectValue placeholder="ভ্যারিয়েন্ট বেছে নিন" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {variants.map((v) => (
-                      <SelectItem key={v.id} value={v.id}>
-                        {v.variant_label} {v.price_adjustment > 0 ? `(+৳${v.price_adjustment})` : v.price_adjustment < 0 ? `(-৳${Math.abs(v.price_adjustment)})` : ""}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
+                  <SelectTrigger className="w-full max-w-xs"><SelectValue placeholder="ভ্যারিয়েন্ট বেছে নিন" /></SelectTrigger>
+                  <SelectContent>{variants.map((v) => <SelectItem key={v.id} value={v.id}>{v.variant_label} {v.price_adjustment > 0 ? `(+৳${v.price_adjustment})` : v.price_adjustment < 0 ? `(-৳${Math.abs(v.price_adjustment)})` : ""}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
             )}
-
-            {/* Quantity */}
             <div className="space-y-2">
               <Label className="text-sm font-medium">পরিমাণ</Label>
               <div className="flex items-center gap-3">
-                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-                  <Minus className="h-4 w-4" />
-                </Button>
+                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => setQuantity(Math.max(1, quantity - 1))}><Minus className="h-4 w-4" /></Button>
                 <span className="text-lg font-semibold w-10 text-center">{quantity}</span>
-                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => setQuantity(quantity + 1)}>
-                  <Plus className="h-4 w-4" />
-                </Button>
+                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => setQuantity(quantity + 1)}><Plus className="h-4 w-4" /></Button>
               </div>
             </div>
-
-            {/* Add to cart */}
-            <Button
-              size="lg"
-              className="w-full md:w-auto honey-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity"
-              onClick={handleAddToCart}
-              disabled={product.stock_quantity <= 0}
-            >
-              <ShoppingCart className="h-5 w-5 mr-2" />
-              {product.stock_quantity > 0 ? "কার্টে যোগ করুন" : "স্টকে নেই"}
+            <Button size="lg" className="w-full md:w-auto honey-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart} disabled={product.stock_quantity <= 0}>
+              <ShoppingCart className="h-5 w-5 mr-2" />{product.stock_quantity > 0 ? "কার্টে যোগ করুন" : "স্টকে নেই"}
             </Button>
-
-            {product.stock_quantity > 0 && product.stock_quantity <= 10 && (
-              <p className="text-sm text-destructive font-medium">⚠️ মাত্র {product.stock_quantity}টি বাকি আছে!</p>
-            )}
+            {product.stock_quantity > 0 && product.stock_quantity <= 10 && <p className="text-sm text-destructive font-medium">⚠️ মাত্র {product.stock_quantity}টি বাকি আছে!</p>}
           </div>
         </div>
 
-        {/* Full description */}
         {product.full_description && (
-          <div className="mt-12 bg-card rounded-xl border border-border p-6 md:p-8">
+          <section className="mt-12 bg-card rounded-xl border border-border p-6 md:p-8">
             <h2 className="text-xl font-display font-bold text-foreground mb-4">বিস্তারিত বিবরণ</h2>
-            <div className="prose prose-sm max-w-none text-foreground/80 whitespace-pre-wrap">
-              {product.full_description}
-            </div>
-          </div>
+            <div className="prose prose-sm max-w-none text-foreground/80 whitespace-pre-wrap">{product.full_description}</div>
+          </section>
         )}
 
-        {/* Reviews section */}
-        <div className="mt-12">
+        <section className="mt-12">
           <h2 className="text-xl font-display font-bold text-foreground mb-6">গ্রাহক রিভিউ ({reviews.length})</h2>
-
-          {/* Review form */}
           <div className="bg-card rounded-xl border border-border p-6 mb-8">
             <h3 className="font-semibold text-foreground mb-4">আপনার মতামত দিন</h3>
             <form onSubmit={handleReviewSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="rname">আপনার নাম *</Label>
-                  <Input id="rname" value={reviewName} onChange={(e) => setReviewName(e.target.value)} required maxLength={100} placeholder="নাম লিখুন" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="rloc">অবস্থান</Label>
-                  <Input id="rloc" value={reviewLocation} onChange={(e) => setReviewLocation(e.target.value)} maxLength={100} placeholder="যেমন: ঢাকা" />
-                </div>
+                <div className="space-y-2"><Label htmlFor="rname">আপনার নাম *</Label><Input id="rname" value={reviewName} onChange={(e) => setReviewName(e.target.value)} required maxLength={100} placeholder="নাম লিখুন" /></div>
+                <div className="space-y-2"><Label htmlFor="rloc">অবস্থান</Label><Input id="rloc" value={reviewLocation} onChange={(e) => setReviewLocation(e.target.value)} maxLength={100} placeholder="যেমন: ঢাকা" /></div>
               </div>
               <div className="space-y-2">
                 <Label>রেটিং *</Label>
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => setReviewRating(star)}
-                      className="p-0.5"
-                    >
-                      <Star className={`h-6 w-6 transition-colors ${star <= reviewRating ? "text-honey-gold fill-honey-gold" : "text-border"}`} />
-                    </button>
-                  ))}
-                </div>
+                <div className="flex gap-1">{[1,2,3,4,5].map((star) => <button key={star} type="button" onClick={() => setReviewRating(star)} className="p-0.5"><Star className={`h-6 w-6 transition-colors ${star <= reviewRating ? "text-honey-gold fill-honey-gold" : "text-border"}`} /></button>)}</div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="rtext">রিভিউ</Label>
-                <Textarea id="rtext" value={reviewText} onChange={(e) => setReviewText(e.target.value)} maxLength={1000} placeholder="আপনার অভিজ্ঞতা শেয়ার করুন..." rows={3} />
-              </div>
-              <Button type="submit" disabled={submitting} className="honey-gradient text-primary-foreground hover:opacity-90">
-                {submitting ? "জমা হচ্ছে..." : "রিভিউ জমা দিন"}
-              </Button>
+              <div className="space-y-2"><Label htmlFor="rtext">রিভিউ</Label><Textarea id="rtext" value={reviewText} onChange={(e) => setReviewText(e.target.value)} maxLength={1000} placeholder="আপনার অভিজ্ঞতা শেয়ার করুন..." rows={3} /></div>
+              <Button type="submit" disabled={submitting} className="honey-gradient text-primary-foreground hover:opacity-90">{submitting ? "জমা হচ্ছে..." : "রিভিউ জমা দিন"}</Button>
             </form>
           </div>
 
-          {/* Existing reviews */}
           {reviews.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {reviews.map((r) => (
                 <div key={r.id} className="bg-card rounded-xl border border-border p-5">
-                  <div className="flex gap-1 mb-2">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className={`h-4 w-4 ${i < r.rating ? "text-honey-gold fill-honey-gold" : "text-border"}`} />
-                    ))}
-                  </div>
+                  <div className="flex gap-1 mb-2">{[...Array(5)].map((_, i) => <Star key={i} className={`h-4 w-4 ${i < r.rating ? "text-honey-gold fill-honey-gold" : "text-border"}`} />)}</div>
                   {r.review_text && <p className="text-sm text-foreground/80 mb-3">"{r.review_text}"</p>}
                   <div className="flex items-center justify-between border-t border-border pt-3">
-                    <div>
-                      <p className="font-semibold text-sm text-foreground">{r.reviewer_name}</p>
-                      {r.reviewer_location && <p className="text-xs text-muted-foreground">{r.reviewer_location}</p>}
-                    </div>
+                    <div><p className="font-semibold text-sm text-foreground">{r.reviewer_name}</p>{r.reviewer_location && <p className="text-xs text-muted-foreground">{r.reviewer_location}</p>}</div>
                     <p className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString("bn-BD")}</p>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-muted-foreground text-center py-6">এখনো কোনো রিভিউ নেই। প্রথম রিভিউ দিন!</p>
+            <div className="text-center py-8">
+              <MessageSquare className="h-10 w-10 mx-auto text-muted-foreground/30 mb-2" />
+              <p className="text-muted-foreground">এখনো কোনো রিভিউ নেই। প্রথম রিভিউ দিন!</p>
+            </div>
           )}
-        </div>
-      </div>
-
+        </section>
+      </main>
       <Footer />
     </div>
   );

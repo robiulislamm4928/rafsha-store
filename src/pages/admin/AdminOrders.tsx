@@ -1,57 +1,29 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Search, Eye, Trash2, Download } from "lucide-react";
+import { Search, Eye, Trash2, Download, Inbox } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Order {
-  id: string;
-  order_number: string;
-  customer_name: string;
-  customer_phone: string;
-  customer_email: string | null;
-  delivery_address: string;
-  district: string;
-  subtotal: number;
-  delivery_charge: number;
-  discount_amount: number;
-  total_amount: number;
-  advance_paid: number;
-  due_on_delivery: number;
-  payment_method: string;
-  payment_status: string;
-  order_status: string;
-  admin_note: string | null;
-  delivery_note: string | null;
-  created_at: string;
+  id: string; order_number: string; customer_name: string; customer_phone: string;
+  customer_email: string | null; delivery_address: string; district: string;
+  subtotal: number; delivery_charge: number; discount_amount: number; total_amount: number;
+  advance_paid: number; due_on_delivery: number; payment_method: string; payment_status: string;
+  order_status: string; admin_note: string | null; delivery_note: string | null; created_at: string;
 }
-
-interface OrderItem {
-  id: string;
-  product_name_snapshot: string;
-  variant_label_snapshot: string | null;
-  unit_price_snapshot: number;
-  quantity: number;
-  item_total: number;
-}
-
-interface StatusHistory {
-  id: string;
-  status: string;
-  note: string | null;
-  changed_at: string;
-}
+interface OrderItem { id: string; product_name_snapshot: string; variant_label_snapshot: string | null; unit_price_snapshot: number; quantity: number; item_total: number; }
+interface StatusHistory { id: string; status: string; note: string | null; changed_at: string; }
 
 const STATUSES = ["Pending", "Processing", "Confirmed", "Shipped", "Delivered", "Cancelled", "Returned"];
 const PAYMENT_STATUSES = ["Pending", "Partial", "Paid", "Refunded"];
 
 const AdminOrders = () => {
-  const { toast } = useToast();
   const [orders, setOrders] = useState<Order[]>([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -63,7 +35,7 @@ const AdminOrders = () => {
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
-    let query = supabase.from("orders").select("*").order("created_at", { ascending: false }).limit(100);
+    let query = supabase.from("orders").select("*").order("created_at", { ascending: false }).limit(500);
     if (statusFilter !== "all") query = query.eq("order_status", statusFilter);
     const { data } = await query;
     setOrders((data as Order[]) || []);
@@ -92,26 +64,26 @@ const AdminOrders = () => {
   const updateStatus = async (orderId: string, newStatus: string) => {
     await supabase.from("orders").update({ order_status: newStatus }).eq("id", orderId);
     await supabase.from("order_status_history").insert({ id: crypto.randomUUID(), order_id: orderId, status: newStatus });
-    toast({ title: "স্ট্যাটাস আপডেট হয়েছে" });
+    toast.success("স্ট্যাটাস আপডেট হয়েছে");
     fetchOrders();
     if (selectedOrder?.id === orderId) setSelectedOrder({ ...selectedOrder, order_status: newStatus });
   };
 
   const updatePaymentStatus = async (orderId: string, status: string) => {
     await supabase.from("orders").update({ payment_status: status }).eq("id", orderId);
-    toast({ title: "পেমেন্ট স্ট্যাটাস আপডেট হয়েছে" });
+    toast.success("পেমেন্ট স্ট্যাটাস আপডেট হয়েছে");
     fetchOrders();
   };
 
   const saveAdminNote = async () => {
     if (!selectedOrder) return;
     await supabase.from("orders").update({ admin_note: adminNote }).eq("id", selectedOrder.id);
-    toast({ title: "নোট সংরক্ষিত" });
+    toast.success("নোট সংরক্ষিত");
   };
 
   const deleteOrder = async (id: string) => {
     await supabase.from("orders").delete().eq("id", id);
-    toast({ title: "অর্ডার মুছে ফেলা হয়েছে" });
+    toast.success("অর্ডার মুছে ফেলা হয়েছে");
     fetchOrders();
     if (selectedOrder?.id === id) setSelectedOrder(null);
   };
@@ -119,8 +91,7 @@ const AdminOrders = () => {
   const downloadInvoice = async (order: Order) => {
     const { default: jsPDF } = await import("jspdf");
     const doc = new jsPDF();
-    doc.setFontSize(18);
-    doc.text("MODHUGHOR Invoice", 20, 20);
+    doc.setFontSize(18); doc.text("MODHUGHOR Invoice", 20, 20);
     doc.setFontSize(10);
     doc.text(`Order: ${order.order_number}`, 20, 35);
     doc.text(`Customer: ${order.customer_name}`, 20, 42);
@@ -131,7 +102,13 @@ const AdminOrders = () => {
   };
 
   const statusColor = (s: string) => {
-    const map: Record<string, string> = { Pending: "bg-honey-gold/20 text-honey-deep", Processing: "bg-primary/10 text-primary", Shipped: "bg-blue-100 text-blue-700", Delivered: "bg-green-100 text-green-700", Cancelled: "bg-destructive/10 text-destructive" };
+    const map: Record<string, string> = {
+      Pending: "bg-honey-gold/20 text-honey-deep",
+      Processing: "bg-primary/10 text-primary",
+      Shipped: "bg-info/10 text-info",
+      Delivered: "bg-success/10 text-success",
+      Cancelled: "bg-destructive/10 text-destructive",
+    };
     return map[s] || "bg-secondary text-secondary-foreground";
   };
 
@@ -169,9 +146,9 @@ const AdminOrders = () => {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={8} className="p-8 text-center text-muted-foreground">লোড হচ্ছে...</td></tr>
+              <tr><td colSpan={8} className="p-4"><div className="space-y-3">{[1,2,3].map(i => <Skeleton key={i} className="h-10 w-full" />)}</div></td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={8} className="p-8 text-center text-muted-foreground">কোনো অর্ডার পাওয়া যায়নি</td></tr>
+              <tr><td colSpan={8} className="p-8 text-center"><Inbox className="h-10 w-10 mx-auto text-muted-foreground/30 mb-2" /><p className="text-muted-foreground">কোনো অর্ডার পাওয়া যায়নি</p></td></tr>
             ) : filtered.map((o) => (
               <tr key={o.id} className="border-b border-border last:border-0 hover:bg-muted/30">
                 <td className="p-3 font-medium text-primary">{o.order_number}</td>

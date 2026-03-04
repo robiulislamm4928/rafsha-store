@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Shield, Trash2 } from "lucide-react";
@@ -10,31 +10,27 @@ interface UserRole { id: string; user_id: string; role: string; }
 interface UserProfile { id: string; full_name: string; email: string; }
 
 const AdminTeam = () => {
-  const { toast } = useToast();
   const [roles, setRoles] = useState<(UserRole & { profile?: UserProfile })[]>([]);
 
-  const fetch = async () => {
+  const fetchData = async () => {
     const { data: roleData } = await supabase.from("user_roles").select("*").in("role", ["admin", "moderator"]);
     if (!roleData) return;
-
     const userIds = [...new Set(roleData.map((r) => r.user_id))];
     const { data: profiles } = await supabase.from("users").select("id, full_name, email").in("id", userIds);
     const profileMap: Record<string, UserProfile> = {};
     profiles?.forEach((p) => { profileMap[p.id] = p as UserProfile; });
-
     setRoles(roleData.map((r) => ({ ...r, profile: profileMap[r.user_id] })));
   };
-
-  useEffect(() => { fetch(); }, []);
+  useEffect(() => { fetchData(); }, []);
 
   const changeRole = async (id: string, newRole: string) => {
     await supabase.from("user_roles").update({ role: newRole as any }).eq("id", id);
-    toast({ title: "রোল আপডেট হয়েছে" }); fetch();
+    toast.success("রোল আপডেট হয়েছে"); fetchData();
   };
 
   const removeRole = async (id: string) => {
     await supabase.from("user_roles").delete().eq("id", id);
-    toast({ title: "রোল মুছে ফেলা হয়েছে" }); fetch();
+    toast.success("রোল মুছে ফেলা হয়েছে"); fetchData();
   };
 
   return (

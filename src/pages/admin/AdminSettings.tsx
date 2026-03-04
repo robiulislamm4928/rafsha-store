@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,7 +20,6 @@ const SETTING_KEYS = [
 ];
 
 const AdminSettings = () => {
-  const { toast } = useToast();
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
 
@@ -44,7 +43,7 @@ const AdminSettings = () => {
       }
     }
     setSaving(false);
-    toast({ title: "সেটিংস সংরক্ষিত হয়েছে" });
+    toast.success("সেটিংস সংরক্ষিত হয়েছে");
   };
 
   return (
