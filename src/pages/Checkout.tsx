@@ -71,33 +71,38 @@ const Checkout = () => {
       quantity: item.quantity,
     }));
 
-    const { data, error } = await supabase.rpc("create_order", {
-      p_customer_name: parsed.data.customer_name,
-      p_customer_phone: parsed.data.customer_phone,
-      p_customer_email: parsed.data.customer_email || "",
-      p_district: parsed.data.district,
-      p_delivery_address: parsed.data.delivery_address,
-      p_delivery_note: parsed.data.delivery_note || "",
-      p_payment_method: parsed.data.payment_method,
-      p_user_id: user?.id || null,
-      p_items: orderItems,
-    });
+    try {
+      const { data, error } = await supabase.rpc("create_order", {
+        p_customer_name: parsed.data.customer_name,
+        p_customer_phone: parsed.data.customer_phone,
+        p_customer_email: parsed.data.customer_email || "",
+        p_district: parsed.data.district,
+        p_delivery_address: parsed.data.delivery_address,
+        p_delivery_note: parsed.data.delivery_note || "",
+        p_payment_method: parsed.data.payment_method,
+        p_user_id: user?.id || "00000000-0000-0000-0000-000000000000",
+        p_items: orderItems,
+      } as any);
 
-    if (error) { setSubmitting(false); toast.error(error.message); return; }
+      if (error) { setSubmitting(false); toast.error("অর্ডার ব্যর্থ: " + error.message); return; }
 
-    const result = data as { success: boolean; message?: string; order_number?: string; total_amount?: number; subtotal?: number; delivery_charge?: number };
+      const result = data as { success: boolean; message?: string; order_number?: string; total_amount?: number; subtotal?: number; delivery_charge?: number };
 
-    if (!result.success) { setSubmitting(false); toast.error(result.message || "অর্ডার ব্যর্থ হয়েছে"); return; }
+      if (!result.success) { setSubmitting(false); toast.error(result.message || "অর্ডার ব্যর্থ হয়েছে"); return; }
 
-    setSubmitting(false);
-    clearCart();
-    toast.success("অর্ডার সফলভাবে সম্পন্ন হয়েছে!");
+      setSubmitting(false);
+      clearCart();
+      toast.success("অর্ডার সফলভাবে সম্পন্ন হয়েছে!");
 
-    navigate("/order-success", {
-      state: { orderNumber: result.order_number, customerName: parsed.data.customer_name, customerPhone: parsed.data.customer_phone,
-        items, subtotal: result.subtotal, deliveryCharge: result.delivery_charge, grandTotal: result.total_amount, paymentMethod: parsed.data.payment_method,
-        district: parsed.data.district, address: parsed.data.delivery_address },
-    });
+      navigate("/order-success", {
+        state: { orderNumber: result.order_number, customerName: parsed.data.customer_name, customerPhone: parsed.data.customer_phone,
+          items, subtotal: result.subtotal, deliveryCharge: result.delivery_charge, grandTotal: result.total_amount, paymentMethod: parsed.data.payment_method,
+          district: parsed.data.district, address: parsed.data.delivery_address },
+      });
+    } catch (err: any) {
+      setSubmitting(false);
+      toast.error("অর্ডার ব্যর্থ হয়েছে: " + (err?.message || "অজানা ত্রুটি"));
+    }
   };
 
   if (items.length === 0) {

@@ -12,16 +12,8 @@ import { Plus, Edit, Trash2, Inbox, Upload, Image as ImageIcon } from "lucide-re
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Banner {
-  id: string;
-  heading: string | null;
-  subtext: string | null;
-  cta_label: string | null;
-  cta_link: string | null;
-  desktop_image_url: string;
-  mobile_image_url: string | null;
-  type: string;
-  is_active: boolean;
-  display_order: number;
+  id: string; heading: string | null; subtext: string | null; cta_label: string | null; cta_link: string | null;
+  desktop_image_url: string; mobile_image_url: string | null; type: string; is_active: boolean; display_order: number;
 }
 
 const emptyBanner = (): Partial<Banner> => ({
@@ -65,8 +57,7 @@ const AdminBanners = () => {
 
   const saveBanner = async () => {
     if (!editing || !editing.desktop_image_url) {
-      toast.error("ডেস্কটপ ইমেজ আবশ্যক");
-      return;
+      toast.error("ডেস্কটপ ইমেজ আবশ্যক"); return;
     }
     const isNew = !editing.id;
     if (isNew) {
@@ -78,14 +69,12 @@ const AdminBanners = () => {
       if (error) { toast.error(error.message); return; }
       toast.success("ব্যানার আপডেট হয়েছে");
     }
-    setEditing(null);
-    fetchBanners();
+    setEditing(null); fetchBanners();
   };
 
   const deleteBanner = async (id: string) => {
     await supabase.from("banners").delete().eq("id", id);
-    toast.success("ব্যানার মুছে ফেলা হয়েছে");
-    fetchBanners();
+    toast.success("ব্যানার মুছে ফেলা হয়েছে"); fetchBanners();
   };
 
   return (
@@ -182,15 +171,12 @@ const AdminBanners = () => {
                 {editing.desktop_image_url && (
                   <img src={editing.desktop_image_url} alt="Preview" className="w-full h-32 object-cover rounded-lg border border-border" />
                 )}
-                <div className="flex gap-2">
-                  <label className="flex-1">
-                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, "desktop_image_url")} />
-                    <Button type="button" variant="outline" className="w-full" disabled={uploading} asChild>
-                      <span><Upload className="h-4 w-4 mr-1" />{uploading ? "আপলোড হচ্ছে..." : "ছবি আপলোড করুন"}</span>
-                    </Button>
-                  </label>
-                </div>
-                <Input placeholder="অথবা URL দিন" value={editing.desktop_image_url || ""} onChange={(e) => setEditing({ ...editing, desktop_image_url: e.target.value })} />
+                <label className="block">
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, "desktop_image_url")} />
+                  <Button type="button" variant="outline" className="w-full" disabled={uploading} asChild>
+                    <span><Upload className="h-4 w-4 mr-1" />{uploading ? "আপলোড হচ্ছে..." : "ডেস্কটপ ছবি আপলোড করুন"}</span>
+                  </Button>
+                </label>
               </div>
 
               {/* Mobile Image Upload */}
@@ -199,10 +185,10 @@ const AdminBanners = () => {
                 {editing.mobile_image_url && (
                   <img src={editing.mobile_image_url} alt="Mobile Preview" className="w-32 h-24 object-cover rounded-lg border border-border" />
                 )}
-                <label>
+                <label className="block">
                   <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, "mobile_image_url")} />
                   <Button type="button" variant="outline" size="sm" disabled={uploading} asChild>
-                    <span><ImageIcon className="h-3.5 w-3.5 mr-1" />মোবাইল ছবি</span>
+                    <span><ImageIcon className="h-3.5 w-3.5 mr-1" />মোবাইল ছবি আপলোড</span>
                   </Button>
                 </label>
               </div>

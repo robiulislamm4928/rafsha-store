@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { useTracking } from "@/hooks/useTracking";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import ChatWidget from "@/components/store/ChatWidget";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -29,10 +30,10 @@ import AdminReviews from "./pages/admin/AdminReviews";
 import AdminShipping from "./pages/admin/AdminShipping";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
-import AdminSessions from "./pages/admin/AdminSessions";
 import AdminTeam from "./pages/admin/AdminTeam";
 import AdminBanners from "./pages/admin/AdminBanners";
 import AdminAnnouncements from "./pages/admin/AdminAnnouncements";
+import AdminChat from "./pages/admin/AdminChat";
 
 const queryClient = new QueryClient();
 
@@ -74,12 +75,13 @@ const App = () => (
                 <Route path="shipping" element={<AdminShipping />} />
                 <Route path="settings" element={<AdminSettings />} />
                 <Route path="analytics" element={<AdminAnalytics />} />
-                <Route path="sessions" element={<AdminSessions />} />
                 <Route path="team" element={<AdminTeam />} />
+                <Route path="chat" element={<AdminChat />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <ChatWidget />
           </CartProvider>
         </AuthProvider>
       </BrowserRouter>
