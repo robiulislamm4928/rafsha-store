@@ -28,7 +28,7 @@ const AdminTeam = () => {
   useEffect(() => { fetch(); }, []);
 
   const changeRole = async (id: string, newRole: string) => {
-    await supabase.from("user_roles").update({ role: newRole }).eq("id", id);
+    await supabase.from("user_roles").update({ role: newRole as any }).eq("id", id);
     toast({ title: "রোল আপডেট হয়েছে" }); fetch();
   };
 
