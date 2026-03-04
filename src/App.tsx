@@ -34,6 +34,11 @@ import AdminTeam from "./pages/admin/AdminTeam";
 
 const queryClient = new QueryClient();
 
+const TrackingProvider = () => {
+  useTracking();
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -42,6 +47,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <CartProvider>
+            <TrackingProvider />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
