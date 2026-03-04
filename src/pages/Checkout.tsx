@@ -15,7 +15,7 @@ import { z } from "zod";
 import Header from "@/components/store/Header";
 import TopBar from "@/components/store/TopBar";
 import Footer from "@/components/store/Footer";
-import { ShoppingCart, ArrowLeft } from "lucide-react";
+import { ShoppingCart, ArrowLeft, Package } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const checkoutSchema = z.object({
@@ -107,7 +107,7 @@ const Checkout = () => {
         <div className="container py-20 text-center">
           <ShoppingCart className="h-16 w-16 mx-auto text-muted-foreground/30 mb-4" />
           <h2 className="text-2xl font-bold text-foreground mb-2">আপনার কার্ট খালি</h2>
-          <Button asChild className="mt-4 honey-gradient text-primary-foreground hover:opacity-90">
+          <Button asChild className="mt-4 brand-gradient text-primary-foreground hover:opacity-90">
             <Link to="/"><ArrowLeft className="h-4 w-4 mr-2" /> শপিং করুন</Link>
           </Button>
         </div>
@@ -120,7 +120,7 @@ const Checkout = () => {
     <div className="min-h-screen bg-background">
       <TopBar /><Header />
       <main className="container py-6 md:py-10">
-        <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-6">📦 চেকআউট</h1>
+        <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-6 flex items-center gap-2"><Package className="h-7 w-7 text-primary" /> চেকআউট</h1>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
             <div className="lg:col-span-2 space-y-6">
@@ -170,7 +170,7 @@ const Checkout = () => {
                   <div className="flex justify-between"><span>অগ্রিম</span><span>৳0</span></div>
                   <div className="flex justify-between font-medium text-foreground"><span>ডেলিভারিতে দিতে হবে</span><span>৳{grandTotal}</span></div>
                 </div>
-                <Button type="submit" size="lg" className="w-full honey-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" disabled={submitting}>{submitting ? "অর্ডার হচ্ছে..." : "অর্ডার নিশ্চিত করুন"}</Button>
+                <Button type="submit" size="lg" className="w-full brand-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" disabled={submitting}>{submitting ? "অর্ডার হচ্ছে..." : "অর্ডার নিশ্চিত করুন"}</Button>
               </div>
             </div>
           </div>

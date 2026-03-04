@@ -39,18 +39,18 @@ const AdminReviews = () => {
           <div key={r.id} className="bg-card rounded-xl border border-border p-4">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <div className="flex gap-1 mb-1">{[...Array(5)].map((_, i) => <Star key={i} className={`h-3.5 w-3.5 ${i < r.rating ? "text-honey-gold fill-honey-gold" : "text-border"}`} />)}</div>
+                <div className="flex gap-1 mb-1">{[...Array(5)].map((_, i) => <Star key={i} className={`h-3.5 w-3.5 ${i < r.rating ? "text-accent fill-accent" : "text-border"}`} />)}</div>
                 {r.review_text && <p className="text-sm text-foreground/80 mb-2">"{r.review_text}"</p>}
                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
                   <span className="font-medium text-foreground">{r.reviewer_name}</span>
                   {r.reviewer_location && <span>{r.reviewer_location}</span>}
                   <span>{new Date(r.created_at).toLocaleDateString("bn-BD")}</span>
-                  <span className={`px-2 py-0.5 rounded-full ${r.is_approved ? "bg-success/10 text-success" : "bg-honey-gold/20 text-honey-deep"}`}>{r.is_approved ? "অনুমোদিত" : "পেন্ডিং"}</span>
+                  <span className={`px-2 py-0.5 rounded-full ${r.is_approved ? "bg-success/10 text-success" : "bg-accent/20 text-accent"}`}>{r.is_approved ? "অনুমোদিত" : "পেন্ডিং"}</span>
                 </div>
               </div>
               <div className="flex gap-1 shrink-0 ml-3">
                 {!r.is_approved && <Button variant="ghost" size="icon" className="h-7 w-7 text-success" onClick={() => approve(r.id, true)}><Check className="h-3.5 w-3.5" /></Button>}
-                {r.is_approved && <Button variant="ghost" size="icon" className="h-7 w-7 text-honey-deep" onClick={() => approve(r.id, false)}><X className="h-3.5 w-3.5" /></Button>}
+                {r.is_approved && <Button variant="ghost" size="icon" className="h-7 w-7 text-accent" onClick={() => approve(r.id, false)}><X className="h-3.5 w-3.5" /></Button>}
                 <AlertDialog><AlertDialogTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button></AlertDialogTrigger>
                   <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>মুছে ফেলতে চান?</AlertDialogTitle></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>বাতিল</AlertDialogCancel><AlertDialogAction onClick={() => del(r.id)} className="bg-destructive text-destructive-foreground">মুছুন</AlertDialogAction></AlertDialogFooter></AlertDialogContent>
                 </AlertDialog>

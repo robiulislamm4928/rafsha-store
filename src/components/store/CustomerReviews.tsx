@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Star } from "lucide-react";
+import { Star, MessageCircle } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface Review {
@@ -27,11 +27,12 @@ const CustomerReviews = () => {
   }, []);
 
   return (
-    <section className="py-10 md:py-14 honey-gradient-subtle">
+    <section className="py-10 md:py-14 brand-gradient-subtle">
       <div className="container">
         <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">
-            💬 গ্রাহকদের মতামত
+          <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground flex items-center justify-center gap-2">
+            <MessageCircle className="h-6 w-6 text-accent" />
+            গ্রাহকদের মতামত
           </h2>
           <p className="text-muted-foreground mt-2">আমাদের সন্তুষ্ট গ্রাহকরা যা বলছেন</p>
         </div>
@@ -48,7 +49,7 @@ const CustomerReviews = () => {
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
-                        className={`h-4 w-4 ${i < r.rating ? "text-honey-gold fill-honey-gold" : "text-border"}`}
+                        className={`h-4 w-4 ${i < r.rating ? "text-accent fill-accent" : "text-border"}`}
                       />
                     ))}
                   </div>

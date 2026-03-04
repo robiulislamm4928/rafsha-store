@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, ImageOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 
@@ -25,7 +25,9 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
         {imageUrl ? (
           <img src={imageUrl} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
-          <div className="w-full h-full honey-gradient-subtle flex items-center justify-center text-6xl">🍯</div>
+          <div className="w-full h-full brand-gradient-subtle flex items-center justify-center">
+            <ImageOff className="h-12 w-12 text-muted-foreground/30" />
+          </div>
         )}
         {hasDiscount && (
           <span className="absolute top-3 left-3 bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded-md">
@@ -54,7 +56,7 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
           </div>
           <Button
             size="sm"
-            className="honey-gradient text-primary-foreground hover:opacity-90 transition-opacity h-8 px-3"
+            className="brand-gradient text-primary-foreground hover:opacity-90 transition-opacity h-8 px-3"
             onClick={(e) => {
               e.preventDefault();
               addItem({ productId: id, productName: name, price: displayPrice, image: imageUrl || undefined });

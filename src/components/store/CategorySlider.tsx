@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { FolderOpen } from "lucide-react";
 
 interface Category {
   id: string;
@@ -43,7 +44,9 @@ const CategorySlider = () => {
                   {cat.image_url ? (
                     <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   ) : (
-                    <div className="w-full h-full honey-gradient-subtle flex items-center justify-center text-4xl">🍯</div>
+                    <div className="w-full h-full brand-gradient-subtle flex items-center justify-center">
+                      <FolderOpen className="h-10 w-10 text-muted-foreground/30" />
+                    </div>
                   )}
                 </div>
                 <p className="mt-2 text-center text-sm font-medium text-foreground group-hover:text-primary transition-colors">

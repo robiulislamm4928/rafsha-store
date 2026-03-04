@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, Minus, Plus, Star, ChevronLeft, MessageSquare } from "lucide-react";
+import { ShoppingCart, Minus, Plus, Star, ChevronLeft, MessageSquare, ImageOff, AlertTriangle } from "lucide-react";
 import { z } from "zod";
 import Header from "@/components/store/Header";
 import TopBar from "@/components/store/TopBar";
@@ -164,7 +164,7 @@ const ProductDetail = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
           <div className="space-y-4">
             <div className="aspect-square rounded-xl overflow-hidden bg-secondary border border-border">
-              {mainImage ? <img src={mainImage} alt={product.name} className="w-full h-full object-cover" loading="lazy" /> : <div className="w-full h-full honey-gradient-subtle flex items-center justify-center text-8xl">🍯</div>}
+              {mainImage ? <img src={mainImage} alt={product.name} className="w-full h-full object-cover" loading="lazy" /> : <div className="w-full h-full brand-gradient-subtle flex items-center justify-center"><ImageOff className="h-16 w-16 text-muted-foreground/30" /></div>}
             </div>
             {images.length > 1 && (
               <div className="flex gap-3 overflow-x-auto pb-2">
@@ -184,7 +184,7 @@ const ProductDetail = () => {
             </div>
             {reviews.length > 0 && (
               <div className="flex items-center gap-2">
-                <div className="flex gap-0.5">{[...Array(5)].map((_, i) => <Star key={i} className={`h-4 w-4 ${i < Math.round(avgRating) ? "text-honey-gold fill-honey-gold" : "text-border"}`} />)}</div>
+                <div className="flex gap-0.5">{[...Array(5)].map((_, i) => <Star key={i} className={`h-4 w-4 ${i < Math.round(avgRating) ? "text-accent fill-accent" : "text-border"}`} />)}</div>
                 <span className="text-sm text-muted-foreground">({reviews.length} রিভিউ)</span>
               </div>
             )}
@@ -211,10 +211,10 @@ const ProductDetail = () => {
                 <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => setQuantity(quantity + 1)}><Plus className="h-4 w-4" /></Button>
               </div>
             </div>
-            <Button size="lg" className="w-full md:w-auto honey-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart} disabled={product.stock_quantity <= 0}>
+            <Button size="lg" className="w-full md:w-auto brand-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart} disabled={product.stock_quantity <= 0}>
               <ShoppingCart className="h-5 w-5 mr-2" />{product.stock_quantity > 0 ? "কার্টে যোগ করুন" : "স্টকে নেই"}
             </Button>
-            {product.stock_quantity > 0 && product.stock_quantity <= 10 && <p className="text-sm text-destructive font-medium">⚠️ মাত্র {product.stock_quantity}টি বাকি আছে!</p>}
+            {product.stock_quantity > 0 && product.stock_quantity <= 10 && <p className="text-sm text-destructive font-medium flex items-center gap-1"><AlertTriangle className="h-4 w-4" /> মাত্র {product.stock_quantity}টি বাকি আছে!</p>}
           </div>
         </div>
 
@@ -236,10 +236,10 @@ const ProductDetail = () => {
               </div>
               <div className="space-y-2">
                 <Label>রেটিং *</Label>
-                <div className="flex gap-1">{[1,2,3,4,5].map((star) => <button key={star} type="button" onClick={() => setReviewRating(star)} className="p-0.5"><Star className={`h-6 w-6 transition-colors ${star <= reviewRating ? "text-honey-gold fill-honey-gold" : "text-border"}`} /></button>)}</div>
+                <div className="flex gap-1">{[1,2,3,4,5].map((star) => <button key={star} type="button" onClick={() => setReviewRating(star)} className="p-0.5"><Star className={`h-6 w-6 transition-colors ${star <= reviewRating ? "text-accent fill-accent" : "text-border"}`} /></button>)}</div>
               </div>
               <div className="space-y-2"><Label htmlFor="rtext">রিভিউ</Label><Textarea id="rtext" value={reviewText} onChange={(e) => setReviewText(e.target.value)} maxLength={1000} placeholder="আপনার অভিজ্ঞতা শেয়ার করুন..." rows={3} /></div>
-              <Button type="submit" disabled={submitting} className="honey-gradient text-primary-foreground hover:opacity-90">{submitting ? "জমা হচ্ছে..." : "রিভিউ জমা দিন"}</Button>
+              <Button type="submit" disabled={submitting} className="brand-gradient text-primary-foreground hover:opacity-90">{submitting ? "জমা হচ্ছে..." : "রিভিউ জমা দিন"}</Button>
             </form>
           </div>
 
@@ -247,7 +247,7 @@ const ProductDetail = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {reviews.map((r) => (
                 <div key={r.id} className="bg-card rounded-xl border border-border p-5">
-                  <div className="flex gap-1 mb-2">{[...Array(5)].map((_, i) => <Star key={i} className={`h-4 w-4 ${i < r.rating ? "text-honey-gold fill-honey-gold" : "text-border"}`} />)}</div>
+                  <div className="flex gap-1 mb-2">{[...Array(5)].map((_, i) => <Star key={i} className={`h-4 w-4 ${i < r.rating ? "text-accent fill-accent" : "text-border"}`} />)}</div>
                   {r.review_text && <p className="text-sm text-foreground/80 mb-3">"{r.review_text}"</p>}
                   <div className="flex items-center justify-between border-t border-border pt-3">
                     <div><p className="font-semibold text-sm text-foreground">{r.reviewer_name}</p>{r.reviewer_location && <p className="text-xs text-muted-foreground">{r.reviewer_location}</p>}</div>

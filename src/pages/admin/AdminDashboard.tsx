@@ -50,14 +50,14 @@ const AdminDashboard = () => {
 
   const cards = [
     { title: "মোট অর্ডার", value: stats.totalOrders, icon: ShoppingCart, color: "text-primary" },
-    { title: "মোট আয়", value: `৳${stats.totalRevenue.toLocaleString()}`, icon: DollarSign, color: "text-honey-deep" },
+    { title: "মোট আয়", value: `৳${stats.totalRevenue.toLocaleString()}`, icon: DollarSign, color: "text-success" },
     { title: "পেন্ডিং অর্ডার", value: stats.pendingOrders, icon: Clock, color: "text-destructive" },
-    { title: "মোট পণ্য", value: stats.totalProducts, icon: Package, color: "text-honey-gold" },
+    { title: "মোট পণ্য", value: stats.totalProducts, icon: Package, color: "text-accent" },
   ];
 
   const statusColor = (s: string) => {
     const map: Record<string, string> = {
-      Pending: "bg-honey-gold/20 text-honey-deep",
+      Pending: "bg-accent/20 text-accent",
       Processing: "bg-primary/10 text-primary",
       Shipped: "bg-info/10 text-info",
       Delivered: "bg-success/10 text-success",

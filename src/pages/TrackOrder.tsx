@@ -53,7 +53,7 @@ const TrackOrder = () => {
 
   const statusColor = (status: string) => {
     switch (status) {
-      case "Pending": return "bg-honey-gold/20 text-honey-deep";
+      case "Pending": return "bg-accent/20 text-accent";
       case "Processing": return "bg-primary/10 text-primary";
       case "Shipped": return "bg-info/10 text-info";
       case "Delivered": return "bg-success/10 text-success";
@@ -69,7 +69,7 @@ const TrackOrder = () => {
 
       <main className="container py-10 md:py-16 flex-1 max-w-2xl">
         <div className="text-center mb-8">
-          <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground">📦 অর্ডার ট্র্যাক করুন</h1>
+          <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground flex items-center justify-center gap-2"><Package className="h-7 w-7 text-primary" /> অর্ডার ট্র্যাক করুন</h1>
           <p className="text-muted-foreground mt-2">আপনার অর্ডার নম্বর এবং ফোন নম্বর দিয়ে অর্ডারের অবস্থা জানুন।</p>
         </div>
 
@@ -84,7 +84,7 @@ const TrackOrder = () => {
               <Input id="ph" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="01XXXXXXXXX" maxLength={11} />
             </div>
           </div>
-          <Button type="submit" disabled={loading} className="w-full honey-gradient text-primary-foreground hover:opacity-90">
+          <Button type="submit" disabled={loading} className="w-full brand-gradient text-primary-foreground hover:opacity-90">
             <Search className="h-4 w-4 mr-2" />
             {loading ? "খুঁজছে..." : "ট্র্যাক করুন"}
           </Button>
@@ -135,7 +135,7 @@ const TrackOrder = () => {
                   {result.history.map((h, i) => (
                     <div key={i} className="flex gap-3">
                       <div className="flex flex-col items-center">
-                        <div className="w-3 h-3 rounded-full honey-gradient shrink-0 mt-1" />
+                        <div className="w-3 h-3 rounded-full brand-gradient shrink-0 mt-1" />
                         {i < result.history!.length - 1 && <div className="w-0.5 flex-1 bg-border mt-1" />}
                       </div>
                       <div className="pb-4">

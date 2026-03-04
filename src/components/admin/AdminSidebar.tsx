@@ -8,6 +8,7 @@ import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
 } from "@/components/ui/sidebar";
+import logo from "@/assets/logo.png";
 
 const menuItems = [
   { title: "ড্যাশবোর্ড", url: "/admin", icon: LayoutDashboard },
@@ -33,8 +34,8 @@ const AdminSidebar = () => {
       <SidebarContent>
         {!collapsed && (
           <div className="p-4 border-b border-border">
-            <h2 className="text-lg font-display font-bold text-honey-gradient">🍯 মধুঘর</h2>
-            <p className="text-xs text-muted-foreground">অ্যাডমিন প্যানেল</p>
+            <img src={logo} alt="রাফছা স্টোর" className="h-10 w-auto" />
+            <p className="text-xs text-muted-foreground mt-1">অ্যাডমিন প্যানেল</p>
           </div>
         )}
         <SidebarGroup>

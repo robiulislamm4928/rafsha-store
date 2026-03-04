@@ -26,8 +26,8 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>মধুঘর — ১০০% খাঁটি প্রাকৃতিক মধু | বাংলাদেশ</title>
-        <meta name="description" content="সুন্দরবনের গহীন অরণ্য থেকে সংগ্রহ করা ১০০% খাঁটি প্রাকৃতিক মধু। ল্যাব টেস্টেড, কেমিক্যাল মুক্ত। সারাদেশে ডেলিভারি।" />
+        <title>রাফছা স্টোর — সেরা পণ্য সেরা দামে | বাংলাদেশ</title>
+        <meta name="description" content="রাফছা স্টোরে পাচ্ছেন মানসম্মত পণ্য সেরা মূল্যে। দ্রুত ডেলিভারি, মানি-ব্যাক গ্যারান্টি। সারাদেশে ডেলিভারি।" />
       </Helmet>
       <TopBar />
       <Header />

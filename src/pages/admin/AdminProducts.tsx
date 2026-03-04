@@ -124,7 +124,7 @@ const AdminProducts = () => {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-display font-bold text-foreground">পণ্য ম্যানেজমেন্ট</h1>
-        <Button onClick={() => openEdit()} className="honey-gradient text-primary-foreground hover:opacity-90"><Plus className="h-4 w-4 mr-1" /> নতুন পণ্য</Button>
+        <Button onClick={() => openEdit()} className="brand-gradient text-primary-foreground hover:opacity-90"><Plus className="h-4 w-4 mr-1" /> নতুন পণ্য</Button>
       </div>
 
       <div className="bg-card rounded-xl border border-border overflow-x-auto">
@@ -253,7 +253,7 @@ const AdminProducts = () => {
 
               <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-border">
                 <Button variant="outline" onClick={() => setEditing(null)}>বাতিল</Button>
-                <Button onClick={saveProduct} className="honey-gradient text-primary-foreground hover:opacity-90">সংরক্ষণ</Button>
+                <Button onClick={saveProduct} className="brand-gradient text-primary-foreground hover:opacity-90">সংরক্ষণ</Button>
               </div>
             </Tabs>
           )}

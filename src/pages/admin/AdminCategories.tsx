@@ -46,7 +46,7 @@ const AdminCategories = () => {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-display font-bold text-foreground">ক্যাটাগরি</h1>
-        <Button onClick={() => setEditing({ name: "", slug: "", image_url: "", parent_id: null, is_active: true, display_order: 0 })} className="honey-gradient text-primary-foreground hover:opacity-90"><Plus className="h-4 w-4 mr-1" /> নতুন</Button>
+        <Button onClick={() => setEditing({ name: "", slug: "", image_url: "", parent_id: null, is_active: true, display_order: 0 })} className="brand-gradient text-primary-foreground hover:opacity-90"><Plus className="h-4 w-4 mr-1" /> নতুন</Button>
       </div>
       <div className="bg-card rounded-xl border border-border overflow-x-auto">
         <table className="w-full text-sm">
@@ -89,7 +89,7 @@ const AdminCategories = () => {
             </div>
             <div className="space-y-2"><Label>ডিসপ্লে অর্ডার</Label><Input type="number" value={editing.display_order || 0} onChange={(e) => setEditing({ ...editing, display_order: Number(e.target.value) })} /></div>
             <div className="flex items-center gap-2"><Switch checked={editing.is_active ?? true} onCheckedChange={(v) => setEditing({ ...editing, is_active: v })} /><Label>সক্রিয়</Label></div>
-            <div className="flex justify-end gap-2 pt-2"><Button variant="outline" onClick={() => setEditing(null)}>বাতিল</Button><Button onClick={save} className="honey-gradient text-primary-foreground hover:opacity-90">সংরক্ষণ</Button></div>
+            <div className="flex justify-end gap-2 pt-2"><Button variant="outline" onClick={() => setEditing(null)}>বাতিল</Button><Button onClick={save} className="brand-gradient text-primary-foreground hover:opacity-90">সংরক্ষণ</Button></div>
           </div>}
         </DialogContent>
       </Dialog>
