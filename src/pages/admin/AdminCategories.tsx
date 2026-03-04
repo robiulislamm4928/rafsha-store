@@ -8,19 +8,33 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { Plus, Edit, Trash2, Upload } from "lucide-react";
 
 interface Category { id: string; name: string; slug: string; image_url: string | null; parent_id: string | null; is_active: boolean; display_order: number; }
 
 const AdminCategories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [editing, setEditing] = useState<Partial<Category> | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const fetchData = async () => {
     const { data } = await supabase.from("categories").select("*").order("display_order");
     setCategories((data as Category[]) || []);
   };
   useEffect(() => { fetchData(); }, []);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const filePath = `${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from("category-images").upload(filePath, file);
+    if (error) { toast.error("আপলোড ব্যর্থ: " + error.message); setUploading(false); return; }
+    const { data } = supabase.storage.from("category-images").getPublicUrl(filePath);
+    setEditing((prev) => prev ? { ...prev, image_url: data.publicUrl } : null);
+    setUploading(false);
+  };
 
   const save = async () => {
     if (!editing) return;
@@ -51,6 +65,7 @@ const AdminCategories = () => {
       <div className="bg-card rounded-xl border border-border overflow-x-auto">
         <table className="w-full text-sm">
           <thead><tr className="border-b border-border text-left">
+            <th className="p-3 font-medium text-muted-foreground">ছবি</th>
             <th className="p-3 font-medium text-muted-foreground">নাম</th>
             <th className="p-3 font-medium text-muted-foreground">স্লাগ</th>
             <th className="p-3 font-medium text-muted-foreground">ক্রম</th>
@@ -60,6 +75,13 @@ const AdminCategories = () => {
           <tbody>
             {categories.map((c) => (
               <tr key={c.id} className="border-b border-border last:border-0 hover:bg-muted/30">
+                <td className="p-3">
+                  {c.image_url ? (
+                    <img src={c.image_url} alt={c.name} className="h-10 w-10 object-cover rounded-md border border-border" />
+                  ) : (
+                    <div className="h-10 w-10 rounded-md bg-muted flex items-center justify-center text-muted-foreground text-xs">—</div>
+                  )}
+                </td>
                 <td className="p-3 font-medium text-foreground">{c.name}</td>
                 <td className="p-3 text-muted-foreground">{c.slug}</td>
                 <td className="p-3">{c.display_order}</td>
@@ -80,7 +102,18 @@ const AdminCategories = () => {
           {editing && <div className="space-y-3">
             <div className="space-y-2"><Label>নাম</Label><Input value={editing.name || ""} onChange={(e) => setEditing({ ...editing, name: e.target.value })} /></div>
             <div className="space-y-2"><Label>স্লাগ</Label><Input value={editing.slug || ""} onChange={(e) => setEditing({ ...editing, slug: e.target.value })} /></div>
-            <div className="space-y-2"><Label>ছবি URL</Label><Input value={editing.image_url || ""} onChange={(e) => setEditing({ ...editing, image_url: e.target.value })} /></div>
+            <div className="space-y-2">
+              <Label>ছবি</Label>
+              {editing.image_url && (
+                <img src={editing.image_url} alt="Preview" className="h-20 w-20 object-cover rounded-lg border border-border" />
+              )}
+              <label className="block">
+                <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                <Button type="button" variant="outline" className="w-full" disabled={uploading} asChild>
+                  <span><Upload className="h-4 w-4 mr-1" />{uploading ? "আপলোড হচ্ছে..." : "ছবি আপলোড করুন"}</span>
+                </Button>
+              </label>
+            </div>
             <div className="space-y-2"><Label>প্যারেন্ট ক্যাটাগরি</Label>
               <Select value={editing.parent_id || "none"} onValueChange={(v) => setEditing({ ...editing, parent_id: v === "none" ? null : v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>

@@ -10,7 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Edit, Trash2, X, Inbox } from "lucide-react";
+import { Plus, Edit, Trash2, X, Inbox, Upload } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Product {
@@ -34,8 +34,8 @@ const AdminProducts = () => {
   const [variants, setVariants] = useState<Variant[]>([]);
   const [images, setImages] = useState<ProductImage[]>([]);
   const [newVariant, setNewVariant] = useState({ variant_label: "", price_adjustment: 0, stock_quantity: 0 });
-  const [newImageUrl, setNewImageUrl] = useState("");
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -106,12 +106,25 @@ const AdminProducts = () => {
     toast.success("ভ্যারিয়েন্ট মুছে ফেলা হয়েছে");
   };
 
-  const addImage = async () => {
-    if (!editing?.id || !newImageUrl) return;
-    await supabase.from("product_images").insert({ product_id: editing.id, image_url: newImageUrl, display_order: images.length, id: crypto.randomUUID() });
-    setNewImageUrl("");
+  const uploadImage = async (file: File) => {
+    if (!editing?.id) return;
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const filePath = `${editing.id}/${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from("product-images").upload(filePath, file);
+    if (error) { toast.error("আপলোড ব্যর্থ: " + error.message); setUploading(false); return; }
+    const { data: urlData } = supabase.storage.from("product-images").getPublicUrl(filePath);
+    
+    await supabase.from("product_images").insert({
+      product_id: editing.id,
+      image_url: urlData.publicUrl,
+      display_order: images.length,
+      id: crypto.randomUUID(),
+    });
+    
     const { data } = await supabase.from("product_images").select("*").eq("product_id", editing.id).order("display_order");
     setImages((data as ProductImage[]) || []);
+    setUploading(false);
     toast.success("ছবি যোগ হয়েছে");
   };
 
@@ -245,10 +258,21 @@ const AdminProducts = () => {
                     </div>
                   ))}
                 </div>
-                <div className="flex gap-2">
-                  <Input placeholder="ছবির URL" value={newImageUrl} onChange={(e) => setNewImageUrl(e.target.value)} className="flex-1" />
-                  <Button size="sm" onClick={addImage} disabled={!newImageUrl}><Plus className="h-3.5 w-3.5 mr-1" /> যোগ</Button>
-                </div>
+                <label className="block">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) uploadImage(file);
+                      e.target.value = "";
+                    }}
+                  />
+                  <Button type="button" variant="outline" className="w-full" disabled={uploading} asChild>
+                    <span><Upload className="h-4 w-4 mr-1" />{uploading ? "আপলোড হচ্ছে..." : "ছবি আপলোড করুন"}</span>
+                  </Button>
+                </label>
               </TabsContent>
 
               <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-border">
