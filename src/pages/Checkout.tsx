@@ -64,40 +64,38 @@ const Checkout = () => {
     if (items.length === 0) { toast.error("আপনার কার্ট খালি"); return; }
 
     setSubmitting(true);
-    const orderId = crypto.randomUUID();
-    const orderNumber = `ORD-${Date.now()}`;
-    const email = parsed.data.customer_email || null;
-
-    const { error: orderError } = await supabase.from("orders").insert({
-      id: orderId, order_number: orderNumber, customer_name: parsed.data.customer_name,
-      customer_phone: parsed.data.customer_phone, customer_email: email,
-      delivery_address: parsed.data.delivery_address, district: parsed.data.district,
-      subtotal: total, delivery_charge: deliveryCharge, discount_amount: 0, total_amount: grandTotal,
-      advance_paid: 0, due_on_delivery: grandTotal, payment_method: parsed.data.payment_method,
-      payment_status: "Pending", order_status: "Pending", user_id: user?.id || null,
-      delivery_note: parsed.data.delivery_note || null,
-    });
-
-    if (orderError) { setSubmitting(false); toast.error(orderError.message); return; }
 
     const orderItems = items.map((item) => ({
-      id: crypto.randomUUID(), order_id: orderId, product_id: item.productId,
-      product_name_snapshot: item.productName, variant_label_snapshot: item.variantLabel || null,
-      unit_price_snapshot: item.price, quantity: item.quantity, item_total: item.price * item.quantity,
+      product_id: item.productId,
+      variant_label: item.variantLabel || null,
+      quantity: item.quantity,
     }));
 
-    const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
-    if (itemsError) { setSubmitting(false); toast.error(itemsError.message); return; }
+    const { data, error } = await supabase.rpc("create_order", {
+      p_customer_name: parsed.data.customer_name,
+      p_customer_phone: parsed.data.customer_phone,
+      p_customer_email: parsed.data.customer_email || "",
+      p_district: parsed.data.district,
+      p_delivery_address: parsed.data.delivery_address,
+      p_delivery_note: parsed.data.delivery_note || "",
+      p_payment_method: parsed.data.payment_method,
+      p_user_id: user?.id || null,
+      p_items: orderItems,
+    });
 
-    await supabase.from("order_status_history").insert({ id: crypto.randomUUID(), order_id: orderId, status: "Pending", note: "অর্ডার গৃহীত হয়েছে" });
+    if (error) { setSubmitting(false); toast.error(error.message); return; }
+
+    const result = data as { success: boolean; message?: string; order_number?: string; total_amount?: number; subtotal?: number; delivery_charge?: number };
+
+    if (!result.success) { setSubmitting(false); toast.error(result.message || "অর্ডার ব্যর্থ হয়েছে"); return; }
 
     setSubmitting(false);
     clearCart();
     toast.success("অর্ডার সফলভাবে সম্পন্ন হয়েছে!");
 
     navigate("/order-success", {
-      state: { orderNumber, customerName: parsed.data.customer_name, customerPhone: parsed.data.customer_phone,
-        items, subtotal: total, deliveryCharge, grandTotal, paymentMethod: parsed.data.payment_method,
+      state: { orderNumber: result.order_number, customerName: parsed.data.customer_name, customerPhone: parsed.data.customer_phone,
+        items, subtotal: result.subtotal, deliveryCharge: result.delivery_charge, grandTotal: result.total_amount, paymentMethod: parsed.data.payment_method,
         district: parsed.data.district, address: parsed.data.delivery_address },
     });
   };
