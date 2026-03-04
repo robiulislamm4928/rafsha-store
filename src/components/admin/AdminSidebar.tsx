@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, ShoppingCart, Package, FolderTree, Users, Star,
-  Truck, Settings, BarChart3, Monitor, Shield,
+  Truck, Settings, BarChart3, Monitor, Shield, Image, Megaphone,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -15,6 +15,8 @@ const menuItems = [
   { title: "অর্ডার", url: "/admin/orders", icon: ShoppingCart },
   { title: "পণ্য", url: "/admin/products", icon: Package },
   { title: "ক্যাটাগরি", url: "/admin/categories", icon: FolderTree },
+  { title: "ব্যানার", url: "/admin/banners", icon: Image },
+  { title: "অ্যানাউন্সমেন্ট", url: "/admin/announcements", icon: Megaphone },
   { title: "গ্রাহক", url: "/admin/customers", icon: Users },
   { title: "রিভিউ", url: "/admin/reviews", icon: Star },
   { title: "শিপিং জোন", url: "/admin/shipping", icon: Truck },
