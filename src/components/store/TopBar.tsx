@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Phone } from "lucide-react";
+import { Phone, Megaphone } from "lucide-react";
 
 const TopBar = () => {
   const [announcements, setAnnouncements] = useState<{ id: string; text: string }[]>([]);
@@ -19,7 +19,7 @@ const TopBar = () => {
   const marqueeText = announcements.map((a) => a.text).join("   •   ");
 
   return (
-    <div className="honey-gradient text-primary-foreground py-1.5 text-sm overflow-hidden relative">
+    <div className="brand-gradient text-primary-foreground py-1.5 text-sm overflow-hidden relative">
       <div className="container flex items-center justify-between">
         <div className="hidden md:flex items-center gap-2 shrink-0 z-10">
           <Phone className="h-3.5 w-3.5" />
@@ -32,7 +32,10 @@ const TopBar = () => {
               <span>{marqueeText}   •   {marqueeText}</span>
             </div>
           ) : (
-            <p className="text-center text-xs">🍯 বাংলাদেশের সেরা প্রাকৃতিক মধু — সরাসরি আপনার দোরগোড়ায়!</p>
+            <p className="text-center text-xs flex items-center justify-center gap-1.5">
+              <Megaphone className="h-3.5 w-3.5" />
+              রাফছা স্টোরে স্বাগতম — সেরা পণ্য সেরা দামে!
+            </p>
           )}
         </div>
 

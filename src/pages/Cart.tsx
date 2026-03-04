@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
-import { Trash2, Minus, Plus, ShoppingCart, ArrowLeft } from "lucide-react";
+import { Trash2, Minus, Plus, ShoppingCart, ArrowLeft, ImageOff } from "lucide-react";
 import Header from "@/components/store/Header";
 import TopBar from "@/components/store/TopBar";
 import Footer from "@/components/store/Footer";
@@ -16,8 +16,8 @@ const Cart = () => {
 
       <div className="container py-6 md:py-10 flex-1">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground">
-            🛒 আপনার কার্ট
+          <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground flex items-center gap-2">
+            <ShoppingCart className="h-7 w-7 text-primary" /> আপনার কার্ট
           </h1>
           {items.length > 0 && (
             <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={clearCart}>
@@ -31,7 +31,7 @@ const Cart = () => {
             <ShoppingCart className="h-16 w-16 mx-auto text-muted-foreground/30 mb-4" />
             <h2 className="text-xl font-semibold text-foreground mb-2">আপনার কার্ট খালি</h2>
             <p className="text-muted-foreground mb-6">আমাদের পণ্যগুলো ব্রাউজ করুন এবং পছন্দের মধু কার্টে যোগ করুন।</p>
-            <Button asChild className="honey-gradient text-primary-foreground hover:opacity-90">
+            <Button asChild className="brand-gradient text-primary-foreground hover:opacity-90">
               <Link to="/"><ArrowLeft className="h-4 w-4 mr-2" /> শপিং চালিয়ে যান</Link>
             </Button>
           </div>
@@ -49,7 +49,7 @@ const Cart = () => {
                     {item.image ? (
                       <img src={item.image} alt={item.productName} className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full honey-gradient-subtle flex items-center justify-center text-3xl">🍯</div>
+                      <div className="w-full h-full brand-gradient-subtle flex items-center justify-center"><ImageOff className="h-8 w-8 text-muted-foreground/30" /></div>
                     )}
                   </div>
 
@@ -123,7 +123,7 @@ const Cart = () => {
                   <span className="font-bold text-foreground text-lg">মোট</span>
                   <span className="font-bold text-primary text-xl">৳{total}</span>
                 </div>
-                <Button asChild className="w-full honey-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" size="lg">
+                <Button asChild className="w-full brand-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" size="lg">
                   <Link to="/checkout">চেকআউট করুন</Link>
                 </Button>
                 <Button asChild variant="outline" className="w-full" size="sm">

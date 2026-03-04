@@ -17,7 +17,7 @@ const AdminLayout = () => {
             <div className="flex items-center gap-2">
               <SidebarTrigger className="shrink-0" />
               <span className="text-sm font-medium text-muted-foreground hidden md:block">
-                🍯 মধুঘর অ্যাডমিন
+                রাফছা স্টোর অ্যাডমিন
               </span>
             </div>
             <div className="flex items-center gap-3">

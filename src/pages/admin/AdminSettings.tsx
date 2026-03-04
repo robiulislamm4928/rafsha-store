@@ -50,7 +50,7 @@ const AdminSettings = () => {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-display font-bold text-foreground">সাইট সেটিংস</h1>
-        <Button onClick={save} disabled={saving} className="honey-gradient text-primary-foreground hover:opacity-90"><Save className="h-4 w-4 mr-1" /> {saving ? "সংরক্ষণ হচ্ছে..." : "সংরক্ষণ"}</Button>
+        <Button onClick={save} disabled={saving} className="brand-gradient text-primary-foreground hover:opacity-90"><Save className="h-4 w-4 mr-1" /> {saving ? "সংরক্ষণ হচ্ছে..." : "সংরক্ষণ"}</Button>
       </div>
       <div className="bg-card rounded-xl border border-border p-6 space-y-4">
         {SETTING_KEYS.map(({ key, label, type }) => (

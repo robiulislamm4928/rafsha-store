@@ -31,7 +31,7 @@ const OrderSuccess = () => {
 
     // Simple invoice layout (jsPDF doesn't support Bengali natively, use transliteration)
     doc.setFontSize(20);
-    doc.text("MODHUGHOR - Invoice", 20, 25);
+    doc.text("RAFCHA STORE - Invoice", 20, 25);
 
     doc.setFontSize(10);
     doc.text(`Order: ${order.orderNumber}`, 20, 40);
@@ -85,11 +85,11 @@ const OrderSuccess = () => {
 
       <div className="container py-10 md:py-16 max-w-2xl">
         <div className="text-center mb-8 animate-fade-in-up">
-          <div className="w-20 h-20 rounded-full honey-gradient mx-auto flex items-center justify-center mb-4">
+          <div className="w-20 h-20 rounded-full brand-gradient mx-auto flex items-center justify-center mb-4">
             <CheckCircle className="h-10 w-10 text-primary-foreground" />
           </div>
           <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground">
-            অর্ডার সফলভাবে সম্পন্ন! 🎉
+            অর্ডার সফলভাবে সম্পন্ন!
           </h1>
           <p className="text-muted-foreground mt-2">আপনার অর্ডার গৃহীত হয়েছে। শীঘ্রই আমরা যোগাযোগ করব।</p>
         </div>
@@ -146,7 +146,7 @@ const OrderSuccess = () => {
           <Button onClick={handleDownloadPDF} variant="outline" className="flex-1">
             <Download className="h-4 w-4 mr-2" /> ইনভয়েস ডাউনলোড
           </Button>
-          <Button asChild className="flex-1 honey-gradient text-primary-foreground hover:opacity-90">
+          <Button asChild className="flex-1 brand-gradient text-primary-foreground hover:opacity-90">
             <Link to="/"><Home className="h-4 w-4 mr-2" /> হোমে ফিরুন</Link>
           </Button>
         </div>

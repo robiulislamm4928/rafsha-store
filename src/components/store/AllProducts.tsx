@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import ProductCard from "./ProductCard";
+import { Package } from "lucide-react";
 
 interface Product {
   id: string;
@@ -31,10 +32,11 @@ const AllProducts = () => {
     <section className="py-10 md:py-14">
       <div className="container">
         <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">
-            🍯 সকল পণ্য
+          <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground flex items-center justify-center gap-2">
+            <Package className="h-6 w-6 text-primary" />
+            সকল পণ্য
           </h2>
-          <p className="text-muted-foreground mt-2">আমাদের সম্পূর্ণ মধু কালেকশন ব্রাউজ করুন</p>
+          <p className="text-muted-foreground mt-2">আমাদের সম্পূর্ণ পণ্য কালেকশন ব্রাউজ করুন</p>
         </div>
         {products.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">

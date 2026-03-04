@@ -52,14 +52,14 @@ const HeroBanner = () => {
       <div className="relative container h-full flex items-center">
         <div className="max-w-xl text-primary-foreground space-y-4 animate-fade-in-up">
           <h2 className="text-3xl md:text-5xl font-display font-bold leading-tight">
-            {slide?.heading || "১০০% খাঁটি প্রাকৃতিক মধু"}
+            {slide?.heading || "সেরা পণ্য সেরা দামে"}
           </h2>
           <p className="text-base md:text-lg opacity-90 leading-relaxed">
-            {slide?.subtext || "সুন্দরবনের গহীন অরণ্য থেকে সংগ্রহ করা বিশুদ্ধ মধু, সরাসরি আপনার ঘরে।"}
+            {slide?.subtext || "রাফছা স্টোরে পাচ্ছেন মানসম্মত পণ্য, দ্রুত ডেলিভারি এবং সেরা কাস্টমার সার্ভিস।"}
           </p>
           <Button
             size="lg"
-            className="honey-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity"
+            className="bg-accent text-accent-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity"
             asChild
           >
             <a href={slide?.cta_link || "/products"}>
@@ -92,7 +92,7 @@ const HeroBanner = () => {
                 key={i}
                 onClick={() => setCurrent(i)}
                 className={`w-2.5 h-2.5 rounded-full transition-all ${
-                  i === current ? "bg-primary w-7" : "bg-primary-foreground/50"
+                  i === current ? "bg-accent w-7" : "bg-primary-foreground/50"
                 }`}
               />
             ))}

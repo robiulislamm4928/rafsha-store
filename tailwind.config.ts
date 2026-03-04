@@ -51,11 +51,11 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        honey: {
-          light: "hsl(var(--honey-light))",
-          gold: "hsl(var(--honey-gold))",
-          deep: "hsl(var(--honey-deep))",
-          dark: "hsl(var(--honey-dark))",
+        brand: {
+          navy: "hsl(var(--brand-navy))",
+          "navy-light": "hsl(var(--brand-navy-light))",
+          rose: "hsl(var(--brand-rose))",
+          blush: "hsl(var(--brand-blush))",
         },
         cream: {
           DEFAULT: "hsl(var(--cream))",

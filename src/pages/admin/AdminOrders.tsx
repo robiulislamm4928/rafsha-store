@@ -103,7 +103,7 @@ const AdminOrders = () => {
 
   const statusColor = (s: string) => {
     const map: Record<string, string> = {
-      Pending: "bg-honey-gold/20 text-honey-deep",
+      Pending: "bg-accent/20 text-accent",
       Processing: "bg-primary/10 text-primary",
       Shipped: "bg-info/10 text-info",
       Delivered: "bg-success/10 text-success",
@@ -243,7 +243,7 @@ const AdminOrders = () => {
                 <div className="border-t border-border pt-3 space-y-2">
                   <h4 className="font-semibold">অ্যাডমিন নোট</h4>
                   <Textarea value={adminNote} onChange={(e) => setAdminNote(e.target.value)} rows={2} placeholder="অ্যাডমিন নোট লিখুন..." />
-                  <Button size="sm" onClick={saveAdminNote} className="honey-gradient text-primary-foreground hover:opacity-90">সংরক্ষণ</Button>
+                  <Button size="sm" onClick={saveAdminNote} className="brand-gradient text-primary-foreground hover:opacity-90">সংরক্ষণ</Button>
                 </div>
               </div>
             </>

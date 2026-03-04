@@ -68,7 +68,7 @@ const AdminAnalytics = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">আজকের ভিউ</CardTitle>
-            <TrendingUp className="h-5 w-5 text-honey-gold" />
+            <TrendingUp className="h-5 w-5 text-accent" />
           </CardHeader>
           <CardContent><p className="text-3xl font-bold text-foreground">{dailyViews[dailyViews.length - 1]?.count || 0}</p></CardContent>
         </Card>
