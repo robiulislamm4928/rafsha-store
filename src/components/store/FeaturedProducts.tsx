@@ -1,0 +1,63 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import ProductCard from "./ProductCard";
+
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  regular_price: number;
+  sale_price: number | null;
+  short_description: string | null;
+  product_images: { image_url: string }[];
+}
+
+const FeaturedProducts = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("products")
+      .select("id, name, slug, regular_price, sale_price, short_description, product_images(image_url)")
+      .eq("is_active", true)
+      .eq("is_featured", true)
+      .order("created_at", { ascending: false })
+      .limit(8)
+      .then(({ data }) => {
+        if (data) setProducts(data as unknown as Product[]);
+      });
+  }, []);
+
+  return (
+    <section className="py-10 md:py-14 honey-gradient-subtle">
+      <div className="container">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">
+            ✨ বিশেষ পণ্যসমূহ
+          </h2>
+          <p className="text-muted-foreground mt-2">আমাদের সবচেয়ে জনপ্রিয় মধু কালেকশন</p>
+        </div>
+        {products.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {products.map((p) => (
+              <ProductCard
+                key={p.id}
+                id={p.id}
+                name={p.name}
+                slug={p.slug}
+                regularPrice={p.regular_price}
+                salePrice={p.sale_price}
+                imageUrl={p.product_images?.[0]?.image_url || null}
+                shortDescription={p.short_description}
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-muted-foreground py-10">শীঘ্রই পণ্য যোগ করা হবে...</p>
+        )}
+      </div>
+    </section>
+  );
+};
+
+export default FeaturedProducts;
