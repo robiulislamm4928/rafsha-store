@@ -1,27 +1,29 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Search, ShieldOff, Shield } from "lucide-react";
+import { Search, ShieldOff, Shield, Users } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface UserProfile { id: string; full_name: string; email: string; phone: string | null; is_blocked: boolean; created_at: string; }
 
 const AdminCustomers = () => {
-  const { toast } = useToast();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const fetchUsers = async () => {
-    const { data } = await supabase.from("users").select("*").order("created_at", { ascending: false });
+    setLoading(true);
+    const { data } = await supabase.from("users").select("*").order("created_at", { ascending: false }).limit(500);
     setUsers((data as UserProfile[]) || []);
+    setLoading(false);
   };
   useEffect(() => { fetchUsers(); }, []);
 
   const toggleBlock = async (userId: string, blocked: boolean) => {
     await supabase.from("users").update({ is_blocked: blocked }).eq("id", userId);
-    toast({ title: blocked ? "ব্লক করা হয়েছে" : "আনব্লক করা হয়েছে" });
+    toast.success(blocked ? "ব্লক করা হয়েছে" : "আনব্লক করা হয়েছে");
     fetchUsers();
   };
 
@@ -49,15 +51,19 @@ const AdminCustomers = () => {
             <th className="p-3 font-medium text-muted-foreground">অ্যাকশন</th>
           </tr></thead>
           <tbody>
-            {filtered.map((u) => (
+            {loading ? (
+              <tr><td colSpan={6} className="p-4"><div className="space-y-3">{[1,2,3].map(i => <Skeleton key={i} className="h-10 w-full" />)}</div></td></tr>
+            ) : filtered.length === 0 ? (
+              <tr><td colSpan={6} className="p-8 text-center"><Users className="h-10 w-10 mx-auto text-muted-foreground/30 mb-2" /><p className="text-muted-foreground">কোনো গ্রাহক পাওয়া যায়নি</p></td></tr>
+            ) : filtered.map((u) => (
               <tr key={u.id} className="border-b border-border last:border-0 hover:bg-muted/30">
                 <td className="p-3 font-medium text-foreground">{u.full_name}</td>
                 <td className="p-3 text-foreground">{u.email}</td>
                 <td className="p-3 text-foreground">{u.phone || "—"}</td>
                 <td className="p-3 text-xs text-muted-foreground">{new Date(u.created_at).toLocaleDateString("bn-BD")}</td>
-                <td className="p-3"><span className={`text-xs px-2 py-0.5 rounded-full ${u.is_blocked ? "bg-destructive/10 text-destructive" : "bg-green-100 text-green-700"}`}>{u.is_blocked ? "ব্লকড" : "সক্রিয়"}</span></td>
+                <td className="p-3"><span className={`text-xs px-2 py-0.5 rounded-full ${u.is_blocked ? "bg-destructive/10 text-destructive" : "bg-success/10 text-success"}`}>{u.is_blocked ? "ব্লকড" : "সক্রিয়"}</span></td>
                 <td className="p-3">
-                  <Button variant="ghost" size="sm" onClick={() => toggleBlock(u.id, !u.is_blocked)} className={u.is_blocked ? "text-green-600" : "text-destructive"}>
+                  <Button variant="ghost" size="sm" onClick={() => toggleBlock(u.id, !u.is_blocked)} className={u.is_blocked ? "text-success" : "text-destructive"}>
                     {u.is_blocked ? <><Shield className="h-3.5 w-3.5 mr-1" /> আনব্লক</> : <><ShieldOff className="h-3.5 w-3.5 mr-1" /> ব্লক</>}
                   </Button>
                 </td>

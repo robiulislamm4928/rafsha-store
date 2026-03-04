@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Trash2, Monitor, Smartphone, Laptop } from "lucide-react";
 
@@ -18,23 +18,22 @@ const deviceIcon = (type: string) => {
 };
 
 const AdminSessions = () => {
-  const { toast } = useToast();
   const [sessions, setSessions] = useState<Session[]>([]);
 
-  const fetch = async () => {
-    const { data } = await supabase.from("login_sessions").select("*").order("login_at", { ascending: false }).limit(100);
+  const fetchData = async () => {
+    const { data } = await supabase.from("login_sessions").select("*").order("login_at", { ascending: false }).limit(200);
     setSessions((data as Session[]) || []);
   };
-  useEffect(() => { fetch(); }, []);
+  useEffect(() => { fetchData(); }, []);
 
   const terminate = async (id: string) => {
     await supabase.from("login_sessions").update({ is_active: false, logged_out_at: new Date().toISOString() }).eq("id", id);
-    toast({ title: "সেশন বন্ধ করা হয়েছে" }); fetch();
+    toast.success("সেশন বন্ধ করা হয়েছে"); fetchData();
   };
 
   const del = async (id: string) => {
     await supabase.from("login_sessions").delete().eq("id", id);
-    toast({ title: "মুছে ফেলা হয়েছে" }); fetch();
+    toast.success("মুছে ফেলা হয়েছে"); fetchData();
   };
 
   return (
@@ -59,7 +58,7 @@ const AdminSessions = () => {
                 <td className="p-3 text-muted-foreground">{s.browser || "—"}</td>
                 <td className="p-3 text-muted-foreground text-xs">{s.ip_address || "—"}</td>
                 <td className="p-3 text-xs text-muted-foreground">{new Date(s.login_at).toLocaleString("bn-BD")}</td>
-                <td className="p-3"><span className={`text-xs px-2 py-0.5 rounded-full ${s.is_active ? "bg-green-100 text-green-700" : "bg-secondary text-muted-foreground"}`}>{s.is_active ? "সক্রিয়" : "বন্ধ"}</span></td>
+                <td className="p-3"><span className={`text-xs px-2 py-0.5 rounded-full ${s.is_active ? "bg-success/10 text-success" : "bg-secondary text-muted-foreground"}`}>{s.is_active ? "সক্রিয়" : "বন্ধ"}</span></td>
                 <td className="p-3"><div className="flex gap-1">
                   {s.is_active && <Button variant="ghost" size="sm" className="text-xs text-destructive h-7" onClick={() => terminate(s.id)}>বন্ধ করুন</Button>}
                   <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => del(s.id)}><Trash2 className="h-3.5 w-3.5" /></Button>

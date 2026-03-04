@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,14 +10,14 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Edit, Trash2, X } from "lucide-react";
+import { Plus, Edit, Trash2, X, Inbox } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Product {
   id: string; name: string; slug: string; short_description: string | null; full_description: string | null;
   sku: string | null; category_id: string | null; regular_price: number; sale_price: number | null;
   stock_quantity: number; is_active: boolean; is_featured: boolean;
 }
-
 interface Category { id: string; name: string; }
 interface Variant { id: string; variant_label: string; price_adjustment: number; stock_quantity: number; is_active: boolean; }
 interface ProductImage { id: string; image_url: string; display_order: number; }
@@ -28,7 +28,6 @@ const emptyProduct = (): Partial<Product> => ({
 });
 
 const AdminProducts = () => {
-  const { toast } = useToast();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [editing, setEditing] = useState<Partial<Product> | null>(null);
@@ -36,17 +35,18 @@ const AdminProducts = () => {
   const [images, setImages] = useState<ProductImage[]>([]);
   const [newVariant, setNewVariant] = useState({ variant_label: "", price_adjustment: 0, stock_quantity: 0 });
   const [newImageUrl, setNewImageUrl] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const fetchProducts = async () => {
-    const { data } = await supabase.from("products").select("*").order("created_at", { ascending: false });
+    setLoading(true);
+    const { data } = await supabase.from("products").select("*").order("created_at", { ascending: false }).limit(500);
     setProducts((data as Product[]) || []);
+    setLoading(false);
   };
-
   const fetchCategories = async () => {
     const { data } = await supabase.from("categories").select("id, name").eq("is_active", true);
     setCategories((data as Category[]) || []);
   };
-
   useEffect(() => { fetchProducts(); fetchCategories(); }, []);
 
   const openEdit = async (product?: Product) => {
@@ -71,16 +71,15 @@ const AdminProducts = () => {
     if (!editing) return;
     const isNew = !editing.id;
     const slug = editing.slug || autoSlug(editing.name || "");
-
     if (isNew) {
       const id = crypto.randomUUID();
       const { error } = await supabase.from("products").insert({ ...editing, id, slug } as any);
-      if (error) { toast({ title: "ত্রুটি", description: error.message, variant: "destructive" }); return; }
-      toast({ title: "পণ্য তৈরি হয়েছে" });
+      if (error) { toast.error(error.message); return; }
+      toast.success("পণ্য তৈরি হয়েছে");
     } else {
       const { error } = await supabase.from("products").update({ ...editing, slug } as any).eq("id", editing.id!);
-      if (error) { toast({ title: "ত্রুটি", description: error.message, variant: "destructive" }); return; }
-      toast({ title: "পণ্য আপডেট হয়েছে" });
+      if (error) { toast.error(error.message); return; }
+      toast.success("পণ্য আপডেট হয়েছে");
     }
     setEditing(null);
     fetchProducts();
@@ -88,7 +87,7 @@ const AdminProducts = () => {
 
   const deleteProduct = async (id: string) => {
     await supabase.from("products").delete().eq("id", id);
-    toast({ title: "পণ্য মুছে ফেলা হয়েছে" });
+    toast.success("পণ্য মুছে ফেলা হয়েছে");
     fetchProducts();
   };
 
@@ -98,13 +97,13 @@ const AdminProducts = () => {
     setNewVariant({ variant_label: "", price_adjustment: 0, stock_quantity: 0 });
     const { data } = await supabase.from("product_variants").select("*").eq("product_id", editing.id);
     setVariants((data as Variant[]) || []);
-    toast({ title: "ভ্যারিয়েন্ট যোগ হয়েছে" });
+    toast.success("ভ্যারিয়েন্ট যোগ হয়েছে");
   };
 
   const deleteVariant = async (vId: string) => {
     await supabase.from("product_variants").delete().eq("id", vId);
     setVariants((prev) => prev.filter((v) => v.id !== vId));
-    toast({ title: "ভ্যারিয়েন্ট মুছে ফেলা হয়েছে" });
+    toast.success("ভ্যারিয়েন্ট মুছে ফেলা হয়েছে");
   };
 
   const addImage = async () => {
@@ -113,7 +112,7 @@ const AdminProducts = () => {
     setNewImageUrl("");
     const { data } = await supabase.from("product_images").select("*").eq("product_id", editing.id).order("display_order");
     setImages((data as ProductImage[]) || []);
-    toast({ title: "ছবি যোগ হয়েছে" });
+    toast.success("ছবি যোগ হয়েছে");
   };
 
   const deleteImage = async (imgId: string) => {
@@ -140,7 +139,11 @@ const AdminProducts = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((p) => (
+            {loading ? (
+              <tr><td colSpan={5} className="p-4"><div className="space-y-3">{[1,2,3].map(i => <Skeleton key={i} className="h-10 w-full" />)}</div></td></tr>
+            ) : products.length === 0 ? (
+              <tr><td colSpan={5} className="p-8 text-center"><Inbox className="h-10 w-10 mx-auto text-muted-foreground/30 mb-2" /><p className="text-muted-foreground">কোনো পণ্য নেই</p></td></tr>
+            ) : products.map((p) => (
               <tr key={p.id} className="border-b border-border last:border-0 hover:bg-muted/30">
                 <td className="p-3">
                   <p className="font-medium text-foreground">{p.name}</p>
@@ -152,7 +155,7 @@ const AdminProducts = () => {
                 </td>
                 <td className="p-3">{p.stock_quantity}</td>
                 <td className="p-3">
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${p.is_active ? "bg-green-100 text-green-700" : "bg-secondary text-muted-foreground"}`}>
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${p.is_active ? "bg-success/10 text-success" : "bg-secondary text-muted-foreground"}`}>
                     {p.is_active ? "সক্রিয়" : "নিষ্ক্রিয়"}
                   </span>
                 </td>

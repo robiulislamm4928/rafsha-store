@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShoppingCart, Package, DollarSign, Clock } from "lucide-react";
+import { ShoppingCart, Package, DollarSign, Clock, Inbox } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Stats {
   totalOrders: number;
@@ -23,6 +24,7 @@ interface RecentOrder {
 const AdminDashboard = () => {
   const [stats, setStats] = useState<Stats>({ totalOrders: 0, totalRevenue: 0, pendingOrders: 0, totalProducts: 0 });
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -41,6 +43,7 @@ const AdminDashboard = () => {
         totalProducts: productsRes.count || 0,
       });
       setRecentOrders((recentRes.data as RecentOrder[]) || []);
+      setLoading(false);
     };
     fetchStats();
   }, []);
@@ -56,12 +59,24 @@ const AdminDashboard = () => {
     const map: Record<string, string> = {
       Pending: "bg-honey-gold/20 text-honey-deep",
       Processing: "bg-primary/10 text-primary",
-      Shipped: "bg-blue-100 text-blue-700",
-      Delivered: "bg-green-100 text-green-700",
+      Shipped: "bg-info/10 text-info",
+      Delivered: "bg-success/10 text-success",
       Cancelled: "bg-destructive/10 text-destructive",
     };
     return map[s] || "bg-secondary text-secondary-foreground";
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <h1 className="text-2xl font-display font-bold text-foreground">ড্যাশবোর্ড</h1>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1,2,3,4].map(i => <Skeleton key={i} className="h-24 rounded-xl" />)}
+        </div>
+        <Skeleton className="h-64 rounded-xl" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -87,7 +102,10 @@ const AdminDashboard = () => {
         </CardHeader>
         <CardContent>
           {recentOrders.length === 0 ? (
-            <p className="text-muted-foreground text-sm py-4 text-center">কোনো অর্ডার নেই</p>
+            <div className="text-center py-8">
+              <Inbox className="h-12 w-12 mx-auto text-muted-foreground/30 mb-3" />
+              <p className="text-muted-foreground text-sm">কোনো অর্ডার নেই</p>
+            </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
