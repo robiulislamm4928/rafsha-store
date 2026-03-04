@@ -1,0 +1,1 @@
+INSERT INTO public.user_roles (user_id, role) VALUES ('084ec3fa-dac0-40aa-b2b9-f51f4a167d1e', 'admin');
