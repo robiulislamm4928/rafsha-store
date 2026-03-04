@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
@@ -20,7 +21,7 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
   return (
     <div className="group bg-card rounded-xl border border-border shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col">
       {/* Image */}
-      <a href={`/product/${slug}`} className="block aspect-square overflow-hidden bg-secondary relative">
+      <Link to={`/product/${slug}`} className="block aspect-square overflow-hidden bg-secondary relative">
         {imageUrl ? (
           <img src={imageUrl} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
@@ -31,15 +32,15 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
             {Math.round(((regularPrice - salePrice!) / regularPrice) * 100)}% ছাড়
           </span>
         )}
-      </a>
+      </Link>
 
       {/* Info */}
       <div className="p-4 flex flex-col flex-1">
-        <a href={`/product/${slug}`}>
+        <Link to={`/product/${slug}`}>
           <h3 className="font-semibold text-foreground text-sm md:text-base line-clamp-2 group-hover:text-primary transition-colors">
             {name}
           </h3>
-        </a>
+        </Link>
         {shortDescription && (
           <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{shortDescription}</p>
         )}
