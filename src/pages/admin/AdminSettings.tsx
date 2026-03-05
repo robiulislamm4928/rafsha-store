@@ -15,8 +15,6 @@ const SETTING_KEYS = [
   { key: "address", label: "ঠিকানা", type: "textarea" },
   { key: "about", label: "সম্পর্কে", type: "textarea" },
   { key: "facebook_url", label: "ফেসবুক URL", type: "text" },
-  { key: "whatsapp_number", label: "হোয়াটসঅ্যাপ নম্বর", type: "text" },
-  { key: "live_chat_script", label: "লাইভ চ্যাট স্ক্রিপ্ট", type: "textarea" },
 ];
 
 const AdminSettings = () => {

@@ -63,7 +63,11 @@ const ChatWidget = () => {
         filter: `conversation_id=eq.${conversationId}`,
       }, (payload) => {
         const msg = payload.new as Message;
-        setMessages((prev) => [...prev, msg]);
+        setMessages((prev) => {
+          // Avoid duplicates from optimistic update
+          if (prev.some(m => m.id === msg.id)) return prev;
+          return [...prev, msg];
+        });
         if (msg.sender_type === "admin" && !open) {
           setUnreadCount(c => c + 1);
         }
@@ -114,14 +118,26 @@ const ChatWidget = () => {
       setConversationId(convId);
     }
 
+    const msgText = newMsg.trim();
+    setNewMsg("");
+
+    // Optimistic update
+    const optimisticMsg: Message = {
+      id: crypto.randomUUID(),
+      sender_type: "customer",
+      message: msgText,
+      created_at: new Date().toISOString(),
+      is_read: false,
+    };
+    setMessages((prev) => [...prev, optimisticMsg]);
+
     await supabase.from("chat_messages").insert({
       conversation_id: convId,
       sender_type: "customer",
       sender_id: user.id,
-      message: newMsg.trim(),
+      message: msgText,
     });
 
-    setNewMsg("");
     setSending(false);
   };
 

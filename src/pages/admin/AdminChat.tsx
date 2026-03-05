@@ -87,7 +87,11 @@ const AdminChat = () => {
         table: "chat_messages",
         filter: `conversation_id=eq.${selected.id}`,
       }, (payload) => {
-        setMessages((prev) => [...prev, payload.new as Message]);
+        const msg = payload.new as Message;
+        setMessages((prev) => {
+          if (prev.some(m => m.id === msg.id)) return prev;
+          return [...prev, msg];
+        });
       })
       .subscribe();
 
@@ -101,15 +105,28 @@ const AdminChat = () => {
   const handleSend = async () => {
     if (!newMsg.trim() || !selected || !user) return;
     setSending(true);
+    const msgText = newMsg.trim();
+    setNewMsg("");
+
+    // Optimistic update
+    const optimisticMsg: Message = {
+      id: crypto.randomUUID(),
+      conversation_id: selected.id,
+      sender_type: "admin",
+      sender_id: user.id,
+      message: msgText,
+      is_read: false,
+      created_at: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, optimisticMsg]);
+
     await supabase.from("chat_messages").insert({
       conversation_id: selected.id,
       sender_type: "admin",
       sender_id: user.id,
-      message: newMsg.trim(),
+      message: msgText,
     });
-    // Update conversation timestamp
     await supabase.from("chat_conversations").update({ updated_at: new Date().toISOString() }).eq("id", selected.id);
-    setNewMsg("");
     setSending(false);
   };
 
