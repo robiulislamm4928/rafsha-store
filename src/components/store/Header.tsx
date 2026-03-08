@@ -180,14 +180,14 @@ const Header = () => {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          <Link to="/cart" className="relative p-2 hover:bg-secondary rounded-lg transition-colors">
+          <button onClick={openCart} className="relative p-2 hover:bg-secondary rounded-lg transition-colors">
             <ShoppingCart className="h-5 w-5 text-foreground" />
             {itemCount > 0 && (
               <span className="absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-accent text-accent-foreground text-[10px] font-bold flex items-center justify-center">
                 {itemCount}
               </span>
             )}
-          </Link>
+          </button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
