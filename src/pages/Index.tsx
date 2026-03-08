@@ -36,7 +36,7 @@ const Index = () => {
       <ScrollSection><FeaturedProducts /></ScrollSection>
       <ScrollSection><KeyPoints /></ScrollSection>
       <ScrollSection><PromotionalBanners /></ScrollSection>
-      <ScrollSection><AllProducts /></ScrollSection>
+      <ScrollSection><CategoryProducts /></ScrollSection>
       <ScrollSection><CustomerReviews /></ScrollSection>
       <ScrollSection><ComparisonTable /></ScrollSection>
       <ScrollSection><MoneybackBanner /></ScrollSection>
