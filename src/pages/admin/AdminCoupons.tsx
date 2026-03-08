@@ -26,6 +26,7 @@ interface Coupon {
 const AdminCoupons = () => {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({
     code: "", discount_type: "fixed", discount_value: "", min_order_amount: "0", max_uses: "", expires_at: "",
   });
