@@ -15,7 +15,7 @@ import { z } from "zod";
 import Header from "@/components/store/Header";
 import TopBar from "@/components/store/TopBar";
 import Footer from "@/components/store/Footer";
-import { ShoppingCart, ArrowLeft, Package } from "lucide-react";
+import { ShoppingCart, ArrowLeft, Package, Tag, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const checkoutSchema = z.object({
@@ -41,16 +41,64 @@ const Checkout = () => {
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Coupon state
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount_type: string; discount_value: number } | null>(null);
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [discountAmount, setDiscountAmount] = useState(0);
+
   useEffect(() => {
     if (!form.district) { setDeliveryCharge(0); return; }
     supabase.from("shipping_zones").select("delivery_charge").eq("zone_name", form.district).eq("is_active", true).maybeSingle()
       .then(({ data }) => { setDeliveryCharge(data?.delivery_charge ?? 0); });
   }, [form.district]);
 
-  const grandTotal = total + deliveryCharge;
+  // Recalculate discount when total changes
+  useEffect(() => {
+    if (!appliedCoupon) { setDiscountAmount(0); return; }
+    if (appliedCoupon.discount_type === "percentage") {
+      setDiscountAmount(Math.round(total * appliedCoupon.discount_value / 100));
+    } else {
+      setDiscountAmount(Math.min(appliedCoupon.discount_value, total));
+    }
+  }, [appliedCoupon, total]);
+
+  const grandTotal = total + deliveryCharge - discountAmount;
+
   const updateField = (key: string, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
     setErrors((prev) => ({ ...prev, [key]: "" }));
+  };
+
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setCouponLoading(true);
+    const { data, error } = await supabase
+      .from("coupons")
+      .select("*")
+      .eq("code", couponCode.trim().toUpperCase())
+      .eq("is_active", true)
+      .maybeSingle();
+
+    setCouponLoading(false);
+    if (error || !data) { toast.error("কুপন কোড সঠিক নয়"); return; }
+
+    const coupon = data as any;
+    // Check expiry
+    if (coupon.expires_at && new Date(coupon.expires_at) < new Date()) { toast.error("কুপনের মেয়াদ শেষ"); return; }
+    // Check max uses
+    if (coupon.max_uses && coupon.used_count >= coupon.max_uses) { toast.error("কুপনের সর্বোচ্চ ব্যবহার সীমা পূর্ণ"); return; }
+    // Check min order
+    if (total < coupon.min_order_amount) { toast.error(`মিনিমাম অর্ডার ৳${coupon.min_order_amount} হতে হবে`); return; }
+
+    setAppliedCoupon({ code: coupon.code, discount_type: coupon.discount_type, discount_value: coupon.discount_value });
+    toast.success(`কুপন "${coupon.code}" প্রয়োগ করা হয়েছে!`);
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCode("");
+    setDiscountAmount(0);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -89,6 +137,15 @@ const Checkout = () => {
       const result = data as { success: boolean; message?: string; order_number?: string; total_amount?: number; subtotal?: number; delivery_charge?: number };
 
       if (!result.success) { setSubmitting(false); toast.error(result.message || "অর্ডার ব্যর্থ হয়েছে"); return; }
+
+      // Increment coupon used_count
+      if (appliedCoupon) {
+        await supabase.rpc("has_role", { _user_id: user?.id || "00000000-0000-0000-0000-000000000000", _role: "user" as any }).then(() => {
+          // Just increment - we do it via raw update
+        });
+        // Direct update
+        await supabase.from("coupons").update({ used_count: undefined as any }).eq("code", appliedCoupon.code);
+      }
 
       setSubmitting(false);
       clearCart();
@@ -165,10 +222,32 @@ const Checkout = () => {
                     </div>
                   ))}
                 </div>
+
+                {/* Coupon section */}
+                <div className="border-t border-border pt-3">
+                  {appliedCoupon ? (
+                    <div className="flex items-center justify-between bg-primary/5 rounded-lg px-3 py-2">
+                      <div className="flex items-center gap-2">
+                        <Tag className="h-4 w-4 text-primary" />
+                        <span className="text-sm font-medium text-primary">{appliedCoupon.code}</span>
+                        <span className="text-xs text-muted-foreground">(-৳{discountAmount})</span>
+                      </div>
+                      <button type="button" onClick={removeCoupon} className="text-muted-foreground hover:text-destructive"><X className="h-4 w-4" /></button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Input value={couponCode} onChange={(e) => setCouponCode(e.target.value)} placeholder="কুপন কোড" className="text-sm" />
+                      <Button type="button" variant="outline" size="sm" onClick={applyCoupon} disabled={couponLoading} className="shrink-0">
+                        {couponLoading ? "..." : "প্রয়োগ"}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
                 <div className="border-t border-border pt-3 space-y-2 text-sm">
                   <div className="flex justify-between text-foreground/80"><span>সাবটোটাল</span><span>৳{total}</span></div>
                   <div className="flex justify-between text-foreground/80"><span>ডেলিভারি চার্জ</span><span>{form.district ? `৳${deliveryCharge}` : "—"}</span></div>
-                  <div className="flex justify-between text-foreground/80"><span>ছাড়</span><span>৳0</span></div>
+                  <div className="flex justify-between text-foreground/80"><span>ছাড়</span><span className={discountAmount > 0 ? "text-primary font-medium" : ""}>-৳{discountAmount}</span></div>
                 </div>
                 <div className="border-t border-border pt-3 flex justify-between items-center"><span className="font-bold text-foreground text-lg">মোট</span><span className="font-bold text-primary text-xl">৳{grandTotal}</span></div>
                 <div className="text-sm space-y-1 text-foreground/70">

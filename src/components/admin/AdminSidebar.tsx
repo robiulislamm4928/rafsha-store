@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, ShoppingCart, Package, FolderTree, Users, Star,
-  Truck, Settings, BarChart3, Shield, Image, Megaphone, MessageCircle,
+  Truck, Settings, BarChart3, Shield, Image, Megaphone, MessageCircle, Tag,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -17,6 +17,7 @@ const menuItems = [
   { title: "ক্যাটাগরি", url: "/admin/categories", icon: FolderTree },
   { title: "ব্যানার", url: "/admin/banners", icon: Image },
   { title: "অ্যানাউন্সমেন্ট", url: "/admin/announcements", icon: Megaphone },
+  { title: "কুপন", url: "/admin/coupons", icon: Tag },
   { title: "গ্রাহক", url: "/admin/customers", icon: Users },
   { title: "রিভিউ", url: "/admin/reviews", icon: Star },
   { title: "লাইভ চ্যাট", url: "/admin/chat", icon: MessageCircle },
