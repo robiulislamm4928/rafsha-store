@@ -126,6 +126,8 @@ const AdminSettings = () => {
               </div>
             ) : type === "textarea" ? (
               <Textarea value={settings[key] || ""} onChange={(e) => setSettings({ ...settings, [key]: e.target.value })} rows={3} />
+            ) : type === "number" ? (
+              <Input type="number" min="0" value={settings[key] || ""} onChange={(e) => setSettings({ ...settings, [key]: e.target.value })} placeholder="0" />
             ) : (
               <Input value={settings[key] || ""} onChange={(e) => setSettings({ ...settings, [key]: e.target.value })} />
             )}
