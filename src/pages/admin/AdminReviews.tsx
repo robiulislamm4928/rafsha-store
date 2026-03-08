@@ -14,9 +14,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 interface Review {
   id: string; reviewer_name: string; reviewer_location: string | null;
   rating: number; review_text: string | null; is_approved: boolean;
-  created_at: string; product_id: string; user_id: string | null;
+   created_at: string; product_id: string; user_id: string | null;
   reviewer_image_url: string | null; social_link: string | null; social_platform: string | null;
-  review_image_url: string | null;
 }
 
 interface Product { id: string; name: string; }
