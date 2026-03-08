@@ -138,6 +138,14 @@ const AdminChat = () => {
     if (selected?.id === id) { setSelected(null); setMessages([]); }
   };
 
+  const deleteConvo = async (id: string) => {
+    await supabase.from("chat_messages").delete().eq("conversation_id", id);
+    await supabase.from("chat_conversations").delete().eq("id", id);
+    toast.success("চ্যাট মুছে ফেলা হয়েছে");
+    fetchConversations();
+    if (selected?.id === id) { setSelected(null); setMessages([]); }
+  };
+
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-display font-bold text-foreground">লাইভ চ্যাট</h1>
