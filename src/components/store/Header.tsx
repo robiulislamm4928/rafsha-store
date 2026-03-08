@@ -231,9 +231,9 @@ const Header = () => {
             <SearchDropdown />
           </div>
           {navLinks.map((link) => (
-            <Link key={link.href} to={link.href} className="block py-2 text-sm font-medium text-foreground/80 hover:text-primary" onClick={() => setMobileOpen(false)}>
+            <button key={link.href} onClick={() => handleNavClick(link.href)} className="block py-2 text-sm font-medium text-foreground/80 hover:text-primary text-left w-full">
               {link.label}
-            </Link>
+            </button>
           ))}
         </div>
       )}
