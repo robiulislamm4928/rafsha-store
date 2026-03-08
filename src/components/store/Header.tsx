@@ -98,6 +98,21 @@ const Header = () => {
     navigate(`/product/${slug}`);
   };
 
+  const handleNavClick = (href: string) => {
+    setMobileOpen(false);
+    if (href.includes("#")) {
+      const [path, hash] = href.split("#");
+      if (window.location.pathname === path || path === "/") {
+        const el = document.getElementById(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+          return;
+        }
+      }
+    }
+    navigate(href);
+  };
+
   const SearchDropdown = () => {
     if (!showResults) return null;
     return (
@@ -157,9 +172,9 @@ const Header = () => {
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
-            <Link key={link.href} to={link.href} className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+            <button key={link.href} onClick={() => handleNavClick(link.href)} className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
               {link.label}
-            </Link>
+            </button>
           ))}
         </nav>
 
@@ -216,9 +231,9 @@ const Header = () => {
             <SearchDropdown />
           </div>
           {navLinks.map((link) => (
-            <Link key={link.href} to={link.href} className="block py-2 text-sm font-medium text-foreground/80 hover:text-primary" onClick={() => setMobileOpen(false)}>
+            <button key={link.href} onClick={() => handleNavClick(link.href)} className="block py-2 text-sm font-medium text-foreground/80 hover:text-primary text-left w-full">
               {link.label}
-            </Link>
+            </button>
           ))}
         </div>
       )}
