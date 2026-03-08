@@ -14,12 +14,17 @@ const SETTING_KEYS = [
   { key: "email", label: "ইমেইল", type: "text" },
   { key: "address", label: "ঠিকানা", type: "textarea" },
   { key: "about", label: "সাইটের বিবরণ", type: "textarea" },
+  { key: "bkash_number", label: "বিকাশ নম্বর", type: "text" },
+  { key: "nagad_number", label: "নগদ নম্বর", type: "text" },
   { key: "facebook_url", label: "ফেসবুক URL", type: "text" },
   { key: "youtube_url", label: "ইউটিউব URL", type: "text" },
   { key: "instagram_url", label: "ইনস্টাগ্রাম URL", type: "text" },
   { key: "tiktok_url", label: "টিকটক URL", type: "text" },
   { key: "twitter_url", label: "টুইটার/X URL", type: "text" },
 ];
+
+const SOCIAL_KEYS = ["facebook_url", "youtube_url", "instagram_url", "tiktok_url", "twitter_url"];
+const PAYMENT_KEYS = ["bkash_number", "nagad_number"];
 
 const AdminSettings = () => {
   const [settings, setSettings] = useState<Record<string, string>>({});
@@ -64,20 +69,22 @@ const AdminSettings = () => {
     toast.success("সেটিংস সংরক্ষিত হয়েছে");
   };
 
+  const generalKeys = SETTING_KEYS.filter(s => !SOCIAL_KEYS.includes(s.key) && !PAYMENT_KEYS.includes(s.key));
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h1 className="text-2xl font-display font-bold text-foreground">সাইট সেটিংস</h1>
-        <Button onClick={save} disabled={saving} className="brand-gradient text-primary-foreground hover:opacity-90"><Save className="h-4 w-4 mr-1" /> {saving ? "সংরক্ষণ হচ্ছে..." : "সংরক্ষণ"}</Button>
+        <Button onClick={save} disabled={saving} className="brand-gradient text-primary-foreground hover:opacity-90 w-full sm:w-auto"><Save className="h-4 w-4 mr-1" /> {saving ? "সংরক্ষণ হচ্ছে..." : "সংরক্ষণ"}</Button>
       </div>
 
-      <div className="bg-card rounded-xl border border-border p-6 space-y-4">
+      <div className="bg-card rounded-xl border border-border p-4 md:p-6 space-y-4">
         <h2 className="font-display font-semibold text-foreground">সাধারণ তথ্য</h2>
-        {SETTING_KEYS.filter(s => !s.key.includes("_url") || s.key === "store_logo_url").filter(s => !["facebook_url","youtube_url","instagram_url","tiktok_url","twitter_url"].includes(s.key)).map(({ key, label, type }) => (
+        {generalKeys.map(({ key, label, type }) => (
           <div key={key} className="space-y-2">
             <Label>{label}</Label>
             {type === "image" ? (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 flex-wrap">
                 {settings[key] && (
                   <div className="relative">
                     <img src={settings[key]} alt="লোগো" className="h-16 w-auto rounded-lg border border-border" />
@@ -98,12 +105,23 @@ const AdminSettings = () => {
         ))}
       </div>
 
-      <div className="bg-card rounded-xl border border-border p-6 space-y-4">
-        <h2 className="font-display font-semibold text-foreground">সোশ্যাল মিডিয়া লিংক</h2>
-        {SETTING_KEYS.filter(s => ["facebook_url","youtube_url","instagram_url","tiktok_url","twitter_url"].includes(s.key)).map(({ key, label }) => (
+      <div className="bg-card rounded-xl border border-border p-4 md:p-6 space-y-4">
+        <h2 className="font-display font-semibold text-foreground">মোবাইল ব্যাংকিং পেমেন্ট নম্বর</h2>
+        <p className="text-sm text-muted-foreground">এই নম্বরগুলো চেকআউট পেজে মোবাইল ব্যাংকিং পেমেন্ট অপশনে দেখানো হবে। গ্রাহক এই নম্বরে টাকা পাঠাবে।</p>
+        {SETTING_KEYS.filter(s => PAYMENT_KEYS.includes(s.key)).map(({ key, label }) => (
           <div key={key} className="space-y-2">
             <Label>{label}</Label>
-            <Input value={settings[key] || ""} onChange={(e) => setSettings({ ...settings, [key]: e.target.value })} placeholder={`https://...`} />
+            <Input value={settings[key] || ""} onChange={(e) => setSettings({ ...settings, [key]: e.target.value })} placeholder="01XXXXXXXXX" />
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-card rounded-xl border border-border p-4 md:p-6 space-y-4">
+        <h2 className="font-display font-semibold text-foreground">সোশ্যাল মিডিয়া লিংক</h2>
+        {SETTING_KEYS.filter(s => SOCIAL_KEYS.includes(s.key)).map(({ key, label }) => (
+          <div key={key} className="space-y-2">
+            <Label>{label}</Label>
+            <Input value={settings[key] || ""} onChange={(e) => setSettings({ ...settings, [key]: e.target.value })} placeholder="https://..." />
           </div>
         ))}
       </div>

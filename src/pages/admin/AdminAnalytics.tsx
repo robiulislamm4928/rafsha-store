@@ -2,37 +2,48 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
-import { Eye, TrendingUp, BarChart3 } from "lucide-react";
+import { Eye, TrendingUp, ShoppingBag } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface DailyView { date: string; count: number; }
-interface PopularPage { page_path: string; count: number; }
+interface PopularProduct { name: string; count: number; }
 
 const AdminAnalytics = () => {
   const [dailyViews, setDailyViews] = useState<DailyView[]>([]);
-  const [popularPages, setPopularPages] = useState<PopularPage[]>([]);
+  const [popularProducts, setPopularProducts] = useState<PopularProduct[]>([]);
   const [totalViews, setTotalViews] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
-      const { data: views } = await supabase.from("page_views").select("page_path, created_at").limit(5000);
+      // Fetch page views
+      const { data: views } = await supabase.from("page_views").select("created_at").limit(5000);
 
-      if (!views) { setLoading(false); return; }
-      setTotalViews(views.length);
+      if (views) {
+        setTotalViews(views.length);
+        const dailyMap: Record<string, number> = {};
+        views.forEach((v) => {
+          const date = new Date(v.created_at).toLocaleDateString("en-CA");
+          dailyMap[date] = (dailyMap[date] || 0) + 1;
+        });
+        setDailyViews(Object.entries(dailyMap).sort().slice(-14).map(([date, count]) => ({ date, count })));
+      }
 
-      const dailyMap: Record<string, number> = {};
-      views.forEach((v) => {
-        const date = new Date(v.created_at).toLocaleDateString("en-CA");
-        dailyMap[date] = (dailyMap[date] || 0) + 1;
-      });
-      const dailyArr = Object.entries(dailyMap).sort().slice(-14).map(([date, count]) => ({ date, count }));
-      setDailyViews(dailyArr);
+      // Fetch popular products from order_items
+      const { data: orderItems } = await supabase.from("order_items").select("product_name_snapshot, quantity").limit(5000);
+      if (orderItems) {
+        const productMap: Record<string, number> = {};
+        orderItems.forEach((item) => {
+          productMap[item.product_name_snapshot] = (productMap[item.product_name_snapshot] || 0) + item.quantity;
+        });
+        setPopularProducts(
+          Object.entries(productMap)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 10)
+        );
+      }
 
-      const pageMap: Record<string, number> = {};
-      views.forEach((v) => { pageMap[v.page_path] = (pageMap[v.page_path] || 0) + 1; });
-      const pageArr = Object.entries(pageMap).map(([page_path, count]) => ({ page_path, count })).sort((a, b) => b.count - a.count).slice(0, 10);
-      setPopularPages(pageArr);
       setLoading(false);
     };
     fetchAnalytics();
@@ -90,21 +101,21 @@ const AdminAnalytics = () => {
       </Card>
 
       <Card>
-        <CardHeader><CardTitle className="text-lg">জনপ্রিয় পেজ</CardTitle></CardHeader>
+        <CardHeader><CardTitle className="text-lg">জনপ্রিয় পণ্য</CardTitle></CardHeader>
         <CardContent>
-          {popularPages.length > 0 ? (
+          {popularProducts.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={popularPages} layout="vertical">
+              <BarChart data={popularProducts} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                 <XAxis type="number" tick={{ fontSize: 11 }} />
-                <YAxis dataKey="page_path" type="category" width={150} tick={{ fontSize: 11 }} />
+                <YAxis dataKey="name" type="category" width={150} tick={{ fontSize: 11 }} />
                 <Tooltip />
-                <Bar dataKey="count" fill={chartColor} radius={[0, 4, 4, 0]} />
+                <Bar dataKey="count" fill={chartColor} radius={[0, 4, 4, 0]} name="বিক্রিত সংখ্যা" />
               </BarChart>
             </ResponsiveContainer>
           ) : (
             <div className="text-center py-8">
-              <BarChart3 className="h-10 w-10 mx-auto text-muted-foreground/30 mb-2" />
+              <ShoppingBag className="h-10 w-10 mx-auto text-muted-foreground/30 mb-2" />
               <p className="text-muted-foreground">কোনো ডেটা নেই</p>
             </div>
           )}
