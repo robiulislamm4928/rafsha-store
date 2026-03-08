@@ -33,8 +33,8 @@ const Index = () => {
       <Header />
       <HeroBanner />
       
-      <ScrollSection><FeaturedProducts /></ScrollSection>
       <ScrollSection><KeyPoints /></ScrollSection>
+      <ScrollSection><FeaturedProducts /></ScrollSection>
       <ScrollSection><PromotionalBanners /></ScrollSection>
       <ScrollSection><CategoryProducts /></ScrollSection>
       <ScrollSection><CustomerReviews /></ScrollSection>
