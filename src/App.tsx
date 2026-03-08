@@ -93,6 +93,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ChatWidget />
+            <CartDrawer />
           </CartProvider>
         </AuthProvider>
       </BrowserRouter>
