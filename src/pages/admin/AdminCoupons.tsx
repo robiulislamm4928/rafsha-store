@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Plus, Trash2, Tag } from "lucide-react";
+import { Plus, Trash2, Tag, Pencil } from "lucide-react";
 
 interface Coupon {
   id: string;
@@ -26,6 +26,7 @@ interface Coupon {
 const AdminCoupons = () => {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({
     code: "", discount_type: "fixed", discount_value: "", min_order_amount: "0", max_uses: "", expires_at: "",
   });
@@ -40,20 +41,45 @@ const AdminCoupons = () => {
   const handleCreate = async () => {
     if (!form.code.trim() || !form.discount_value) { toast.error("কোড এবং ডিসকাউন্ট মান দিন"); return; }
     setSaving(true);
-    const { error } = await supabase.from("coupons").insert({
+    const payload = {
       code: form.code.trim().toUpperCase(),
       discount_type: form.discount_type as any,
       discount_value: parseFloat(form.discount_value),
       min_order_amount: parseFloat(form.min_order_amount) || 0,
       max_uses: form.max_uses ? parseInt(form.max_uses) : null,
       expires_at: form.expires_at || null,
-    } as any);
+    } as any;
+
+    let error;
+    if (editingId) {
+      ({ error } = await supabase.from("coupons").update(payload).eq("id", editingId));
+    } else {
+      ({ error } = await supabase.from("coupons").insert(payload));
+    }
     setSaving(false);
-    if (error) { toast.error("কুপন তৈরি ব্যর্থ: " + error.message); return; }
-    toast.success("কুপন তৈরি হয়েছে");
-    setForm({ code: "", discount_type: "fixed", discount_value: "", min_order_amount: "0", max_uses: "", expires_at: "" });
-    setDialogOpen(false);
+    if (error) { toast.error((editingId ? "কুপন আপডেট" : "কুপন তৈরি") + " ব্যর্থ: " + error.message); return; }
+    toast.success(editingId ? "কুপন আপডেট হয়েছে" : "কুপন তৈরি হয়েছে");
+    resetForm();
     fetchCoupons();
+  };
+
+  const resetForm = () => {
+    setForm({ code: "", discount_type: "fixed", discount_value: "", min_order_amount: "0", max_uses: "", expires_at: "" });
+    setEditingId(null);
+    setDialogOpen(false);
+  };
+
+  const startEdit = (c: Coupon) => {
+    setEditingId(c.id);
+    setForm({
+      code: c.code,
+      discount_type: c.discount_type,
+      discount_value: String(c.discount_value),
+      min_order_amount: String(c.min_order_amount),
+      max_uses: c.max_uses ? String(c.max_uses) : "",
+      expires_at: c.expires_at ? c.expires_at.slice(0, 16) : "",
+    });
+    setDialogOpen(true);
   };
 
   const toggleActive = async (id: string, active: boolean) => {
@@ -71,12 +97,12 @@ const AdminCoupons = () => {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-display font-bold text-foreground">কুপন ম্যানেজমেন্ট</h1>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open) resetForm(); else setDialogOpen(true); }}>
           <DialogTrigger asChild>
-            <Button className="brand-gradient text-primary-foreground hover:opacity-90"><Plus className="h-4 w-4 mr-1" /> নতুন কুপন</Button>
+            <Button onClick={() => { setEditingId(null); setForm({ code: "", discount_type: "fixed", discount_value: "", min_order_amount: "0", max_uses: "", expires_at: "" }); }} className="brand-gradient text-primary-foreground hover:opacity-90"><Plus className="h-4 w-4 mr-1" /> নতুন কুপন</Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogHeader><DialogTitle>নতুন কুপন তৈরি করুন</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editingId ? "কুপন এডিট করুন" : "নতুন কুপন তৈরি করুন"}</DialogTitle></DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2"><Label>কুপন কোড *</Label><Input value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} placeholder="SAVE20" /></div>
               <div className="grid grid-cols-2 gap-4">
@@ -97,7 +123,7 @@ const AdminCoupons = () => {
                 <div className="space-y-2"><Label>সর্বোচ্চ ব্যবহার</Label><Input type="number" value={form.max_uses} onChange={(e) => setForm({ ...form, max_uses: e.target.value })} placeholder="সীমাহীন" /></div>
               </div>
               <div className="space-y-2"><Label>মেয়াদ শেষের তারিখ</Label><Input type="datetime-local" value={form.expires_at} onChange={(e) => setForm({ ...form, expires_at: e.target.value })} /></div>
-              <Button onClick={handleCreate} disabled={saving} className="w-full brand-gradient text-primary-foreground hover:opacity-90">{saving ? "তৈরি হচ্ছে..." : "কুপন তৈরি করুন"}</Button>
+              <Button onClick={handleCreate} disabled={saving} className="w-full brand-gradient text-primary-foreground hover:opacity-90">{saving ? (editingId ? "আপডেট হচ্ছে..." : "তৈরি হচ্ছে...") : (editingId ? "কুপন আপডেট করুন" : "কুপন তৈরি করুন")}</Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -121,7 +147,8 @@ const AdminCoupons = () => {
                 <td className="p-3 text-foreground">৳{c.min_order_amount}</td>
                 <td className="p-3 text-foreground">{c.used_count}{c.max_uses ? `/${c.max_uses}` : ""}</td>
                 <td className="p-3"><Switch checked={c.is_active} onCheckedChange={(v) => toggleActive(c.id, v)} /></td>
-                <td className="p-3">
+                <td className="p-3 flex items-center gap-1">
+                  <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground" onClick={() => startEdit(c)}><Pencil className="h-3.5 w-3.5" /></Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button></AlertDialogTrigger>
                     <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>কুপন মুছে ফেলতে চান?</AlertDialogTitle></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>বাতিল</AlertDialogCancel><AlertDialogAction onClick={() => deleteCoupon(c.id)} className="bg-destructive text-destructive-foreground">মুছুন</AlertDialogAction></AlertDialogFooter></AlertDialogContent>
