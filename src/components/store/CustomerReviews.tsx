@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Star, MessageCircle } from "lucide-react";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Star, MessageCircle, Globe, ExternalLink } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel";
 
 interface Review {
   id: string;
@@ -9,7 +16,19 @@ interface Review {
   reviewer_location: string | null;
   rating: number;
   review_text: string | null;
+  reviewer_image_url: string | null;
+  social_link: string | null;
+  social_platform: string | null;
+  user_id: string | null;
 }
+
+const platformIcons: Record<string, string> = {
+  facebook: "https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/facebook.svg",
+  instagram: "https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/instagram.svg",
+  youtube: "https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/youtube.svg",
+  tiktok: "https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/tiktok.svg",
+  twitter: "https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/twitter.svg",
+};
 
 const CustomerReviews = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -17,12 +36,12 @@ const CustomerReviews = () => {
   useEffect(() => {
     supabase
       .from("reviews")
-      .select("id, reviewer_name, reviewer_location, rating, review_text")
+      .select("id, reviewer_name, reviewer_location, rating, review_text, reviewer_image_url, social_link, social_platform, user_id")
       .eq("is_approved", true)
       .order("created_at", { ascending: false })
-      .limit(10)
+      .limit(12)
       .then(({ data }) => {
-        if (data) setReviews(data);
+        if (data) setReviews(data as Review[]);
       });
   }, []);
 
@@ -38,35 +57,79 @@ const CustomerReviews = () => {
         </div>
 
         {reviews.length > 0 ? (
-          <ScrollArea className="w-full">
-            <div className="flex gap-4 pb-4">
+          <Carousel
+            opts={{ align: "start", loop: reviews.length > 3 }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-3">
               {reviews.map((r) => (
-                <div
-                  key={r.id}
-                  className="shrink-0 w-72 md:w-80 bg-card rounded-xl border border-border p-5 shadow-sm"
-                >
-                  <div className="flex gap-1 mb-3">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`h-4 w-4 ${i < r.rating ? "text-accent fill-accent" : "text-border"}`}
-                      />
-                    ))}
-                  </div>
-                  {r.review_text && (
-                    <p className="text-sm text-foreground/80 mb-3 line-clamp-3">"{r.review_text}"</p>
-                  )}
-                  <div className="border-t border-border pt-3">
-                    <p className="font-semibold text-sm text-foreground">{r.reviewer_name}</p>
-                    {r.reviewer_location && (
-                      <p className="text-xs text-muted-foreground">{r.reviewer_location}</p>
+                <CarouselItem key={r.id} className="pl-3 basis-full sm:basis-1/2 lg:basis-1/3">
+                  <div className="bg-card rounded-xl border border-border p-5 shadow-sm h-full flex flex-col relative">
+                    {/* Social icon - top right */}
+                    <div className="absolute top-3 right-3">
+                      {r.user_id && !r.social_link ? (
+                        <Globe className="h-4 w-4 text-muted-foreground" />
+                      ) : r.social_link ? (
+                        <a
+                          href={r.social_link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:text-primary/80 transition-colors"
+                        >
+                          {r.social_platform && platformIcons[r.social_platform] ? (
+                            <img
+                              src={platformIcons[r.social_platform]}
+                              alt={r.social_platform}
+                              className="h-4 w-4 opacity-60 hover:opacity-100 transition-opacity dark:invert"
+                            />
+                          ) : (
+                            <ExternalLink className="h-4 w-4" />
+                          )}
+                        </a>
+                      ) : null}
+                    </div>
+
+                    {/* Stars */}
+                    <div className="flex gap-0.5 mb-3">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`h-4 w-4 ${i < r.rating ? "text-accent fill-accent" : "text-border"}`}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Review text */}
+                    {r.review_text && (
+                      <p className="text-sm text-foreground/80 mb-4 flex-1 line-clamp-4">
+                        "{r.review_text}"
+                      </p>
                     )}
+
+                    {/* Reviewer info */}
+                    <div className="border-t border-border pt-3 flex items-center gap-3">
+                      <Avatar className="h-9 w-9">
+                        <AvatarImage src={r.reviewer_image_url || undefined} alt={r.reviewer_name} />
+                        <AvatarFallback className="text-xs bg-primary/10 text-primary font-semibold">
+                          {r.reviewer_name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-semibold text-sm text-foreground leading-tight">
+                          {r.reviewer_name}
+                        </p>
+                        {r.reviewer_location && (
+                          <p className="text-xs text-muted-foreground">{r.reviewer_location}</p>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </CarouselItem>
               ))}
-            </div>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
+            </CarouselContent>
+            <CarouselPrevious className="-left-4 md:-left-5" />
+            <CarouselNext className="-right-4 md:-right-5" />
+          </Carousel>
         ) : (
           <p className="text-center text-muted-foreground py-6">শীঘ্রই রিভিউ আসছে...</p>
         )}

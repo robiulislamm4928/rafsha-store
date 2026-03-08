@@ -652,8 +652,11 @@ export type Database = {
           product_id: string
           rating: number
           review_text: string | null
+          reviewer_image_url: string | null
           reviewer_location: string | null
           reviewer_name: string
+          social_link: string | null
+          social_platform: string | null
           user_id: string | null
         }
         Insert: {
@@ -663,8 +666,11 @@ export type Database = {
           product_id: string
           rating: number
           review_text?: string | null
+          reviewer_image_url?: string | null
           reviewer_location?: string | null
           reviewer_name: string
+          social_link?: string | null
+          social_platform?: string | null
           user_id?: string | null
         }
         Update: {
@@ -674,8 +680,11 @@ export type Database = {
           product_id?: string
           rating?: number
           review_text?: string | null
+          reviewer_image_url?: string | null
           reviewer_location?: string | null
           reviewer_name?: string
+          social_link?: string | null
+          social_platform?: string | null
           user_id?: string | null
         }
         Relationships: [
