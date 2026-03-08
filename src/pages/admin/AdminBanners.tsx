@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Plus, Edit, Trash2, Inbox, Upload, Image as ImageIcon } from "lucide-react";
+import { Plus, Edit, Trash2, Inbox, Upload, Info } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Banner {
@@ -18,7 +18,7 @@ interface Banner {
 
 const emptyBanner = (): Partial<Banner> => ({
   heading: "", subtext: "", cta_label: "", cta_link: "",
-  desktop_image_url: "", mobile_image_url: "", type: "hero",
+  desktop_image_url: "", mobile_image_url: null, type: "hero",
   is_active: true, display_order: 0,
 });
 
@@ -37,27 +37,28 @@ const AdminBanners = () => {
 
   useEffect(() => { fetchBanners(); }, []);
 
-  const uploadImage = async (file: File, path: string): Promise<string | null> => {
+  const uploadImage = async (file: File): Promise<string | null> => {
     const ext = file.name.split(".").pop();
-    const filePath = `${path}/${crypto.randomUUID()}.${ext}`;
+    const filePath = `banners/${crypto.randomUUID()}.${ext}`;
     const { error } = await supabase.storage.from("banners").upload(filePath, file);
     if (error) { toast.error("আপলোড ব্যর্থ: " + error.message); return null; }
     const { data } = supabase.storage.from("banners").getPublicUrl(filePath);
     return data.publicUrl;
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: "desktop_image_url" | "mobile_image_url") => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const url = await uploadImage(file, field === "desktop_image_url" ? "desktop" : "mobile");
-    if (url) setEditing((prev) => prev ? { ...prev, [field]: url } : null);
+    const url = await uploadImage(file);
+    if (url) setEditing((prev) => prev ? { ...prev, desktop_image_url: url } : null);
     setUploading(false);
+    e.target.value = "";
   };
 
   const saveBanner = async () => {
     if (!editing || !editing.desktop_image_url) {
-      toast.error("ডেস্কটপ ইমেজ আবশ্যক"); return;
+      toast.error("ব্যানার ইমেজ আপলোড করুন"); return;
     }
     const isNew = !editing.id;
     if (isNew) {
@@ -86,12 +87,16 @@ const AdminBanners = () => {
         </Button>
       </div>
 
-      <div className="bg-muted/50 rounded-lg p-3 md:p-4 text-sm text-muted-foreground space-y-1">
-        <p className="font-medium text-foreground">ব্যানার সাইজ গাইড:</p>
-        <p>📐 <strong>হিরো ব্যানার:</strong> <strong>1920×840px</strong> (16:7 অনুপাত) — ডেস্কটপ ও মোবাইল উভয়ে একই সাইজ ব্যবহার হবে</p>
-        <p>📱 <strong>মোবাইল ব্যানার (ঐচ্ছিক):</strong> <strong>768×430px</strong> — আপলোড করলে মোবাইলে এটি দেখাবে</p>
-        <p>🎯 <strong>প্রমোশনাল ব্যানার:</strong> <strong>800×400px</strong></p>
-        <p className="text-xs mt-1">💡 সেরা ফলাফলের জন্য JPG/WebP ফরম্যাটে ২MB এর নিচে রাখুন</p>
+      <div className="bg-muted/50 rounded-lg p-3 md:p-4 text-sm text-muted-foreground border border-border">
+        <div className="flex items-start gap-2">
+          <Info className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <p className="font-medium text-foreground">ব্যানার সাইজ গাইড:</p>
+            <p><strong>হিরো ব্যানার:</strong> <strong>1920×700px</strong> — ডেস্কটপ ও মোবাইল উভয়ে একই ইমেজ ব্যবহার হবে</p>
+            <p><strong>প্রমোশনাল ব্যানার:</strong> <strong>800×400px</strong></p>
+            <p className="text-xs mt-1">সেরা ফলাফলের জন্য JPG/WebP ফরম্যাটে ২MB এর নিচে রাখুন</p>
+          </div>
+        </div>
       </div>
 
       <div className="bg-card rounded-xl border border-border overflow-x-auto">
@@ -169,39 +174,28 @@ const AdminBanners = () => {
                 </Select>
               </div>
 
-              {/* Desktop Image Upload */}
+              {/* Banner Image Upload */}
               <div className="space-y-2">
-                <Label>ডেস্কটপ ইমেজ *</Label>
+                <Label>ব্যানার ইমেজ *</Label>
+                <p className="text-xs text-muted-foreground">
+                  {editing.type === "hero" ? "প্রস্তাবিত সাইজ: 1920×700px" : "প্রস্তাবিত সাইজ: 800×400px"}
+                </p>
                 {editing.desktop_image_url && (
                   <img src={editing.desktop_image_url} alt="Preview" className="w-full h-32 object-cover rounded-lg border border-border" />
                 )}
                 <label className="block">
-                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, "desktop_image_url")} />
+                  <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
                   <Button type="button" variant="outline" className="w-full" disabled={uploading} asChild>
-                    <span><Upload className="h-4 w-4 mr-1" />{uploading ? "আপলোড হচ্ছে..." : "ডেস্কটপ ছবি আপলোড করুন"}</span>
+                    <span><Upload className="h-4 w-4 mr-1" />{uploading ? "আপলোড হচ্ছে..." : "ব্যানার ছবি আপলোড করুন"}</span>
                   </Button>
                 </label>
               </div>
 
-              {/* Mobile Image Upload */}
-              <div className="space-y-2">
-                <Label>মোবাইল ইমেজ (ঐচ্ছিক)</Label>
-                {editing.mobile_image_url && (
-                  <img src={editing.mobile_image_url} alt="Mobile Preview" className="w-32 h-24 object-cover rounded-lg border border-border" />
-                )}
-                <label className="block">
-                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, "mobile_image_url")} />
-                  <Button type="button" variant="outline" size="sm" disabled={uploading} asChild>
-                    <span><ImageIcon className="h-3.5 w-3.5 mr-1" />মোবাইল ছবি আপলোড</span>
-                  </Button>
-                </label>
-              </div>
-
-              <div className="space-y-2"><Label>শিরোনাম</Label><Input value={editing.heading || ""} onChange={(e) => setEditing({ ...editing, heading: e.target.value })} /></div>
-              <div className="space-y-2"><Label>সাব-টেক্সট</Label><Input value={editing.subtext || ""} onChange={(e) => setEditing({ ...editing, subtext: e.target.value })} /></div>
+              <div className="space-y-2"><Label>শিরোনাম (টাইটেল)</Label><Input value={editing.heading || ""} onChange={(e) => setEditing({ ...editing, heading: e.target.value })} placeholder="যেমন: সেরা পণ্য সেরা দামে" /></div>
+              <div className="space-y-2"><Label>সাবটাইটেল</Label><Input value={editing.subtext || ""} onChange={(e) => setEditing({ ...editing, subtext: e.target.value })} placeholder="যেমন: আমাদের কালেকশন দেখুন" /></div>
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2"><Label>CTA লেবেল</Label><Input value={editing.cta_label || ""} onChange={(e) => setEditing({ ...editing, cta_label: e.target.value })} placeholder="এখনই কিনুন" /></div>
-                <div className="space-y-2"><Label>CTA লিঙ্ক</Label><Input value={editing.cta_link || ""} onChange={(e) => setEditing({ ...editing, cta_link: e.target.value })} placeholder="/products" /></div>
+                <div className="space-y-2"><Label>বাটন টেক্সট</Label><Input value={editing.cta_label || ""} onChange={(e) => setEditing({ ...editing, cta_label: e.target.value })} placeholder="এখনই কিনুন" /></div>
+                <div className="space-y-2"><Label>বাটন লিঙ্ক</Label><Input value={editing.cta_link || ""} onChange={(e) => setEditing({ ...editing, cta_link: e.target.value })} placeholder="/products" /></div>
               </div>
               <div className="space-y-2"><Label>ডিসপ্লে ক্রম</Label><Input type="number" value={editing.display_order || 0} onChange={(e) => setEditing({ ...editing, display_order: Number(e.target.value) })} /></div>
               <div className="flex items-center gap-2"><Switch checked={editing.is_active ?? true} onCheckedChange={(v) => setEditing({ ...editing, is_active: v })} /><Label>সক্রিয়</Label></div>
