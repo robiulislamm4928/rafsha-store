@@ -61,11 +61,12 @@ const Checkout = () => {
     supabase.from("shipping_zones").select("zone_name, delivery_charge").eq("is_active", true).order("zone_name")
       .then(({ data }) => { if (data) setShippingZones(data); });
 
-    supabase.from("site_settings").select("key, value").in("key", ["bkash_number", "nagad_number"])
+    supabase.from("site_settings").select("key, value").in("key", ["bkash_number", "nagad_number", "free_delivery_threshold"])
       .then(({ data }) => {
         data?.forEach((s) => {
           if (s.key === "bkash_number") setBkashNumber(s.value);
           if (s.key === "nagad_number") setNagadNumber(s.value);
+          if (s.key === "free_delivery_threshold") setFreeDeliveryThreshold(Number(s.value) || 0);
         });
       });
   }, []);
