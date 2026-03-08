@@ -40,6 +40,7 @@ import AdminBanners from "./pages/admin/AdminBanners";
 import AdminAnnouncements from "./pages/admin/AdminAnnouncements";
 import AdminChat from "./pages/admin/AdminChat";
 import AdminCoupons from "./pages/admin/AdminCoupons";
+import AdminKeyPoints from "./pages/admin/AdminKeyPoints";
 
 const queryClient = new QueryClient();
 
@@ -88,6 +89,7 @@ const App = () => (
                 <Route path="team" element={<AdminTeam />} />
                 <Route path="chat" element={<AdminChat />} />
                 <Route path="coupons" element={<AdminCoupons />} />
+                <Route path="key-points" element={<AdminKeyPoints />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />
