@@ -166,7 +166,7 @@ const AdminProducts = () => {
                   <span className="font-medium">৳{p.sale_price ?? p.regular_price}</span>
                   {p.sale_price && <span className="text-xs text-muted-foreground line-through ml-1">৳{p.regular_price}</span>}
                 </td>
-                <td className="p-3">{p.stock_quantity}</td>
+                <td className="p-3">{p.stock_quantity === -1 ? <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">আনলিমিটেড</span> : p.stock_quantity}</td>
                 <td className="p-3">
                   <span className={`text-xs px-2 py-0.5 rounded-full ${p.is_active ? "bg-success/10 text-success" : "bg-secondary text-muted-foreground"}`}>
                     {p.is_active ? "সক্রিয়" : "নিষ্ক্রিয়"}
@@ -229,7 +229,13 @@ const AdminProducts = () => {
 
               <TabsContent value="inventory" className="space-y-3 mt-4">
                 <div className="space-y-2"><Label>SKU</Label><Input value={editing.sku || ""} onChange={(e) => setEditing({ ...editing, sku: e.target.value })} /></div>
-                <div className="space-y-2"><Label>স্টক পরিমাণ</Label><Input type="number" value={editing.stock_quantity || 0} onChange={(e) => setEditing({ ...editing, stock_quantity: Number(e.target.value) })} /></div>
+                <div className="flex items-center gap-2 mt-2">
+                  <Switch checked={editing.stock_quantity === -1} onCheckedChange={(v) => setEditing({ ...editing, stock_quantity: v ? -1 : 0 })} />
+                  <Label>আনলিমিটেড স্টক</Label>
+                </div>
+                {editing.stock_quantity !== -1 && (
+                  <div className="space-y-2"><Label>স্টক পরিমাণ</Label><Input type="number" value={editing.stock_quantity || 0} onChange={(e) => setEditing({ ...editing, stock_quantity: Number(e.target.value) })} /></div>
+                )}
               </TabsContent>
 
               <TabsContent value="variants" className="space-y-3 mt-4">

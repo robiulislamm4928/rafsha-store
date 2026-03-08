@@ -218,16 +218,16 @@ const ProductDetail = () => {
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button size="lg" className="flex-1 brand-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart} disabled={product.stock_quantity <= 0}>
-                <ShoppingCart className="h-5 w-5 mr-2" />{product.stock_quantity > 0 ? "কার্টে যোগ করুন" : "স্টকে নেই"}
+              <Button size="lg" className="flex-1 brand-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart} disabled={product.stock_quantity === 0}>
+                <ShoppingCart className="h-5 w-5 mr-2" />{product.stock_quantity === 0 ? "স্টকে নেই" : "কার্টে যোগ করুন"}
               </Button>
-              {product.stock_quantity > 0 && (
+              {product.stock_quantity !== 0 && (
                 <Button size="lg" variant="outline" className="flex-1 border-primary text-primary font-semibold hover:bg-primary/10" onClick={handleBuyNow}>
                   <Zap className="h-5 w-5 mr-2" /> সরাসরি কিনুন
                 </Button>
               )}
             </div>
-            {product.stock_quantity > 0 && product.stock_quantity <= 10 && <p className="text-sm text-destructive font-medium flex items-center gap-1"><AlertTriangle className="h-4 w-4" /> মাত্র {product.stock_quantity}টি বাকি আছে!</p>}
+            {product.stock_quantity > 0 && product.stock_quantity <= 10 && product.stock_quantity !== -1 && <p className="text-sm text-destructive font-medium flex items-center gap-1"><AlertTriangle className="h-4 w-4" /> মাত্র {product.stock_quantity}টি বাকি আছে!</p>}
           </div>
         </div>
 
