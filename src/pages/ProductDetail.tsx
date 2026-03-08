@@ -79,6 +79,14 @@ const ProductDetail = () => {
   const [reviewImageUrl, setReviewImageUrl] = useState("");
   const [uploadingReviewImage, setUploadingReviewImage] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [userProfileImage, setUserProfileImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user) { setUserProfileImage(null); return; }
+    supabase.from("users").select("profile_image_url").eq("id", user.id).single().then(({ data }) => {
+      setUserProfileImage(data?.profile_image_url || null);
+    });
+  }, [user]);
 
   useEffect(() => {
     if (!slug) return;
@@ -166,7 +174,7 @@ const ProductDetail = () => {
     const parsed = reviewSchema.safeParse({ reviewer_name: reviewName, reviewer_location: reviewLocation || undefined, rating: reviewRating, review_text: reviewText || undefined });
     if (!parsed.success) { toast.error(parsed.error.errors[0]?.message); return; }
     setSubmitting(true);
-    const { error } = await supabase.from("reviews").insert({ product_id: product.id, user_id: user?.id || null, reviewer_name: parsed.data.reviewer_name, reviewer_location: parsed.data.reviewer_location || null, rating: parsed.data.rating, review_text: parsed.data.review_text || null, reviewer_image_url: reviewImageUrl || null });
+    const { error } = await supabase.from("reviews").insert({ product_id: product.id, user_id: user?.id || null, reviewer_name: parsed.data.reviewer_name, reviewer_location: parsed.data.reviewer_location || null, rating: parsed.data.rating, review_text: parsed.data.review_text || null, reviewer_image_url: userProfileImage || null, review_image_url: reviewImageUrl || null });
     setSubmitting(false);
     if (error) { toast.error("রিভিউ জমা দিতে সমস্যা হয়েছে"); } else {
       toast.success("আপনার রিভিউ অনুমোদনের পর প্রকাশিত হবে");
@@ -268,7 +276,7 @@ const ProductDetail = () => {
               </div>
               <div className="space-y-2"><Label htmlFor="rtext">রিভিউ</Label><Textarea id="rtext" value={reviewText} onChange={(e) => setReviewText(e.target.value)} maxLength={1000} placeholder="আপনার অভিজ্ঞতা শেয়ার করুন..." rows={3} /></div>
               <div className="space-y-2">
-                <Label>আপনার ছবি (ঐচ্ছিক)</Label>
+                <Label>পণ্যের ছবি (ঐচ্ছিক)</Label>
                 <div className="flex items-center gap-3">
                   {reviewImageUrl && <img src={reviewImageUrl} alt="preview" className="h-10 w-10 rounded-full object-cover" />}
                   <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-sm hover:bg-muted transition-colors">
