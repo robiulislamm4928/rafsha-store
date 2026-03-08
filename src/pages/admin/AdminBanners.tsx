@@ -86,9 +86,13 @@ const AdminBanners = () => {
         </Button>
       </div>
 
-      <p className="text-sm text-muted-foreground">
-        হিরো ব্যানার সাইজ: <strong>1920×700px</strong> (ডেস্কটপ), <strong>768×500px</strong> (মোবাইল)। প্রমোশনাল ব্যানার: <strong>800×400px</strong>।
-      </p>
+      <div className="bg-muted/50 rounded-lg p-3 md:p-4 text-sm text-muted-foreground space-y-1">
+        <p className="font-medium text-foreground">ব্যানার সাইজ গাইড:</p>
+        <p>📐 <strong>হিরো ব্যানার:</strong> <strong>1920×840px</strong> (16:7 অনুপাত) — ডেস্কটপ ও মোবাইল উভয়ে একই সাইজ ব্যবহার হবে</p>
+        <p>📱 <strong>মোবাইল ব্যানার (ঐচ্ছিক):</strong> <strong>768×430px</strong> — আপলোড করলে মোবাইলে এটি দেখাবে</p>
+        <p>🎯 <strong>প্রমোশনাল ব্যানার:</strong> <strong>800×400px</strong></p>
+        <p className="text-xs mt-1">💡 সেরা ফলাফলের জন্য JPG/WebP ফরম্যাটে ২MB এর নিচে রাখুন</p>
+      </div>
 
       <div className="bg-card rounded-xl border border-border overflow-x-auto">
         <table className="w-full text-sm">
