@@ -18,6 +18,7 @@ const menuItems = [
   { title: "ব্যানার", url: "/admin/banners", icon: Image },
   { title: "অ্যানাউন্সমেন্ট", url: "/admin/announcements", icon: Megaphone },
   { title: "কুপন", url: "/admin/coupons", icon: Tag },
+  { title: "কী পয়েন্টস", url: "/admin/key-points", icon: Sparkles },
   { title: "গ্রাহক", url: "/admin/customers", icon: Users },
   { title: "রিভিউ", url: "/admin/reviews", icon: Star },
   { title: "লাইভ চ্যাট", url: "/admin/chat", icon: MessageCircle },
