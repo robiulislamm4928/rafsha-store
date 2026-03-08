@@ -227,7 +227,7 @@ const ProductDetail = () => {
                 </Button>
               )}
             </div>
-            {product.stock_quantity > 0 && product.stock_quantity <= 10 && <p className="text-sm text-destructive font-medium flex items-center gap-1"><AlertTriangle className="h-4 w-4" /> মাত্র {product.stock_quantity}টি বাকি আছে!</p>}
+            {product.stock_quantity > 0 && product.stock_quantity <= 10 && product.stock_quantity !== -1 && <p className="text-sm text-destructive font-medium flex items-center gap-1"><AlertTriangle className="h-4 w-4" /> মাত্র {product.stock_quantity}টি বাকি আছে!</p>}
           </div>
         </div>
 

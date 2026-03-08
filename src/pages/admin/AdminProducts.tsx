@@ -229,7 +229,13 @@ const AdminProducts = () => {
 
               <TabsContent value="inventory" className="space-y-3 mt-4">
                 <div className="space-y-2"><Label>SKU</Label><Input value={editing.sku || ""} onChange={(e) => setEditing({ ...editing, sku: e.target.value })} /></div>
-                <div className="space-y-2"><Label>স্টক পরিমাণ</Label><Input type="number" value={editing.stock_quantity || 0} onChange={(e) => setEditing({ ...editing, stock_quantity: Number(e.target.value) })} /></div>
+                <div className="flex items-center gap-2 mt-2">
+                  <Switch checked={editing.stock_quantity === -1} onCheckedChange={(v) => setEditing({ ...editing, stock_quantity: v ? -1 : 0 })} />
+                  <Label>আনলিমিটেড স্টক</Label>
+                </div>
+                {editing.stock_quantity !== -1 && (
+                  <div className="space-y-2"><Label>স্টক পরিমাণ</Label><Input type="number" value={editing.stock_quantity || 0} onChange={(e) => setEditing({ ...editing, stock_quantity: Number(e.target.value) })} /></div>
+                )}
               </TabsContent>
 
               <TabsContent value="variants" className="space-y-3 mt-4">
