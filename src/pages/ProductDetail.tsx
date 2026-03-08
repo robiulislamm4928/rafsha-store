@@ -148,16 +148,29 @@ const ProductDetail = () => {
     navigate("/checkout");
   };
 
+  const handleReviewImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingReviewImage(true);
+    const ext = file.name.split(".").pop();
+    const path = `${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from("review-images").upload(path, file);
+    if (error) { toast.error("ছবি আপলোড ব্যর্থ"); setUploadingReviewImage(false); return; }
+    const { data: urlData } = supabase.storage.from("review-images").getPublicUrl(path);
+    setReviewImageUrl(urlData.publicUrl);
+    setUploadingReviewImage(false);
+  };
+
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const parsed = reviewSchema.safeParse({ reviewer_name: reviewName, reviewer_location: reviewLocation || undefined, rating: reviewRating, review_text: reviewText || undefined });
     if (!parsed.success) { toast.error(parsed.error.errors[0]?.message); return; }
     setSubmitting(true);
-    const { error } = await supabase.from("reviews").insert({ product_id: product.id, user_id: user?.id || null, reviewer_name: parsed.data.reviewer_name, reviewer_location: parsed.data.reviewer_location || null, rating: parsed.data.rating, review_text: parsed.data.review_text || null });
+    const { error } = await supabase.from("reviews").insert({ product_id: product.id, user_id: user?.id || null, reviewer_name: parsed.data.reviewer_name, reviewer_location: parsed.data.reviewer_location || null, rating: parsed.data.rating, review_text: parsed.data.review_text || null, reviewer_image_url: reviewImageUrl || null });
     setSubmitting(false);
     if (error) { toast.error("রিভিউ জমা দিতে সমস্যা হয়েছে"); } else {
       toast.success("আপনার রিভিউ অনুমোদনের পর প্রকাশিত হবে");
-      setReviewName(""); setReviewLocation(""); setReviewRating(5); setReviewText("");
+      setReviewName(""); setReviewLocation(""); setReviewRating(5); setReviewText(""); setReviewImageUrl("");
     }
   };
 
