@@ -149,6 +149,8 @@ const AdminSettings = () => {
         )}
       </div>
 
+      <div className="bg-card rounded-xl border border-border p-4 md:p-6 space-y-4">
+        <h2 className="font-display font-semibold text-foreground">মোবাইল ব্যাংকিং পেমেন্ট নম্বর</h2>
         <p className="text-sm text-muted-foreground">এই নম্বরগুলো চেকআউট পেজে মোবাইল ব্যাংকিং পেমেন্ট অপশনে দেখানো হবে। গ্রাহক এই নম্বরে টাকা পাঠাবে।</p>
         {SETTING_KEYS.filter(s => PAYMENT_KEYS.includes(s.key)).map(({ key, label }) => (
           <div key={key} className="space-y-2">
