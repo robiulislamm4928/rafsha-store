@@ -267,7 +267,18 @@ const ProductDetail = () => {
                 <div className="flex gap-1">{[1,2,3,4,5].map((star) => <button key={star} type="button" onClick={() => setReviewRating(star)} className="p-0.5"><Star className={`h-6 w-6 transition-colors ${star <= reviewRating ? "text-accent fill-accent" : "text-border"}`} /></button>)}</div>
               </div>
               <div className="space-y-2"><Label htmlFor="rtext">রিভিউ</Label><Textarea id="rtext" value={reviewText} onChange={(e) => setReviewText(e.target.value)} maxLength={1000} placeholder="আপনার অভিজ্ঞতা শেয়ার করুন..." rows={3} /></div>
-              <Button type="submit" disabled={submitting} className="brand-gradient text-primary-foreground hover:opacity-90">{submitting ? "জমা হচ্ছে..." : "রিভিউ জমা দিন"}</Button>
+              <div className="space-y-2">
+                <Label>আপনার ছবি (ঐচ্ছিক)</Label>
+                <div className="flex items-center gap-3">
+                  {reviewImageUrl && <img src={reviewImageUrl} alt="preview" className="h-10 w-10 rounded-full object-cover" />}
+                  <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-sm hover:bg-muted transition-colors">
+                    <Upload className="h-3.5 w-3.5" />
+                    {uploadingReviewImage ? "আপলোড হচ্ছে..." : "ছবি আপলোড"}
+                    <input type="file" accept="image/*" className="hidden" onChange={handleReviewImageUpload} disabled={uploadingReviewImage} />
+                  </label>
+                </div>
+              </div>
+              <Button type="submit" disabled={submitting || uploadingReviewImage} className="brand-gradient text-primary-foreground hover:opacity-90">{submitting ? "জমা হচ্ছে..." : "রিভিউ জমা দিন"}</Button>
             </form>
           </div>
 
