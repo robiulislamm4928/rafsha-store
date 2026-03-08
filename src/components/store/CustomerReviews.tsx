@@ -6,9 +6,8 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
 } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 interface Review {
   id: string;
@@ -58,13 +57,14 @@ const CustomerReviews = () => {
 
         {reviews.length > 0 ? (
           <Carousel
-            opts={{ align: "start", loop: reviews.length > 3 }}
+            opts={{ align: "start", loop: true }}
+            plugins={[Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true })]}
             className="w-full"
           >
             <CarouselContent className="-ml-3">
               {reviews.map((r) => (
                 <CarouselItem key={r.id} className="pl-3 basis-full sm:basis-1/2 lg:basis-1/3">
-                  <div className="bg-card rounded-xl border border-border p-5 shadow-sm h-full flex flex-col relative">
+                  <div className="bg-card rounded-xl border border-border p-5 shadow-sm h-full flex flex-col relative transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
                     {/* Social icon - top right */}
                     <div className="absolute top-3 right-3">
                       {r.user_id && !r.social_link ? (
@@ -127,8 +127,6 @@ const CustomerReviews = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="-left-4 md:-left-5" />
-            <CarouselNext className="-right-4 md:-right-5" />
           </Carousel>
         ) : (
           <p className="text-center text-muted-foreground py-6">শীঘ্রই রিভিউ আসছে...</p>

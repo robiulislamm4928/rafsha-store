@@ -76,6 +76,8 @@ const ProductDetail = () => {
   const [reviewLocation, setReviewLocation] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
+  const [reviewImageUrl, setReviewImageUrl] = useState("");
+  const [uploadingReviewImage, setUploadingReviewImage] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
