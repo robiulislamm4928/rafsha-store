@@ -164,7 +164,7 @@ const ProductDetail = () => {
     setSubmitting(false);
     if (error) { toast.error("রিভিউ জমা দিতে সমস্যা হয়েছে"); } else {
       toast.success("আপনার রিভিউ অনুমোদনের পর প্রকাশিত হবে");
-      setReviewName(""); setReviewLocation(""); setReviewRating(5); setReviewText(""); setReviewImageUrl("");
+      setReviewName(""); setReviewLocation(""); setReviewRating(5); setReviewText("");
     }
   };
 
