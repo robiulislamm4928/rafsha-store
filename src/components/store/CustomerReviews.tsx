@@ -19,6 +19,7 @@ interface Review {
   social_link: string | null;
   social_platform: string | null;
   user_id: string | null;
+  review_image_url: string | null;
 }
 
 const platformIcons: Record<string, string> = {
@@ -35,7 +36,7 @@ const CustomerReviews = () => {
   useEffect(() => {
     supabase
       .from("reviews")
-      .select("id, reviewer_name, reviewer_location, rating, review_text, reviewer_image_url, social_link, social_platform, user_id")
+      .select("id, reviewer_name, reviewer_location, rating, review_text, reviewer_image_url, social_link, social_platform, user_id, review_image_url")
       .eq("is_approved", true)
       .order("created_at", { ascending: false })
       .limit(12)
@@ -101,9 +102,18 @@ const CustomerReviews = () => {
 
                     {/* Review text */}
                     {r.review_text && (
-                      <p className="text-sm text-foreground/80 mb-4 flex-1 line-clamp-4">
+                      <p className="text-sm text-foreground/80 mb-3 flex-1 line-clamp-4">
                         "{r.review_text}"
                       </p>
+                    )}
+
+                    {/* Product image */}
+                    {r.review_image_url && (
+                      <img
+                        src={r.review_image_url}
+                        alt="পণ্যের ছবি"
+                        className="w-full h-32 object-cover rounded-lg mb-3 border border-border"
+                      />
                     )}
 
                     {/* Reviewer info */}
