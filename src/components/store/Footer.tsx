@@ -47,8 +47,9 @@ const Footer = () => {
             <h4 className="font-semibold mb-4">দ্রুত লিঙ্ক</h4>
             <ul className="space-y-2 text-sm">
               <li><a href="/" className="opacity-80 hover:opacity-100 transition-opacity">হোম</a></li>
+              <li><a href="/#all-products" className="opacity-80 hover:opacity-100 transition-opacity">সকল পণ্য</a></li>
+              <li><a href="/about" className="opacity-80 hover:opacity-100 transition-opacity">About Us</a></li>
               <li><a href="/track-order" className="opacity-80 hover:opacity-100 transition-opacity">অর্ডার ট্র্যাক</a></li>
-              <li><a href="/profile" className="opacity-80 hover:opacity-100 transition-opacity">আমার প্রোফাইল</a></li>
             </ul>
 
             {/* Social Links */}
