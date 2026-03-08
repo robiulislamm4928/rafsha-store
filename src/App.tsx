@@ -53,6 +53,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <CartProvider>
+            <DynamicMeta />
             <TrackingProvider />
             <Routes>
               <Route path="/" element={<Index />} />
