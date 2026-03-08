@@ -147,7 +147,8 @@ const AdminCoupons = () => {
                 <td className="p-3 text-foreground">৳{c.min_order_amount}</td>
                 <td className="p-3 text-foreground">{c.used_count}{c.max_uses ? `/${c.max_uses}` : ""}</td>
                 <td className="p-3"><Switch checked={c.is_active} onCheckedChange={(v) => toggleActive(c.id, v)} /></td>
-                <td className="p-3">
+                <td className="p-3 flex items-center gap-1">
+                  <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground" onClick={() => startEdit(c)}><Pencil className="h-3.5 w-3.5" /></Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button></AlertDialogTrigger>
                     <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>কুপন মুছে ফেলতে চান?</AlertDialogTitle></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>বাতিল</AlertDialogCancel><AlertDialogAction onClick={() => deleteCoupon(c.id)} className="bg-destructive text-destructive-foreground">মুছুন</AlertDialogAction></AlertDialogFooter></AlertDialogContent>
