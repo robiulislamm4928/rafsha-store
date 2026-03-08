@@ -191,12 +191,15 @@ const AdminBanners = () => {
                 </label>
               </div>
 
-              <div className="space-y-2"><Label>শিরোনাম (টাইটেল)</Label><Input value={editing.heading || ""} onChange={(e) => setEditing({ ...editing, heading: e.target.value })} placeholder="যেমন: সেরা পণ্য সেরা দামে" /></div>
-              <div className="space-y-2"><Label>সাবটাইটেল</Label><Input value={editing.subtext || ""} onChange={(e) => setEditing({ ...editing, subtext: e.target.value })} placeholder="যেমন: আমাদের কালেকশন দেখুন" /></div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2"><Label>বাটন টেক্সট</Label><Input value={editing.cta_label || ""} onChange={(e) => setEditing({ ...editing, cta_label: e.target.value })} placeholder="এখনই কিনুন" /></div>
-                <div className="space-y-2"><Label>বাটন লিঙ্ক</Label><Input value={editing.cta_link || ""} onChange={(e) => setEditing({ ...editing, cta_link: e.target.value })} placeholder="/products" /></div>
-              </div>
+               <div className="space-y-2"><Label>শিরোনাম (টাইটেল)</Label><Input value={editing.heading || ""} onChange={(e) => setEditing({ ...editing, heading: e.target.value })} placeholder="যেমন: সেরা পণ্য সেরা দামে" /></div>
+               <div className="space-y-2"><Label>সাবটাইটেল</Label><Input value={editing.subtext || ""} onChange={(e) => setEditing({ ...editing, subtext: e.target.value })} placeholder="যেমন: আমাদের কালেকশন দেখুন" /></div>
+               
+               {editing.type === "hero" && (
+                 <div className="grid grid-cols-2 gap-3">
+                   <div className="space-y-2"><Label>বাটন টেক্সট</Label><Input value={editing.cta_label || ""} onChange={(e) => setEditing({ ...editing, cta_label: e.target.value })} placeholder="এখনই কিনুন" /></div>
+                   <div className="space-y-2"><Label>বাটন লিঙ্ক</Label><Input value={editing.cta_link || ""} onChange={(e) => setEditing({ ...editing, cta_link: e.target.value })} placeholder="/products" /></div>
+                 </div>
+               )}
               <div className="space-y-2"><Label>ডিসপ্লে ক্রম</Label><Input type="number" value={editing.display_order || 0} onChange={(e) => setEditing({ ...editing, display_order: Number(e.target.value) })} /></div>
               <div className="flex items-center gap-2"><Switch checked={editing.is_active ?? true} onCheckedChange={(v) => setEditing({ ...editing, is_active: v })} /><Label>সক্রিয়</Label></div>
 
