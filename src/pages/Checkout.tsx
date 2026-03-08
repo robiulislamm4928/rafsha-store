@@ -38,6 +38,8 @@ const Checkout = () => {
     delivery_address: "", delivery_note: "", payment_method: "COD" as "COD" | "MOBILE_BANKING",
   });
   const [deliveryCharge, setDeliveryCharge] = useState(0);
+  const [freeDeliveryThreshold, setFreeDeliveryThreshold] = useState(0);
+  const [rawDeliveryCharge, setRawDeliveryCharge] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -59,11 +61,12 @@ const Checkout = () => {
     supabase.from("shipping_zones").select("zone_name, delivery_charge").eq("is_active", true).order("zone_name")
       .then(({ data }) => { if (data) setShippingZones(data); });
 
-    supabase.from("site_settings").select("key, value").in("key", ["bkash_number", "nagad_number"])
+    supabase.from("site_settings").select("key, value").in("key", ["bkash_number", "nagad_number", "free_delivery_threshold"])
       .then(({ data }) => {
         data?.forEach((s) => {
           if (s.key === "bkash_number") setBkashNumber(s.value);
           if (s.key === "nagad_number") setNagadNumber(s.value);
+          if (s.key === "free_delivery_threshold") setFreeDeliveryThreshold(Number(s.value) || 0);
         });
       });
   }, []);
@@ -71,8 +74,17 @@ const Checkout = () => {
   useEffect(() => {
     if (!form.district) { setDeliveryCharge(0); return; }
     supabase.from("shipping_zones").select("delivery_charge").eq("zone_name", form.district).eq("is_active", true).maybeSingle()
-      .then(({ data }) => { setDeliveryCharge(data?.delivery_charge ?? 0); });
+      .then(({ data }) => { setRawDeliveryCharge(data?.delivery_charge ?? 0); });
   }, [form.district]);
+
+  // Apply free delivery logic
+  useEffect(() => {
+    if (freeDeliveryThreshold > 0 && total >= freeDeliveryThreshold) {
+      setDeliveryCharge(0);
+    } else {
+      setDeliveryCharge(rawDeliveryCharge);
+    }
+  }, [total, rawDeliveryCharge, freeDeliveryThreshold]);
 
   useEffect(() => {
     if (!appliedCoupon) { setDiscountAmount(0); return; }
@@ -326,7 +338,17 @@ const Checkout = () => {
 
                 <div className="border-t border-border pt-3 space-y-2 text-sm">
                   <div className="flex justify-between text-foreground/80"><span>সাবটোটাল</span><span>৳{total}</span></div>
-                  <div className="flex justify-between text-foreground/80"><span>ডেলিভারি চার্জ</span><span>{form.district ? `৳${deliveryCharge}` : "—"}</span></div>
+                  <div className="flex justify-between text-foreground/80">
+                    <span>ডেলিভারি চার্জ</span>
+                    <span>
+                      {!form.district ? "—" : freeDeliveryThreshold > 0 && total >= freeDeliveryThreshold ? (
+                        <span className="text-green-600 font-medium">ফ্রি! <span className="line-through text-muted-foreground font-normal">৳{rawDeliveryCharge}</span></span>
+                      ) : `৳${deliveryCharge}`}
+                    </span>
+                  </div>
+                  {freeDeliveryThreshold > 0 && total < freeDeliveryThreshold && form.district && (
+                    <p className="text-xs text-primary">আরও ৳{freeDeliveryThreshold - total} অর্ডার করলে ডেলিভারি ফ্রি!</p>
+                  )}
                   {discountAmount > 0 && <div className="flex justify-between text-foreground/80"><span>ছাড়</span><span className="text-primary font-medium">-৳{discountAmount}</span></div>}
                 </div>
                 <div className="border-t border-border pt-3 flex justify-between items-center"><span className="font-bold text-foreground text-lg">মোট</span><span className="font-bold text-primary text-xl">৳{grandTotal}</span></div>

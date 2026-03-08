@@ -14,6 +14,7 @@ const SETTING_KEYS = [
   { key: "email", label: "ইমেইল", type: "text" },
   { key: "address", label: "ঠিকানা", type: "textarea" },
   { key: "about", label: "সাইটের বিবরণ", type: "textarea" },
+  { key: "free_delivery_threshold", label: "ফ্রি ডেলিভারি মিনিমাম অর্ডার (৳)", type: "number" },
   { key: "bkash_number", label: "বিকাশ নম্বর", type: "text" },
   { key: "nagad_number", label: "নগদ নম্বর", type: "text" },
   { key: "notification_sound_url", label: "নোটিফিকেশন সাউন্ড", type: "sound" },
@@ -27,6 +28,7 @@ const SETTING_KEYS = [
 const SOCIAL_KEYS = ["facebook_url", "youtube_url", "instagram_url", "tiktok_url", "twitter_url"];
 const PAYMENT_KEYS = ["bkash_number", "nagad_number"];
 const NOTIFICATION_KEYS = ["notification_sound_url"];
+const DELIVERY_KEYS = ["free_delivery_threshold"];
 
 const AdminSettings = () => {
   const [settings, setSettings] = useState<Record<string, string>>({});
@@ -95,7 +97,7 @@ const AdminSettings = () => {
     toast.success("সেটিংস সংরক্ষিত হয়েছে");
   };
 
-  const generalKeys = SETTING_KEYS.filter(s => !SOCIAL_KEYS.includes(s.key) && !PAYMENT_KEYS.includes(s.key) && !NOTIFICATION_KEYS.includes(s.key));
+  const generalKeys = SETTING_KEYS.filter(s => !SOCIAL_KEYS.includes(s.key) && !PAYMENT_KEYS.includes(s.key) && !NOTIFICATION_KEYS.includes(s.key) && !DELIVERY_KEYS.includes(s.key));
 
   return (
     <div className="space-y-4">
@@ -124,11 +126,27 @@ const AdminSettings = () => {
               </div>
             ) : type === "textarea" ? (
               <Textarea value={settings[key] || ""} onChange={(e) => setSettings({ ...settings, [key]: e.target.value })} rows={3} />
+            ) : type === "number" ? (
+              <Input type="number" min="0" value={settings[key] || ""} onChange={(e) => setSettings({ ...settings, [key]: e.target.value })} placeholder="0" />
             ) : (
               <Input value={settings[key] || ""} onChange={(e) => setSettings({ ...settings, [key]: e.target.value })} />
             )}
           </div>
         ))}
+      </div>
+
+      <div className="bg-card rounded-xl border border-border p-4 md:p-6 space-y-4">
+        <h2 className="font-display font-semibold text-foreground">ফ্রি ডেলিভারি সেটিং</h2>
+        <p className="text-sm text-muted-foreground">নির্দিষ্ট পরিমাণের উপরে অর্ডার করলে ডেলিভারি চার্জ ফ্রি হবে। ০ দিলে এই ফিচার বন্ধ থাকবে।</p>
+        {SETTING_KEYS.filter(s => DELIVERY_KEYS.includes(s.key)).map(({ key, label }) => (
+          <div key={key} className="space-y-2">
+            <Label>{label}</Label>
+            <Input type="number" min="0" value={settings[key] || ""} onChange={(e) => setSettings({ ...settings, [key]: e.target.value })} placeholder="যেমন: 1000" />
+          </div>
+        ))}
+        {settings.free_delivery_threshold && Number(settings.free_delivery_threshold) > 0 && (
+          <p className="text-xs text-primary font-medium">✓ বর্তমানে ৳{settings.free_delivery_threshold} এর উপরে অর্ডারে ফ্রি ডেলিভারি চালু আছে</p>
+        )}
       </div>
 
       <div className="bg-card rounded-xl border border-border p-4 md:p-6 space-y-4">
