@@ -11,7 +11,6 @@ interface Banner {
   cta_label: string | null;
   cta_link: string | null;
   desktop_image_url: string;
-  mobile_image_url: string | null;
 }
 
 const HeroBanner = () => {
@@ -21,7 +20,7 @@ const HeroBanner = () => {
   useEffect(() => {
     supabase
       .from("banners")
-      .select("id, heading, subtext, cta_label, cta_link, desktop_image_url, mobile_image_url")
+      .select("id, heading, subtext, cta_label, cta_link, desktop_image_url")
       .eq("type", "hero")
       .eq("is_active", true)
       .order("display_order")
@@ -39,38 +38,36 @@ const HeroBanner = () => {
   const slide = banners[current];
 
   return (
-    <section className="relative w-full aspect-[16/7] md:aspect-[16/6] overflow-hidden">
-      {/* Background - uses mobile image on small screens if available */}
-      <picture className="absolute inset-0">
-        {slide?.mobile_image_url && (
-          <source media="(max-width: 767px)" srcSet={slide.mobile_image_url} />
-        )}
-        <img
-          src={slide?.desktop_image_url || heroFallback}
-          alt={slide?.heading || "Hero Banner"}
-          className="w-full h-full object-cover transition-all duration-700"
-        />
-      </picture>
+    <section className="relative w-full overflow-hidden">
+      <img
+        src={slide?.desktop_image_url || heroFallback}
+        alt={slide?.heading || "Hero Banner"}
+        className="w-full h-auto object-cover transition-all duration-700"
+      />
       <div className="absolute inset-0 bg-gradient-to-r from-foreground/70 via-foreground/40 to-transparent" />
 
       {/* Content */}
-      <div className="relative container h-full flex items-center">
+      <div className="absolute inset-0 container flex items-center">
         <div className="max-w-xl text-primary-foreground space-y-3 md:space-y-4 animate-fade-in-up px-1">
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold leading-tight">
-            {slide?.heading || "সেরা পণ্য সেরা দামে"}
-          </h2>
-          <p className="text-sm sm:text-base md:text-lg opacity-90 leading-relaxed">
-            {slide?.subtext || "রাফছা স্টোরে পাচ্ছেন মানসম্মত পণ্য, দ্রুত ডেলিভারি এবং সেরা কাস্টমার সার্ভিস।"}
-          </p>
-          <Button
-            size="lg"
-            className="bg-accent text-accent-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity text-sm md:text-base"
-            asChild
-          >
-            <a href={slide?.cta_link || "/products"}>
-              {slide?.cta_label || "এখনই কিনুন"}
-            </a>
-          </Button>
+          {slide?.heading && (
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold leading-tight">
+              {slide.heading}
+            </h2>
+          )}
+          {slide?.subtext && (
+            <p className="text-sm sm:text-base md:text-lg opacity-90 leading-relaxed">
+              {slide.subtext}
+            </p>
+          )}
+          {slide?.cta_label && slide?.cta_link && (
+            <Button
+              size="lg"
+              className="bg-accent text-accent-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity text-sm md:text-base"
+              asChild
+            >
+              <a href={slide.cta_link}>{slide.cta_label}</a>
+            </Button>
+          )}
         </div>
       </div>
 
