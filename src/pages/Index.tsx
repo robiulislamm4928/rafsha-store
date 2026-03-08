@@ -6,7 +6,7 @@ import CategorySlider from "@/components/store/CategorySlider";
 import FeaturedProducts from "@/components/store/FeaturedProducts";
 import KeyPoints from "@/components/store/KeyPoints";
 import PromotionalBanners from "@/components/store/PromotionalBanners";
-import AllProducts from "@/components/store/AllProducts";
+import CategoryProducts from "@/components/store/CategoryProducts";
 import CustomerReviews from "@/components/store/CustomerReviews";
 import ComparisonTable from "@/components/store/ComparisonTable";
 import MoneybackBanner from "@/components/store/MoneybackBanner";
@@ -36,7 +36,7 @@ const Index = () => {
       <ScrollSection><FeaturedProducts /></ScrollSection>
       <ScrollSection><KeyPoints /></ScrollSection>
       <ScrollSection><PromotionalBanners /></ScrollSection>
-      <ScrollSection><AllProducts /></ScrollSection>
+      <ScrollSection><CategoryProducts /></ScrollSection>
       <ScrollSection><CustomerReviews /></ScrollSection>
       <ScrollSection><ComparisonTable /></ScrollSection>
       <ScrollSection><MoneybackBanner /></ScrollSection>
