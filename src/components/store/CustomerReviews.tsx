@@ -35,7 +35,7 @@ const CustomerReviews = () => {
   useEffect(() => {
     supabase
       .from("reviews")
-      .select("id, reviewer_name, reviewer_location, rating, review_text, reviewer_image_url, social_link, social_platform, user_id")
+      .select("id, reviewer_name, reviewer_location, rating, review_text, reviewer_image_url, social_link, social_platform, user_id, review_image_url")
       .eq("is_approved", true)
       .order("created_at", { ascending: false })
       .limit(12)
