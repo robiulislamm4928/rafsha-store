@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, Minus, Plus, Star, ChevronLeft, MessageSquare, ImageOff, AlertTriangle, Zap } from "lucide-react";
+import { ShoppingCart, Minus, Plus, Star, ChevronLeft, MessageSquare, ImageOff, AlertTriangle, Zap, Upload } from "lucide-react";
 import { z } from "zod";
 import Header from "@/components/store/Header";
 import TopBar from "@/components/store/TopBar";
@@ -76,6 +76,8 @@ const ProductDetail = () => {
   const [reviewLocation, setReviewLocation] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
+  const [reviewImageUrl, setReviewImageUrl] = useState("");
+  const [uploadingReviewImage, setUploadingReviewImage] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -146,16 +148,29 @@ const ProductDetail = () => {
     navigate("/checkout");
   };
 
+  const handleReviewImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingReviewImage(true);
+    const ext = file.name.split(".").pop();
+    const path = `${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from("review-images").upload(path, file);
+    if (error) { toast.error("ছবি আপলোড ব্যর্থ"); setUploadingReviewImage(false); return; }
+    const { data: urlData } = supabase.storage.from("review-images").getPublicUrl(path);
+    setReviewImageUrl(urlData.publicUrl);
+    setUploadingReviewImage(false);
+  };
+
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const parsed = reviewSchema.safeParse({ reviewer_name: reviewName, reviewer_location: reviewLocation || undefined, rating: reviewRating, review_text: reviewText || undefined });
     if (!parsed.success) { toast.error(parsed.error.errors[0]?.message); return; }
     setSubmitting(true);
-    const { error } = await supabase.from("reviews").insert({ product_id: product.id, user_id: user?.id || null, reviewer_name: parsed.data.reviewer_name, reviewer_location: parsed.data.reviewer_location || null, rating: parsed.data.rating, review_text: parsed.data.review_text || null });
+    const { error } = await supabase.from("reviews").insert({ product_id: product.id, user_id: user?.id || null, reviewer_name: parsed.data.reviewer_name, reviewer_location: parsed.data.reviewer_location || null, rating: parsed.data.rating, review_text: parsed.data.review_text || null, reviewer_image_url: reviewImageUrl || null });
     setSubmitting(false);
     if (error) { toast.error("রিভিউ জমা দিতে সমস্যা হয়েছে"); } else {
       toast.success("আপনার রিভিউ অনুমোদনের পর প্রকাশিত হবে");
-      setReviewName(""); setReviewLocation(""); setReviewRating(5); setReviewText("");
+      setReviewName(""); setReviewLocation(""); setReviewRating(5); setReviewText(""); setReviewImageUrl("");
     }
   };
 
@@ -252,7 +267,18 @@ const ProductDetail = () => {
                 <div className="flex gap-1">{[1,2,3,4,5].map((star) => <button key={star} type="button" onClick={() => setReviewRating(star)} className="p-0.5"><Star className={`h-6 w-6 transition-colors ${star <= reviewRating ? "text-accent fill-accent" : "text-border"}`} /></button>)}</div>
               </div>
               <div className="space-y-2"><Label htmlFor="rtext">রিভিউ</Label><Textarea id="rtext" value={reviewText} onChange={(e) => setReviewText(e.target.value)} maxLength={1000} placeholder="আপনার অভিজ্ঞতা শেয়ার করুন..." rows={3} /></div>
-              <Button type="submit" disabled={submitting} className="brand-gradient text-primary-foreground hover:opacity-90">{submitting ? "জমা হচ্ছে..." : "রিভিউ জমা দিন"}</Button>
+              <div className="space-y-2">
+                <Label>আপনার ছবি (ঐচ্ছিক)</Label>
+                <div className="flex items-center gap-3">
+                  {reviewImageUrl && <img src={reviewImageUrl} alt="preview" className="h-10 w-10 rounded-full object-cover" />}
+                  <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-sm hover:bg-muted transition-colors">
+                    <Upload className="h-3.5 w-3.5" />
+                    {uploadingReviewImage ? "আপলোড হচ্ছে..." : "ছবি আপলোড"}
+                    <input type="file" accept="image/*" className="hidden" onChange={handleReviewImageUpload} disabled={uploadingReviewImage} />
+                  </label>
+                </div>
+              </div>
+              <Button type="submit" disabled={submitting || uploadingReviewImage} className="brand-gradient text-primary-foreground hover:opacity-90">{submitting ? "জমা হচ্ছে..." : "রিভিউ জমা দিন"}</Button>
             </form>
           </div>
 
