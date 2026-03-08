@@ -24,15 +24,11 @@ const TopBar = () => {
 
   return (
     <div className="bg-primary text-primary-foreground h-9 flex items-center overflow-hidden text-xs relative">
-      {isSingle ? (
-        <div className="w-full text-center font-medium px-4 truncate">
-          {announcements[0].text}
-        </div>
-      ) : (
-        <div className="marquee whitespace-nowrap font-medium">
-          {announcements.map((a) => a.text).join("   •   ")}
-        </div>
-      )}
+      <div className="marquee whitespace-nowrap font-medium">
+        {announcements.map((a) => a.text).join("   •   ")}
+        {"   •   "}
+        {announcements.map((a) => a.text).join("   •   ")}
+      </div>
     </div>
   );
 };
