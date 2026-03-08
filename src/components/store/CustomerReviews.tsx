@@ -19,6 +19,7 @@ interface Review {
   social_link: string | null;
   social_platform: string | null;
   user_id: string | null;
+  review_image_url: string | null;
 }
 
 const platformIcons: Record<string, string> = {
