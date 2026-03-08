@@ -97,7 +97,7 @@ const AdminSettings = () => {
     toast.success("সেটিংস সংরক্ষিত হয়েছে");
   };
 
-  const generalKeys = SETTING_KEYS.filter(s => !SOCIAL_KEYS.includes(s.key) && !PAYMENT_KEYS.includes(s.key) && !NOTIFICATION_KEYS.includes(s.key));
+  const generalKeys = SETTING_KEYS.filter(s => !SOCIAL_KEYS.includes(s.key) && !PAYMENT_KEYS.includes(s.key) && !NOTIFICATION_KEYS.includes(s.key) && !DELIVERY_KEYS.includes(s.key));
 
   return (
     <div className="space-y-4">
