@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { BD_DISTRICTS } from "@/lib/districts";
+
 import { z } from "zod";
 import Header from "@/components/store/Header";
 import TopBar from "@/components/store/TopBar";
@@ -46,6 +46,13 @@ const Checkout = () => {
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount_type: string; discount_value: number } | null>(null);
   const [couponLoading, setCouponLoading] = useState(false);
   const [discountAmount, setDiscountAmount] = useState(0);
+  const [shippingZones, setShippingZones] = useState<{ zone_name: string; delivery_charge: number }[]>([]);
+
+  // Load shipping zones
+  useEffect(() => {
+    supabase.from("shipping_zones").select("zone_name, delivery_charge").eq("is_active", true).order("zone_name")
+      .then(({ data }) => { if (data) setShippingZones(data); });
+  }, []);
 
   useEffect(() => {
     if (!form.district) { setDeliveryCharge(0); return; }
@@ -193,10 +200,10 @@ const Checkout = () => {
                   <div className="space-y-2"><Label htmlFor="phone">ফোন নম্বর *</Label><Input id="phone" value={form.customer_phone} onChange={(e) => updateField("customer_phone", e.target.value)} placeholder="01XXXXXXXXX" maxLength={11} />{errors.customer_phone && <p className="text-xs text-destructive">{errors.customer_phone}</p>}</div>
                 </div>
                 <div className="space-y-2"><Label htmlFor="email">ইমেইল (ঐচ্ছিক)</Label><Input id="email" type="email" value={form.customer_email} onChange={(e) => updateField("customer_email", e.target.value)} placeholder="email@example.com" maxLength={255} />{errors.customer_email && <p className="text-xs text-destructive">{errors.customer_email}</p>}</div>
-                <div className="space-y-2"><Label>জেলা *</Label>
+                <div className="space-y-2"><Label>জেলা / শিপিং জোন *</Label>
                   <Select value={form.district} onValueChange={(v) => updateField("district", v)}>
-                    <SelectTrigger><SelectValue placeholder="জেলা নির্বাচন করুন" /></SelectTrigger>
-                    <SelectContent className="max-h-60">{BD_DISTRICTS.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
+                    <SelectTrigger><SelectValue placeholder="জোন নির্বাচন করুন" /></SelectTrigger>
+                    <SelectContent className="max-h-60">{shippingZones.map((z) => <SelectItem key={z.zone_name} value={z.zone_name}>{z.zone_name} (৳{z.delivery_charge})</SelectItem>)}</SelectContent>
                   </Select>
                   {errors.district && <p className="text-xs text-destructive">{errors.district}</p>}
                 </div>
