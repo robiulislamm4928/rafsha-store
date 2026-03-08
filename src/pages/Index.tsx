@@ -33,6 +33,7 @@ const Index = () => {
       <Header />
       <HeroBanner />
       
+      <ScrollSection><CategorySlider /></ScrollSection>
       <ScrollSection><KeyPoints /></ScrollSection>
       <ScrollSection><FeaturedProducts /></ScrollSection>
       <ScrollSection><PromotionalBanners /></ScrollSection>
