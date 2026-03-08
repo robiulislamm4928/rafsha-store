@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Save, Upload, X } from "lucide-react";
+import { Save, Upload, X, Volume2 } from "lucide-react";
 
 const SETTING_KEYS = [
   { key: "store_name", label: "স্টোরের নাম", type: "text" },
@@ -16,6 +16,7 @@ const SETTING_KEYS = [
   { key: "about", label: "সাইটের বিবরণ", type: "textarea" },
   { key: "bkash_number", label: "বিকাশ নম্বর", type: "text" },
   { key: "nagad_number", label: "নগদ নম্বর", type: "text" },
+  { key: "notification_sound_url", label: "নোটিফিকেশন সাউন্ড", type: "sound" },
   { key: "facebook_url", label: "ফেসবুক URL", type: "text" },
   { key: "youtube_url", label: "ইউটিউব URL", type: "text" },
   { key: "instagram_url", label: "ইনস্টাগ্রাম URL", type: "text" },
@@ -25,12 +26,15 @@ const SETTING_KEYS = [
 
 const SOCIAL_KEYS = ["facebook_url", "youtube_url", "instagram_url", "tiktok_url", "twitter_url"];
 const PAYMENT_KEYS = ["bkash_number", "nagad_number"];
+const NOTIFICATION_KEYS = ["notification_sound_url"];
 
 const AdminSettings = () => {
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingSound, setUploadingSound] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const soundFileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     supabase.from("site_settings").select("key, value").then(({ data }) => {
@@ -54,6 +58,28 @@ const AdminSettings = () => {
     toast.success("লোগো আপলোড হয়েছে");
   };
 
+  const uploadSound = async (file: File) => {
+    if (!file.type.startsWith("audio/")) { toast.error("শুধু অডিও ফাইল আপলোড করুন (MP3, WAV, OGG)"); return; }
+    if (file.size > 5 * 1024 * 1024) { toast.error("ফাইল সাইজ ৫MB এর কম হতে হবে"); return; }
+    setUploadingSound(true);
+    const ext = file.name.split(".").pop();
+    const path = `notification-sound-${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("banners").upload(path, file, { upsert: true });
+    if (error) { setUploadingSound(false); toast.error("আপলোড ব্যর্থ"); return; }
+    const { data: urlData } = supabase.storage.from("banners").getPublicUrl(path);
+    setSettings((prev) => ({ ...prev, notification_sound_url: urlData.publicUrl }));
+    setUploadingSound(false);
+    toast.success("সাউন্ড আপলোড হয়েছে");
+  };
+
+  const playPreview = () => {
+    const url = settings.notification_sound_url;
+    if (!url) { toast.error("কোনো সাউন্ড সেট করা নেই"); return; }
+    const audio = new Audio(url);
+    audio.volume = 0.7;
+    audio.play().catch(() => toast.error("সাউন্ড প্লে করা যায়নি"));
+  };
+
   const save = async () => {
     setSaving(true);
     for (const { key } of SETTING_KEYS) {
@@ -69,7 +95,7 @@ const AdminSettings = () => {
     toast.success("সেটিংস সংরক্ষিত হয়েছে");
   };
 
-  const generalKeys = SETTING_KEYS.filter(s => !SOCIAL_KEYS.includes(s.key) && !PAYMENT_KEYS.includes(s.key));
+  const generalKeys = SETTING_KEYS.filter(s => !SOCIAL_KEYS.includes(s.key) && !PAYMENT_KEYS.includes(s.key) && !NOTIFICATION_KEYS.includes(s.key));
 
   return (
     <div className="space-y-4">
@@ -114,6 +140,29 @@ const AdminSettings = () => {
             <Input value={settings[key] || ""} onChange={(e) => setSettings({ ...settings, [key]: e.target.value })} placeholder="01XXXXXXXXX" />
           </div>
         ))}
+      </div>
+
+      <div className="bg-card rounded-xl border border-border p-4 md:p-6 space-y-4">
+        <h2 className="font-display font-semibold text-foreground">নোটিফিকেশন সাউন্ড</h2>
+        <p className="text-sm text-muted-foreground">নতুন অর্ডার বা চ্যাট মেসেজ আসলে এই সাউন্ড বাজবে। MP3, WAV বা OGG ফরম্যাটের ফাইল আপলোড করুন (সর্বোচ্চ ৫MB)।</p>
+        <div className="flex items-center gap-3 flex-wrap">
+          {settings.notification_sound_url && (
+            <div className="flex items-center gap-2 bg-secondary/50 rounded-lg px-3 py-2">
+              <Volume2 className="h-4 w-4 text-primary" />
+              <span className="text-sm text-foreground truncate max-w-[200px]">সাউন্ড সেট আছে</span>
+              <Button type="button" variant="ghost" size="sm" className="h-7 text-xs" onClick={playPreview}>
+                প্লে
+              </Button>
+              <button onClick={() => setSettings((p) => ({ ...p, notification_sound_url: "" }))} className="text-destructive hover:text-destructive/80">
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          )}
+          <input type="file" ref={soundFileRef} accept="audio/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) uploadSound(e.target.files[0]); }} />
+          <Button type="button" variant="outline" size="sm" onClick={() => soundFileRef.current?.click()} disabled={uploadingSound}>
+            <Upload className="h-4 w-4 mr-1" /> {uploadingSound ? "আপলোড হচ্ছে..." : "সাউন্ড আপলোড"}
+          </Button>
+        </div>
       </div>
 
       <div className="bg-card rounded-xl border border-border p-4 md:p-6 space-y-4">

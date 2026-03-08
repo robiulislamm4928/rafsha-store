@@ -26,26 +26,38 @@ const AdminDashboard = () => {
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      const [ordersRes, pendingRes, productsRes, recentRes] = await Promise.all([
-        supabase.from("orders").select("total_amount"),
-        supabase.from("orders").select("id", { count: "exact", head: true }).eq("order_status", "Pending"),
-        supabase.from("products").select("id", { count: "exact", head: true }),
-        supabase.from("orders").select("id, order_number, customer_name, total_amount, order_status, created_at").order("created_at", { ascending: false }).limit(10),
-      ]);
+  const fetchStats = async () => {
+    const [ordersRes, pendingRes, productsRes, recentRes] = await Promise.all([
+      supabase.from("orders").select("total_amount"),
+      supabase.from("orders").select("id", { count: "exact", head: true }).eq("order_status", "Pending"),
+      supabase.from("products").select("id", { count: "exact", head: true }),
+      supabase.from("orders").select("id, order_number, customer_name, total_amount, order_status, created_at").order("created_at", { ascending: false }).limit(10),
+    ]);
 
-      const orders = ordersRes.data || [];
-      setStats({
-        totalOrders: orders.length,
-        totalRevenue: orders.reduce((s, o) => s + (o.total_amount || 0), 0),
-        pendingOrders: pendingRes.count || 0,
-        totalProducts: productsRes.count || 0,
-      });
-      setRecentOrders((recentRes.data as RecentOrder[]) || []);
-      setLoading(false);
-    };
+    const orders = ordersRes.data || [];
+    setStats({
+      totalOrders: orders.length,
+      totalRevenue: orders.reduce((s, o) => s + (o.total_amount || 0), 0),
+      pendingOrders: pendingRes.count || 0,
+      totalProducts: productsRes.count || 0,
+    });
+    setRecentOrders((recentRes.data as RecentOrder[]) || []);
+    setLoading(false);
+  };
+
+  useEffect(() => {
     fetchStats();
+  }, []);
+
+  // Real-time: auto-refresh when orders change
+  useEffect(() => {
+    const channel = supabase
+      .channel("dashboard-rt-orders")
+      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => {
+        fetchStats();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const cards = [
