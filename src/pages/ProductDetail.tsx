@@ -77,7 +77,6 @@ const ProductDetail = () => {
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const [userProfileImage, setUserProfileImage] = useState<string | null>(null);
 
   useEffect(() => {
