@@ -3,7 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, MessageCircle, User } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Send, MessageCircle, User, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface Conversation {
   id: string;
@@ -136,6 +138,14 @@ const AdminChat = () => {
     if (selected?.id === id) { setSelected(null); setMessages([]); }
   };
 
+  const deleteConvo = async (id: string) => {
+    await supabase.from("chat_messages").delete().eq("conversation_id", id);
+    await supabase.from("chat_conversations").delete().eq("id", id);
+    toast.success("চ্যাট মুছে ফেলা হয়েছে");
+    fetchConversations();
+    if (selected?.id === id) { setSelected(null); setMessages([]); }
+  };
+
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-display font-bold text-foreground">লাইভ চ্যাট</h1>
@@ -168,6 +178,22 @@ const AdminChat = () => {
                 }`}>
                   {c.status === "open" ? "সক্রিয়" : "বন্ধ"}
                 </span>
+                {c.status === "closed" && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0 text-destructive" onClick={(e) => e.stopPropagation()}>
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                      <AlertDialogHeader><AlertDialogTitle>চ্যাট মুছে ফেলতে চান?</AlertDialogTitle></AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>বাতিল</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => deleteConvo(c.id)} className="bg-destructive text-destructive-foreground">মুছুন</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
               </div>
               <p className="text-[10px] text-muted-foreground mt-1">
                 {new Date(c.updated_at).toLocaleString("bn-BD")}
