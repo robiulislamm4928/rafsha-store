@@ -97,12 +97,12 @@ const AdminCoupons = () => {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-display font-bold text-foreground">কুপন ম্যানেজমেন্ট</h1>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open) resetForm(); else setDialogOpen(true); }}>
           <DialogTrigger asChild>
-            <Button className="brand-gradient text-primary-foreground hover:opacity-90"><Plus className="h-4 w-4 mr-1" /> নতুন কুপন</Button>
+            <Button onClick={() => { setEditingId(null); setForm({ code: "", discount_type: "fixed", discount_value: "", min_order_amount: "0", max_uses: "", expires_at: "" }); }} className="brand-gradient text-primary-foreground hover:opacity-90"><Plus className="h-4 w-4 mr-1" /> নতুন কুপন</Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogHeader><DialogTitle>নতুন কুপন তৈরি করুন</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{editingId ? "কুপন এডিট করুন" : "নতুন কুপন তৈরি করুন"}</DialogTitle></DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2"><Label>কুপন কোড *</Label><Input value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} placeholder="SAVE20" /></div>
               <div className="grid grid-cols-2 gap-4">
@@ -123,7 +123,7 @@ const AdminCoupons = () => {
                 <div className="space-y-2"><Label>সর্বোচ্চ ব্যবহার</Label><Input type="number" value={form.max_uses} onChange={(e) => setForm({ ...form, max_uses: e.target.value })} placeholder="সীমাহীন" /></div>
               </div>
               <div className="space-y-2"><Label>মেয়াদ শেষের তারিখ</Label><Input type="datetime-local" value={form.expires_at} onChange={(e) => setForm({ ...form, expires_at: e.target.value })} /></div>
-              <Button onClick={handleCreate} disabled={saving} className="w-full brand-gradient text-primary-foreground hover:opacity-90">{saving ? "তৈরি হচ্ছে..." : "কুপন তৈরি করুন"}</Button>
+              <Button onClick={handleCreate} disabled={saving} className="w-full brand-gradient text-primary-foreground hover:opacity-90">{saving ? (editingId ? "আপডেট হচ্ছে..." : "তৈরি হচ্ছে...") : (editingId ? "কুপন আপডেট করুন" : "কুপন তৈরি করুন")}</Button>
             </div>
           </DialogContent>
         </Dialog>
