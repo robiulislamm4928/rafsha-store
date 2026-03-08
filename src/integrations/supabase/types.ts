@@ -252,6 +252,36 @@ export type Database = {
         }
         Relationships: []
       }
+      key_points: {
+        Row: {
+          created_at: string
+          description: string
+          display_order: number
+          icon_url: string | null
+          id: string
+          is_active: boolean
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          display_order?: number
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          display_order?: number
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean
+          title?: string
+        }
+        Relationships: []
+      }
       login_sessions: {
         Row: {
           browser: string | null
