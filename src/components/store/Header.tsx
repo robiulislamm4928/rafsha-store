@@ -98,6 +98,21 @@ const Header = () => {
     navigate(`/product/${slug}`);
   };
 
+  const handleNavClick = (href: string) => {
+    setMobileOpen(false);
+    if (href.includes("#")) {
+      const [path, hash] = href.split("#");
+      if (window.location.pathname === path || path === "/") {
+        const el = document.getElementById(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+          return;
+        }
+      }
+    }
+    navigate(href);
+  };
+
   const SearchDropdown = () => {
     if (!showResults) return null;
     return (

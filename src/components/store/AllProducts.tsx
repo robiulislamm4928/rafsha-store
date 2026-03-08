@@ -29,7 +29,7 @@ const AllProducts = () => {
   }, []);
 
   return (
-    <section className="py-10 md:py-14">
+    <section id="all-products" className="py-10 md:py-14">
       <div className="container">
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground flex items-center justify-center gap-2">
