@@ -8,6 +8,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import { useTracking } from "@/hooks/useTracking";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import ChatWidget from "@/components/store/ChatWidget";
+import DynamicMeta from "@/components/DynamicMeta";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
