@@ -221,7 +221,7 @@ const ProductDetail = () => {
               <Button size="lg" className="flex-1 brand-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart} disabled={product.stock_quantity === 0}>
                 <ShoppingCart className="h-5 w-5 mr-2" />{product.stock_quantity === 0 ? "স্টকে নেই" : "কার্টে যোগ করুন"}
               </Button>
-              {product.stock_quantity > 0 && (
+              {product.stock_quantity !== 0 && (
                 <Button size="lg" variant="outline" className="flex-1 border-primary text-primary font-semibold hover:bg-primary/10" onClick={handleBuyNow}>
                   <Zap className="h-5 w-5 mr-2" /> সরাসরি কিনুন
                 </Button>
