@@ -651,7 +651,6 @@ export type Database = {
           is_approved: boolean
           product_id: string
           rating: number
-          review_image_url: string | null
           review_text: string | null
           reviewer_image_url: string | null
           reviewer_location: string | null
@@ -666,7 +665,6 @@ export type Database = {
           is_approved?: boolean
           product_id: string
           rating: number
-          review_image_url?: string | null
           review_text?: string | null
           reviewer_image_url?: string | null
           reviewer_location?: string | null
@@ -681,7 +679,6 @@ export type Database = {
           is_approved?: boolean
           product_id?: string
           rating?: number
-          review_image_url?: string | null
           review_text?: string | null
           reviewer_image_url?: string | null
           reviewer_location?: string | null
