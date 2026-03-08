@@ -70,7 +70,7 @@ const AdminReviews = () => {
     const { error } = await supabase.storage.from("review-images").upload(path, file);
     if (error) { toast.error(error.message); setUploading(false); return; }
     const { data: urlData } = supabase.storage.from("review-images").getPublicUrl(path);
-    setForm((prev) => ({ ...prev, [field]: urlData.publicUrl }));
+    setForm((prev) => ({ ...prev, reviewer_image_url: urlData.publicUrl }));
     setUploading(false);
   };
 
