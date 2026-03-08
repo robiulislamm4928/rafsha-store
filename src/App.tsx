@@ -8,6 +8,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import { useTracking } from "@/hooks/useTracking";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import ChatWidget from "@/components/store/ChatWidget";
+import CartDrawer from "@/components/store/CartDrawer";
 import DynamicMeta from "@/components/DynamicMeta";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
@@ -92,6 +93,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ChatWidget />
+            <CartDrawer />
           </CartProvider>
         </AuthProvider>
       </BrowserRouter>
