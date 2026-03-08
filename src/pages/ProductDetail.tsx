@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, Minus, Plus, Star, ChevronLeft, MessageSquare, ImageOff, AlertTriangle, Zap, Upload } from "lucide-react";
+import { ShoppingCart, Minus, Plus, Star, ChevronLeft, MessageSquare, ImageOff, AlertTriangle, Zap } from "lucide-react";
 import { z } from "zod";
 import Header from "@/components/store/Header";
 import TopBar from "@/components/store/TopBar";
