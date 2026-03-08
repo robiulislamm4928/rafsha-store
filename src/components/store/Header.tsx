@@ -27,8 +27,15 @@ const Header = () => {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [searching, setSearching] = useState(false);
+  const [logoUrl, setLogoUrl] = useState(fallbackLogo);
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    supabase.from("site_settings").select("key, value").eq("key", "store_logo_url").single().then(({ data }) => {
+      if (data?.value) setLogoUrl(data.value);
+    });
+  }, []);
 
   const navLinks = [
     { label: "হোম", href: "/" },
