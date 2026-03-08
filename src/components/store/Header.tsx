@@ -32,8 +32,9 @@ const Header = () => {
 
   const navLinks = [
     { label: "হোম", href: "/" },
+    { label: "সকল পণ্য", href: "/#all-products" },
+    { label: "About Us", href: "/about" },
     { label: "অর্ডার ট্র্যাক", href: "/track-order" },
-    { label: "আমার প্রোফাইল", href: "/profile" },
   ];
 
   // Debounced search
