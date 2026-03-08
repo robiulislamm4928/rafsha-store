@@ -79,6 +79,14 @@ const ProductDetail = () => {
   const [reviewImageUrl, setReviewImageUrl] = useState("");
   const [uploadingReviewImage, setUploadingReviewImage] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [userProfileImage, setUserProfileImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user) { setUserProfileImage(null); return; }
+    supabase.from("users").select("profile_image_url").eq("id", user.id).single().then(({ data }) => {
+      setUserProfileImage(data?.profile_image_url || null);
+    });
+  }, [user]);
 
   useEffect(() => {
     if (!slug) return;
