@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import logo from "@/assets/logo.png";
+import fallbackLogo from "@/assets/logo.png";
 
 interface SearchResult {
   id: string;
@@ -27,8 +27,15 @@ const Header = () => {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [searching, setSearching] = useState(false);
+  const [logoUrl, setLogoUrl] = useState(fallbackLogo);
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    supabase.from("site_settings").select("key, value").eq("key", "store_logo_url").single().then(({ data }) => {
+      if (data?.value) setLogoUrl(data.value);
+    });
+  }, []);
 
   const navLinks = [
     { label: "হোম", href: "/" },
@@ -153,7 +160,7 @@ const Header = () => {
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border shadow-sm">
       <div className="container flex items-center justify-between h-16 gap-4">
         <Link to="/" className="shrink-0 flex items-center gap-2">
-          <img src={logo} alt="রাফছা স্টোর" className="h-10 w-auto" />
+          <img src={logoUrl} alt="রাফছা স্টোর" className="h-10 w-auto" />
         </Link>
 
         {/* Desktop Search */}
