@@ -61,7 +61,7 @@ const AdminReviews = () => {
     toast.success("রিভিউ মুছে ফেলা হয়েছে"); fetchData();
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: "reviewer_image_url" | "review_image_url") => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
