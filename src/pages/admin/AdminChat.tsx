@@ -178,6 +178,22 @@ const AdminChat = () => {
                 }`}>
                   {c.status === "open" ? "সক্রিয়" : "বন্ধ"}
                 </span>
+                {c.status === "closed" && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0 text-destructive" onClick={(e) => e.stopPropagation()}>
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                      <AlertDialogHeader><AlertDialogTitle>চ্যাট মুছে ফেলতে চান?</AlertDialogTitle></AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>বাতিল</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => deleteConvo(c.id)} className="bg-destructive text-destructive-foreground">মুছুন</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
               </div>
               <p className="text-[10px] text-muted-foreground mt-1">
                 {new Date(c.updated_at).toLocaleString("bn-BD")}
