@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, Minus, Plus, Star, ChevronLeft, MessageSquare, ImageOff, AlertTriangle } from "lucide-react";
+import { ShoppingCart, Minus, Plus, Star, ChevronLeft, MessageSquare, ImageOff, AlertTriangle, Zap } from "lucide-react";
 import { z } from "zod";
 import Header from "@/components/store/Header";
 import TopBar from "@/components/store/TopBar";
@@ -61,6 +61,7 @@ const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { addItem } = useCart();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [images, setImages] = useState<ProductImage[]>([]);
@@ -140,6 +141,11 @@ const ProductDetail = () => {
     toast.success(`${product.name} কার্টে যোগ করা হয়েছে`);
   };
 
+  const handleBuyNow = () => {
+    addItem({ productId: product.id, productName: product.name, variantLabel: activeVariant?.variant_label, price: finalPrice, image: images[0]?.image_url }, quantity);
+    navigate("/checkout");
+  };
+
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const parsed = reviewSchema.safeParse({ reviewer_name: reviewName, reviewer_location: reviewLocation || undefined, rating: reviewRating, review_text: reviewText || undefined });
@@ -211,9 +217,16 @@ const ProductDetail = () => {
                 <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => setQuantity(quantity + 1)}><Plus className="h-4 w-4" /></Button>
               </div>
             </div>
-            <Button size="lg" className="w-full md:w-auto brand-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart} disabled={product.stock_quantity <= 0}>
-              <ShoppingCart className="h-5 w-5 mr-2" />{product.stock_quantity > 0 ? "কার্টে যোগ করুন" : "স্টকে নেই"}
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button size="lg" className="flex-1 brand-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart} disabled={product.stock_quantity <= 0}>
+                <ShoppingCart className="h-5 w-5 mr-2" />{product.stock_quantity > 0 ? "কার্টে যোগ করুন" : "স্টকে নেই"}
+              </Button>
+              {product.stock_quantity > 0 && (
+                <Button size="lg" variant="outline" className="flex-1 border-primary text-primary font-semibold hover:bg-primary/10" onClick={handleBuyNow}>
+                  <Zap className="h-5 w-5 mr-2" /> সরাসরি কিনুন
+                </Button>
+              )}
+            </div>
             {product.stock_quantity > 0 && product.stock_quantity <= 10 && <p className="text-sm text-destructive font-medium flex items-center gap-1"><AlertTriangle className="h-4 w-4" /> মাত্র {product.stock_quantity}টি বাকি আছে!</p>}
           </div>
         </div>

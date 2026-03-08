@@ -17,6 +17,7 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import TrackOrder from "./pages/TrackOrder";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 // Admin
@@ -34,6 +35,7 @@ import AdminTeam from "./pages/admin/AdminTeam";
 import AdminBanners from "./pages/admin/AdminBanners";
 import AdminAnnouncements from "./pages/admin/AdminAnnouncements";
 import AdminChat from "./pages/admin/AdminChat";
+import AdminCoupons from "./pages/admin/AdminCoupons";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +63,7 @@ const App = () => (
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/order-success" element={<OrderSuccess />} />
               <Route path="/track-order" element={<TrackOrder />} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
               {/* Admin routes */}
               <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout /></ProtectedRoute>}>
@@ -77,6 +80,7 @@ const App = () => (
                 <Route path="analytics" element={<AdminAnalytics />} />
                 <Route path="team" element={<AdminTeam />} />
                 <Route path="chat" element={<AdminChat />} />
+                <Route path="coupons" element={<AdminCoupons />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />

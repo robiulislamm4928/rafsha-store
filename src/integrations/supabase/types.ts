@@ -189,6 +189,45 @@ export type Database = {
           },
         ]
       }
+      coupons: {
+        Row: {
+          code: string
+          created_at: string
+          discount_type: string
+          discount_value: number
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          min_order_amount: number
+          used_count: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          min_order_amount?: number
+          used_count?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          min_order_amount?: number
+          used_count?: number
+        }
+        Relationships: []
+      }
       incomplete_orders: {
         Row: {
           cart_snapshot: Json | null
@@ -692,6 +731,7 @@ export type Database = {
           id: string
           is_blocked: boolean
           phone: string | null
+          profile_image_url: string | null
         }
         Insert: {
           created_at?: string
@@ -702,6 +742,7 @@ export type Database = {
           id: string
           is_blocked?: boolean
           phone?: string | null
+          profile_image_url?: string | null
         }
         Update: {
           created_at?: string
@@ -712,6 +753,7 @@ export type Database = {
           id?: string
           is_blocked?: boolean
           phone?: string | null
+          profile_image_url?: string | null
         }
         Relationships: []
       }
