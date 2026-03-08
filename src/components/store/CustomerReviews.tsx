@@ -102,9 +102,18 @@ const CustomerReviews = () => {
 
                     {/* Review text */}
                     {r.review_text && (
-                      <p className="text-sm text-foreground/80 mb-4 flex-1 line-clamp-4">
+                      <p className="text-sm text-foreground/80 mb-3 flex-1 line-clamp-4">
                         "{r.review_text}"
                       </p>
+                    )}
+
+                    {/* Product image */}
+                    {r.review_image_url && (
+                      <img
+                        src={r.review_image_url}
+                        alt="পণ্যের ছবি"
+                        className="w-full h-32 object-cover rounded-lg mb-3 border border-border"
+                      />
                     )}
 
                     {/* Reviewer info */}
