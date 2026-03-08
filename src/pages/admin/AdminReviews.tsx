@@ -230,7 +230,7 @@ const AdminReviews = () => {
                 <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-sm hover:bg-muted transition-colors">
                   <Upload className="h-3.5 w-3.5" />
                   {uploading ? "আপলোড হচ্ছে..." : "ছবি আপলোড"}
-                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, "reviewer_image_url")} disabled={uploading} />
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e)} disabled={uploading} />
                 </label>
               </div>
             </div>
