@@ -155,19 +155,6 @@ const ProductDetail = () => {
     navigate("/checkout");
   };
 
-  const handleReviewImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploadingReviewImage(true);
-    const ext = file.name.split(".").pop();
-    const path = `${crypto.randomUUID()}.${ext}`;
-    const { error } = await supabase.storage.from("review-images").upload(path, file);
-    if (error) { toast.error("ছবি আপলোড ব্যর্থ"); setUploadingReviewImage(false); return; }
-    const { data: urlData } = supabase.storage.from("review-images").getPublicUrl(path);
-    setReviewImageUrl(urlData.publicUrl);
-    setUploadingReviewImage(false);
-  };
-
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const parsed = reviewSchema.safeParse({ reviewer_name: reviewName, reviewer_location: reviewLocation || undefined, rating: reviewRating, review_text: reviewText || undefined });
