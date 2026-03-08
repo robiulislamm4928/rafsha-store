@@ -136,7 +136,19 @@ const AdminSettings = () => {
       </div>
 
       <div className="bg-card rounded-xl border border-border p-4 md:p-6 space-y-4">
-        <h2 className="font-display font-semibold text-foreground">মোবাইল ব্যাংকিং পেমেন্ট নম্বর</h2>
+        <h2 className="font-display font-semibold text-foreground">ফ্রি ডেলিভারি সেটিং</h2>
+        <p className="text-sm text-muted-foreground">নির্দিষ্ট পরিমাণের উপরে অর্ডার করলে ডেলিভারি চার্জ ফ্রি হবে। ০ দিলে এই ফিচার বন্ধ থাকবে।</p>
+        {SETTING_KEYS.filter(s => DELIVERY_KEYS.includes(s.key)).map(({ key, label }) => (
+          <div key={key} className="space-y-2">
+            <Label>{label}</Label>
+            <Input type="number" min="0" value={settings[key] || ""} onChange={(e) => setSettings({ ...settings, [key]: e.target.value })} placeholder="যেমন: 1000" />
+          </div>
+        ))}
+        {settings.free_delivery_threshold && Number(settings.free_delivery_threshold) > 0 && (
+          <p className="text-xs text-primary font-medium">✓ বর্তমানে ৳{settings.free_delivery_threshold} এর উপরে অর্ডারে ফ্রি ডেলিভারি চালু আছে</p>
+        )}
+      </div>
+
         <p className="text-sm text-muted-foreground">এই নম্বরগুলো চেকআউট পেজে মোবাইল ব্যাংকিং পেমেন্ট অপশনে দেখানো হবে। গ্রাহক এই নম্বরে টাকা পাঠাবে।</p>
         {SETTING_KEYS.filter(s => PAYMENT_KEYS.includes(s.key)).map(({ key, label }) => (
           <div key={key} className="space-y-2">

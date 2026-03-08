@@ -74,8 +74,17 @@ const Checkout = () => {
   useEffect(() => {
     if (!form.district) { setDeliveryCharge(0); return; }
     supabase.from("shipping_zones").select("delivery_charge").eq("zone_name", form.district).eq("is_active", true).maybeSingle()
-      .then(({ data }) => { setDeliveryCharge(data?.delivery_charge ?? 0); });
+      .then(({ data }) => { setRawDeliveryCharge(data?.delivery_charge ?? 0); });
   }, [form.district]);
+
+  // Apply free delivery logic
+  useEffect(() => {
+    if (freeDeliveryThreshold > 0 && total >= freeDeliveryThreshold) {
+      setDeliveryCharge(0);
+    } else {
+      setDeliveryCharge(rawDeliveryCharge);
+    }
+  }, [total, rawDeliveryCharge, freeDeliveryThreshold]);
 
   useEffect(() => {
     if (!appliedCoupon) { setDiscountAmount(0); return; }
