@@ -29,6 +29,8 @@ const FeaturedProducts = () => {
       });
   }, []);
 
+  if (products.length === 0) return null;
+
   return (
     <section className="py-10 md:py-14 brand-gradient-subtle">
       <div className="container">
@@ -39,24 +41,20 @@ const FeaturedProducts = () => {
           </h2>
           <p className="text-muted-foreground mt-2">আমাদের সবচেয়ে জনপ্রিয় পণ্য কালেকশন</p>
         </div>
-        {products.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {products.map((p) => (
-              <ProductCard
-                key={p.id}
-                id={p.id}
-                name={p.name}
-                slug={p.slug}
-                regularPrice={p.regular_price}
-                salePrice={p.sale_price}
-                imageUrl={p.product_images?.[0]?.image_url || null}
-                shortDescription={p.short_description}
-              />
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-muted-foreground py-10">শীঘ্রই পণ্য যোগ করা হবে...</p>
-        )}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          {products.map((p) => (
+            <ProductCard
+              key={p.id}
+              id={p.id}
+              name={p.name}
+              slug={p.slug}
+              regularPrice={p.regular_price}
+              salePrice={p.sale_price}
+              imageUrl={p.product_images?.[0]?.image_url || null}
+              shortDescription={p.short_description}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
