@@ -106,14 +106,8 @@ const CustomerReviews = () => {
                       </p>
                     )}
 
-                    {/* Product image */}
-                    {r.review_image_url && (
-                      <img
-                        src={r.review_image_url}
-                        alt="পণ্যের ছবি"
-                        className="w-full h-32 object-cover rounded-lg mb-3 border border-border"
-                      />
-                    )}
+
+
 
                     {/* Reviewer info */}
                     <div className="border-t border-border pt-3 flex items-center gap-3">
