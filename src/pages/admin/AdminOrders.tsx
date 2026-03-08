@@ -91,13 +91,92 @@ const AdminOrders = () => {
   const downloadInvoice = async (order: Order) => {
     const { default: jsPDF } = await import("jspdf");
     const doc = new jsPDF();
-    doc.setFontSize(18); doc.text("MODHUGHOR Invoice", 20, 20);
+
+    // Fetch site settings + order items
+    const [settingsRes, itemsRes] = await Promise.all([
+      supabase.from("site_settings").select("key, value").in("key", ["store_name", "store_phone", "store_email", "store_address"]),
+      supabase.from("order_items").select("*").eq("order_id", order.id),
+    ]);
+    const s: Record<string, string> = {};
+    settingsRes.data?.forEach((r) => { s[r.key] = r.value; });
+    const storeName = s.store_name || "Rafcha Store";
+    const items = (itemsRes.data as OrderItem[]) || [];
+
+    // Header
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    doc.text(storeName, 20, 22);
     doc.setFontSize(10);
-    doc.text(`Order: ${order.order_number}`, 20, 35);
-    doc.text(`Customer: ${order.customer_name}`, 20, 42);
-    doc.text(`Phone: ${order.customer_phone}`, 20, 49);
-    doc.text(`Total: ${order.total_amount} BDT`, 20, 56);
-    doc.text(`Status: ${order.order_status}`, 20, 63);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(100);
+    doc.text("INVOICE", 170, 22, { align: "right" });
+
+    let y = 30;
+    if (s.store_phone) { doc.text(`Phone: ${s.store_phone}`, 20, y); y += 5; }
+    if (s.store_email) { doc.text(`Email: ${s.store_email}`, 20, y); y += 5; }
+    if (s.store_address) { doc.text(`Address: ${s.store_address}`, 20, y); y += 5; }
+
+    y += 3;
+    doc.setDrawColor(200);
+    doc.line(20, y, 190, y);
+    y += 8;
+
+    // Order info
+    doc.setTextColor(0);
+    doc.setFont("helvetica", "bold");
+    doc.text("Order Details", 20, y); y += 6;
+    doc.setFont("helvetica", "normal");
+    doc.text(`Order: ${order.order_number}`, 20, y);
+    doc.text(`Date: ${new Date(order.created_at).toLocaleDateString("en-GB")}`, 140, y); y += 6;
+    doc.text(`Customer: ${order.customer_name}`, 20, y); y += 5;
+    doc.text(`Phone: ${order.customer_phone}`, 20, y); y += 5;
+    if (order.customer_email) { doc.text(`Email: ${order.customer_email}`, 20, y); y += 5; }
+    doc.text(`District: ${order.district}`, 20, y); y += 5;
+    doc.text(`Address: ${order.delivery_address.substring(0, 80)}`, 20, y); y += 5;
+    doc.text(`Payment: ${order.payment_method}`, 20, y);
+    doc.text(`Status: ${order.order_status}`, 140, y); y += 5;
+    doc.text(`Payment Status: ${order.payment_status}`, 20, y); y += 8;
+
+    // Items table
+    doc.setFillColor(245, 245, 245);
+    doc.rect(20, y - 1, 170, 8, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.text("Product", 22, y + 4);
+    doc.text("Qty", 125, y + 4, { align: "center" });
+    doc.text("Price", 150, y + 4, { align: "right" });
+    doc.text("Total", 188, y + 4, { align: "right" });
+    y += 10;
+
+    doc.setFont("helvetica", "normal");
+    items.forEach((item) => {
+      const name = `${item.product_name_snapshot}${item.variant_label_snapshot ? ` (${item.variant_label_snapshot})` : ""}`.substring(0, 50);
+      doc.text(name, 22, y + 4);
+      doc.text(String(item.quantity), 125, y + 4, { align: "center" });
+      doc.text(`${item.unit_price_snapshot}`, 150, y + 4, { align: "right" });
+      doc.text(`${item.item_total}`, 188, y + 4, { align: "right" });
+      y += 7;
+    });
+
+    y += 3;
+    doc.line(120, y, 190, y); y += 7;
+    doc.setFontSize(10);
+    doc.text("Subtotal:", 140, y); doc.text(`${order.subtotal} BDT`, 188, y, { align: "right" }); y += 6;
+    doc.text("Delivery:", 140, y); doc.text(`${order.delivery_charge} BDT`, 188, y, { align: "right" }); y += 6;
+    if (order.discount_amount > 0) { doc.text("Discount:", 140, y); doc.text(`-${order.discount_amount} BDT`, 188, y, { align: "right" }); y += 6; }
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text("Total:", 140, y); doc.text(`${order.total_amount} BDT`, 188, y, { align: "right" }); y += 6;
+    doc.setFontSize(10);
+    doc.text("Advance:", 140, y); doc.text(`${order.advance_paid} BDT`, 188, y, { align: "right" }); y += 6;
+    doc.text("Due:", 140, y); doc.text(`${order.due_on_delivery} BDT`, 188, y, { align: "right" });
+
+    y += 15;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(130);
+    doc.text("Thank you for your order!", 105, y, { align: "center" });
+
     doc.save(`invoice-${order.order_number}.pdf`);
   };
 
