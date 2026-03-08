@@ -182,8 +182,8 @@ const Header = () => {
             <DropdownMenuContent align="end" className="w-48">
               {user ? (
                 <>
-                  <DropdownMenuItem asChild><Link to="/account">আমার অ্যাকাউন্ট</Link></DropdownMenuItem>
-                  <DropdownMenuItem asChild><Link to="/orders">আমার অর্ডার</Link></DropdownMenuItem>
+                  <DropdownMenuItem asChild><Link to="/profile">আমার প্রোফাইল</Link></DropdownMenuItem>
+                  <DropdownMenuItem asChild><Link to="/track-order">অর্ডার ট্র্যাক</Link></DropdownMenuItem>
                   <DropdownMenuItem onClick={() => signOut()}>লগআউট</DropdownMenuItem>
                 </>
               ) : (
