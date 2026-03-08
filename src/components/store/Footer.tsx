@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { MapPin, Phone, Mail } from "lucide-react";
+import { MapPin, Phone, Mail, Facebook, Youtube, Instagram } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const Footer = () => {
@@ -19,13 +19,24 @@ const Footer = () => {
       });
   }, []);
 
+  const socialLinks = [
+    { key: "facebook_url", icon: Facebook, label: "Facebook" },
+    { key: "youtube_url", icon: Youtube, label: "YouTube" },
+    { key: "instagram_url", icon: Instagram, label: "Instagram" },
+    { key: "tiktok_url", icon: null, label: "TikTok" },
+    { key: "twitter_url", icon: null, label: "X / Twitter" },
+  ].filter((s) => settings[s.key]);
+
+  const displayLogo = settings.store_logo_url || logo;
+  const storeName = settings.store_name || "রাফছা স্টোর";
+
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="container py-10 md:py-14">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand */}
           <div>
-            <img src={logo} alt="রাফছা স্টোর" className="h-14 w-auto mb-4 brightness-0 invert" />
+            <img src={displayLogo} alt={storeName} className="h-14 w-auto mb-4 brightness-0 invert" />
             <p className="text-sm opacity-80 leading-relaxed">
               {settings.about || "আপনার পছন্দের পণ্য সেরা মূল্যে — সারাদেশে দ্রুত ডেলিভারি।"}
             </p>
@@ -35,11 +46,26 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">দ্রুত লিঙ্ক</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="/products" className="opacity-80 hover:opacity-100 transition-opacity">পণ্যসমূহ</a></li>
-              <li><a href="/categories" className="opacity-80 hover:opacity-100 transition-opacity">ক্যাটাগরি</a></li>
+              <li><a href="/" className="opacity-80 hover:opacity-100 transition-opacity">হোম</a></li>
               <li><a href="/track-order" className="opacity-80 hover:opacity-100 transition-opacity">অর্ডার ট্র্যাক</a></li>
-              <li><a href="/about" className="opacity-80 hover:opacity-100 transition-opacity">আমাদের সম্পর্কে</a></li>
+              <li><a href="/profile" className="opacity-80 hover:opacity-100 transition-opacity">আমার প্রোফাইল</a></li>
             </ul>
+
+            {/* Social Links */}
+            {socialLinks.length > 0 && (
+              <div className="mt-6">
+                <h4 className="font-semibold mb-3">সোশ্যাল মিডিয়া</h4>
+                <div className="flex gap-3">
+                  {socialLinks.map((s) => (
+                    <a key={s.key} href={settings[s.key]} target="_blank" rel="noopener noreferrer"
+                      className="w-9 h-9 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 flex items-center justify-center transition-colors"
+                      title={s.label}>
+                      {s.icon ? <s.icon className="h-4 w-4" /> : <span className="text-xs font-bold">{s.label[0]}</span>}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Contact */}
@@ -78,7 +104,7 @@ const Footer = () => {
       {/* Copyright */}
       <div className="border-t border-primary-foreground/10">
         <div className="container py-4 text-center text-xs opacity-60">
-          © {new Date().getFullYear()} রাফছা স্টোর। সর্বস্বত্ব সংরক্ষিত।
+          © {new Date().getFullYear()} {storeName}। সর্বস্বত্ব সংরক্ষিত।
         </div>
       </div>
     </footer>
