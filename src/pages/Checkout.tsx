@@ -338,7 +338,17 @@ const Checkout = () => {
 
                 <div className="border-t border-border pt-3 space-y-2 text-sm">
                   <div className="flex justify-between text-foreground/80"><span>সাবটোটাল</span><span>৳{total}</span></div>
-                  <div className="flex justify-between text-foreground/80"><span>ডেলিভারি চার্জ</span><span>{form.district ? `৳${deliveryCharge}` : "—"}</span></div>
+                  <div className="flex justify-between text-foreground/80">
+                    <span>ডেলিভারি চার্জ</span>
+                    <span>
+                      {!form.district ? "—" : freeDeliveryThreshold > 0 && total >= freeDeliveryThreshold ? (
+                        <span className="text-green-600 font-medium">ফ্রি! <span className="line-through text-muted-foreground font-normal">৳{rawDeliveryCharge}</span></span>
+                      ) : `৳${deliveryCharge}`}
+                    </span>
+                  </div>
+                  {freeDeliveryThreshold > 0 && total < freeDeliveryThreshold && form.district && (
+                    <p className="text-xs text-primary">আরও ৳{freeDeliveryThreshold - total} অর্ডার করলে ডেলিভারি ফ্রি!</p>
+                  )}
                   {discountAmount > 0 && <div className="flex justify-between text-foreground/80"><span>ছাড়</span><span className="text-primary font-medium">-৳{discountAmount}</span></div>}
                 </div>
                 <div className="border-t border-border pt-3 flex justify-between items-center"><span className="font-bold text-foreground text-lg">মোট</span><span className="font-bold text-primary text-xl">৳{grandTotal}</span></div>
