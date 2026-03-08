@@ -104,7 +104,11 @@ const Footer = () => {
       {/* Copyright */}
       <div className="border-t border-primary-foreground/10">
         <div className="container py-4 text-center text-xs opacity-60">
-          © {new Date().getFullYear()} {storeName}। সর্বস্বত্ব সংরক্ষিত।
+          © Copyright {new Date().getFullYear()} <strong>{storeName}</strong> | Developed by{" "}
+          <a href="https://digiinvention.com/" target="_blank" rel="noopener noreferrer">
+            <strong>DiGi Invention Agency</strong>
+          </a>
+          .
         </div>
       </div>
     </footer>
