@@ -41,20 +41,45 @@ const AdminCoupons = () => {
   const handleCreate = async () => {
     if (!form.code.trim() || !form.discount_value) { toast.error("কোড এবং ডিসকাউন্ট মান দিন"); return; }
     setSaving(true);
-    const { error } = await supabase.from("coupons").insert({
+    const payload = {
       code: form.code.trim().toUpperCase(),
       discount_type: form.discount_type as any,
       discount_value: parseFloat(form.discount_value),
       min_order_amount: parseFloat(form.min_order_amount) || 0,
       max_uses: form.max_uses ? parseInt(form.max_uses) : null,
       expires_at: form.expires_at || null,
-    } as any);
+    } as any;
+
+    let error;
+    if (editingId) {
+      ({ error } = await supabase.from("coupons").update(payload).eq("id", editingId));
+    } else {
+      ({ error } = await supabase.from("coupons").insert(payload));
+    }
     setSaving(false);
-    if (error) { toast.error("কুপন তৈরি ব্যর্থ: " + error.message); return; }
-    toast.success("কুপন তৈরি হয়েছে");
-    setForm({ code: "", discount_type: "fixed", discount_value: "", min_order_amount: "0", max_uses: "", expires_at: "" });
-    setDialogOpen(false);
+    if (error) { toast.error((editingId ? "কুপন আপডেট" : "কুপন তৈরি") + " ব্যর্থ: " + error.message); return; }
+    toast.success(editingId ? "কুপন আপডেট হয়েছে" : "কুপন তৈরি হয়েছে");
+    resetForm();
     fetchCoupons();
+  };
+
+  const resetForm = () => {
+    setForm({ code: "", discount_type: "fixed", discount_value: "", min_order_amount: "0", max_uses: "", expires_at: "" });
+    setEditingId(null);
+    setDialogOpen(false);
+  };
+
+  const startEdit = (c: Coupon) => {
+    setEditingId(c.id);
+    setForm({
+      code: c.code,
+      discount_type: c.discount_type,
+      discount_value: String(c.discount_value),
+      min_order_amount: String(c.min_order_amount),
+      max_uses: c.max_uses ? String(c.max_uses) : "",
+      expires_at: c.expires_at ? c.expires_at.slice(0, 16) : "",
+    });
+    setDialogOpen(true);
   };
 
   const toggleActive = async (id: string, active: boolean) => {
