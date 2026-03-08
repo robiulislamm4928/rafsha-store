@@ -276,7 +276,7 @@ const ProductDetail = () => {
               </div>
               <div className="space-y-2"><Label htmlFor="rtext">রিভিউ</Label><Textarea id="rtext" value={reviewText} onChange={(e) => setReviewText(e.target.value)} maxLength={1000} placeholder="আপনার অভিজ্ঞতা শেয়ার করুন..." rows={3} /></div>
               <div className="space-y-2">
-                <Label>আপনার ছবি (ঐচ্ছিক)</Label>
+                <Label>পণ্যের ছবি (ঐচ্ছিক)</Label>
                 <div className="flex items-center gap-3">
                   {reviewImageUrl && <img src={reviewImageUrl} alt="preview" className="h-10 w-10 rounded-full object-cover" />}
                   <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-sm hover:bg-muted transition-colors">
