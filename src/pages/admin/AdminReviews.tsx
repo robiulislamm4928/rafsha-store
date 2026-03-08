@@ -32,6 +32,7 @@ const socialPlatforms = [
 const emptyForm = {
   reviewer_name: "", reviewer_location: "", rating: 5, review_text: "",
   product_id: "", reviewer_image_url: "", social_link: "", social_platform: "",
+  review_image_url: "",
 };
 
 const AdminReviews = () => {
