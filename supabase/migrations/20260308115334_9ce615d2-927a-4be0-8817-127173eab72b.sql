@@ -1,0 +1,1 @@
+ALTER TABLE public.reviews DROP COLUMN IF EXISTS review_image_url;
