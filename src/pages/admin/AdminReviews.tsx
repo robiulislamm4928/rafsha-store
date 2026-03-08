@@ -234,7 +234,22 @@ const AdminReviews = () => {
                 <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-sm hover:bg-muted transition-colors">
                   <Upload className="h-3.5 w-3.5" />
                   {uploading ? "আপলোড হচ্ছে..." : "ছবি আপলোড"}
-                  <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploading} />
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, "reviewer_image_url")} disabled={uploading} />
+                </label>
+              </div>
+            </div>
+
+            {/* Product review image upload */}
+            <div className="space-y-2">
+              <Label>পণ্যের ছবি (ঐচ্ছিক)</Label>
+              <div className="flex items-center gap-3">
+                {form.review_image_url && (
+                  <img src={form.review_image_url} alt="product" className="h-16 w-16 rounded-lg object-cover border border-border" />
+                )}
+                <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-sm hover:bg-muted transition-colors">
+                  <Upload className="h-3.5 w-3.5" />
+                  {uploading ? "আপলোড হচ্ছে..." : "পণ্যের ছবি আপলোড"}
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, "review_image_url")} disabled={uploading} />
                 </label>
               </div>
             </div>
