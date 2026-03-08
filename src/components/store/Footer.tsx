@@ -35,8 +35,8 @@ const Footer = () => {
       <div className="container py-10 md:py-14">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand */}
-          <div>
-            <img src={displayLogo} alt={storeName} className="h-14 w-auto mb-4 brightness-0 invert" />
+           <div>
+             <img src={displayLogo} alt={storeName} className="h-20 w-auto mb-4" />
             <p className="text-sm opacity-80 leading-relaxed">
               {settings.about || "আপনার পছন্দের পণ্য সেরা মূল্যে — সারাদেশে দ্রুত ডেলিভারি।"}
             </p>
