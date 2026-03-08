@@ -19,7 +19,7 @@ interface SearchResult {
 }
 
 const Header = () => {
-  const { itemCount } = useCart();
+  const { itemCount, openCart } = useCart();
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
