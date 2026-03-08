@@ -184,7 +184,6 @@ const Header = () => {
               {user ? (
                 <>
                   <DropdownMenuItem asChild><Link to="/profile">আমার প্রোফাইল</Link></DropdownMenuItem>
-                  <DropdownMenuItem asChild><Link to="/track-order">অর্ডার ট্র্যাক</Link></DropdownMenuItem>
                   <DropdownMenuItem onClick={() => signOut()}>লগআউট</DropdownMenuItem>
                 </>
               ) : (
