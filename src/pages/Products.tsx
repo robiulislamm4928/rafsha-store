@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import TopBar from "@/components/store/TopBar";
 import Header from "@/components/store/Header";
@@ -28,9 +29,10 @@ interface Product {
 }
 
 const Products = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(searchParams.get("category"));
   const [loading, setLoading] = useState(true);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
@@ -63,6 +65,11 @@ const Products = () => {
   const handleCategoryClick = (catId: string | null) => {
     setSelectedCategory(catId);
     setMobileFilterOpen(false);
+    if (catId) {
+      setSearchParams({ category: catId });
+    } else {
+      setSearchParams({});
+    }
   };
 
   const CategorySidebar = ({ className }: { className?: string }) => (
