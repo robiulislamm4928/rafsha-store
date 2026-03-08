@@ -90,7 +90,6 @@ const AdminReviews = () => {
       reviewer_image_url: r.reviewer_image_url || "",
       social_link: r.social_link || "",
       social_platform: r.social_platform || "",
-      review_image_url: r.review_image_url || "",
     });
     setEditing(r.id);
     setAdding(true);
