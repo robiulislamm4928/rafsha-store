@@ -38,6 +38,8 @@ const Checkout = () => {
     delivery_address: "", delivery_note: "", payment_method: "COD" as "COD" | "MOBILE_BANKING",
   });
   const [deliveryCharge, setDeliveryCharge] = useState(0);
+  const [freeDeliveryThreshold, setFreeDeliveryThreshold] = useState(0);
+  const [rawDeliveryCharge, setRawDeliveryCharge] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
