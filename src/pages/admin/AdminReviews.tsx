@@ -16,6 +16,7 @@ interface Review {
   rating: number; review_text: string | null; is_approved: boolean;
   created_at: string; product_id: string; user_id: string | null;
   reviewer_image_url: string | null; social_link: string | null; social_platform: string | null;
+  review_image_url: string | null;
 }
 
 interface Product { id: string; name: string; }
@@ -31,6 +32,7 @@ const socialPlatforms = [
 const emptyForm = {
   reviewer_name: "", reviewer_location: "", rating: 5, review_text: "",
   product_id: "", reviewer_image_url: "", social_link: "", social_platform: "",
+  review_image_url: "",
 };
 
 const AdminReviews = () => {
@@ -61,7 +63,7 @@ const AdminReviews = () => {
     toast.success("রিভিউ মুছে ফেলা হয়েছে"); fetchData();
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: "reviewer_image_url" | "review_image_url") => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
@@ -70,7 +72,7 @@ const AdminReviews = () => {
     const { error } = await supabase.storage.from("review-images").upload(path, file);
     if (error) { toast.error(error.message); setUploading(false); return; }
     const { data: urlData } = supabase.storage.from("review-images").getPublicUrl(path);
-    setForm({ ...form, reviewer_image_url: urlData.publicUrl });
+    setForm((prev) => ({ ...prev, [field]: urlData.publicUrl }));
     setUploading(false);
   };
 
@@ -90,6 +92,7 @@ const AdminReviews = () => {
       reviewer_image_url: r.reviewer_image_url || "",
       social_link: r.social_link || "",
       social_platform: r.social_platform || "",
+      review_image_url: r.review_image_url || "",
     });
     setEditing(r.id);
     setAdding(true);
@@ -108,6 +111,7 @@ const AdminReviews = () => {
       reviewer_image_url: form.reviewer_image_url || null,
       social_link: form.social_link || null,
       social_platform: form.social_platform || null,
+      review_image_url: form.review_image_url || null,
     };
 
     if (editing) {
@@ -230,7 +234,22 @@ const AdminReviews = () => {
                 <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-sm hover:bg-muted transition-colors">
                   <Upload className="h-3.5 w-3.5" />
                   {uploading ? "আপলোড হচ্ছে..." : "ছবি আপলোড"}
-                  <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploading} />
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, "reviewer_image_url")} disabled={uploading} />
+                </label>
+              </div>
+            </div>
+
+            {/* Product review image upload */}
+            <div className="space-y-2">
+              <Label>পণ্যের ছবি (ঐচ্ছিক)</Label>
+              <div className="flex items-center gap-3">
+                {form.review_image_url && (
+                  <img src={form.review_image_url} alt="product" className="h-16 w-16 rounded-lg object-cover border border-border" />
+                )}
+                <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border text-sm hover:bg-muted transition-colors">
+                  <Upload className="h-3.5 w-3.5" />
+                  {uploading ? "আপলোড হচ্ছে..." : "পণ্যের ছবি আপলোড"}
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, "review_image_url")} disabled={uploading} />
                 </label>
               </div>
             </div>

@@ -1,0 +1,1 @@
+ALTER TABLE public.reviews ADD COLUMN review_image_url text DEFAULT NULL;
