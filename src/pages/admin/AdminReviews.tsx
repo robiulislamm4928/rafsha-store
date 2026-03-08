@@ -111,6 +111,7 @@ const AdminReviews = () => {
       reviewer_image_url: form.reviewer_image_url || null,
       social_link: form.social_link || null,
       social_platform: form.social_platform || null,
+      review_image_url: form.review_image_url || null,
     };
 
     if (editing) {
