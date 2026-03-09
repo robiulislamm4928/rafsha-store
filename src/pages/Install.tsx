@@ -59,9 +59,9 @@ const Install = () => {
           </p>
 
           {installed ? (
-            <div className="flex flex-col items-center gap-3 p-6 rounded-xl bg-green-50 border border-green-200">
-              <CheckCircle2 className="h-10 w-10 text-green-600" />
-              <p className="font-semibold text-green-800">অ্যাপ সফলভাবে ইনস্টল হয়েছে! 🎉</p>
+            <div className="flex flex-col items-center gap-3 p-6 rounded-xl bg-secondary border border-border">
+              <CheckCircle2 className="h-10 w-10 text-primary" />
+              <p className="font-semibold text-foreground">অ্যাপ সফলভাবে ইনস্টল হয়েছে! 🎉</p>
             </div>
           ) : isIOS ? (
             <div className="p-6 rounded-xl bg-secondary border border-border space-y-4 text-left">
