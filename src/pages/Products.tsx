@@ -24,6 +24,7 @@ interface Product {
   regular_price: number;
   sale_price: number | null;
   short_description: string | null;
+  stock_quantity: number;
   category_id: string | null;
   product_images: { image_url: string }[];
 }
