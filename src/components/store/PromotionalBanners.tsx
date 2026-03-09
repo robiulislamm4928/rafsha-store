@@ -35,7 +35,7 @@ const PromotionalBanners = () => {
           {banners.map((banner) => (
             <div
               key={banner.id}
-              className="relative rounded-xl overflow-hidden h-48 md:h-56 shadow-sm"
+              className="relative rounded-xl overflow-hidden h-36 sm:h-48 md:h-56 shadow-sm"
             >
               <img
                 src={banner.desktop_image_url}

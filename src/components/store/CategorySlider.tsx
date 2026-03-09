@@ -38,7 +38,7 @@ const CategorySlider = () => {
               <a
                 key={cat.id}
                 href={`/products?category=${cat.id}`}
-                className="group shrink-0 w-36 md:w-44"
+                className="group shrink-0 w-28 sm:w-36 md:w-44"
               >
                 <div className="aspect-square rounded-xl overflow-hidden bg-secondary border border-border shadow-sm group-hover:shadow-md transition-shadow">
                   {cat.image_url ? (
