@@ -104,8 +104,11 @@ const Footer = () => {
 
       {/* Copyright */}
       <div className="border-t border-primary-foreground/10">
-        <div className="container py-4 text-center text-xs opacity-60">
-          © Copyright {new Date().getFullYear()} <strong>{storeName}</strong> | Developed by{" "}
+        <div className="container py-4 text-center text-[10px] sm:text-xs opacity-60 px-4">
+          © Copyright {new Date().getFullYear()} <strong>{storeName}</strong>
+          <span className="hidden sm:inline"> | </span>
+          <br className="sm:hidden" />
+          Developed by{" "}
           <a href="https://digiinvention.com/" target="_blank" rel="noopener noreferrer">
             <strong>DiGi Invention Agency</strong>
           </a>

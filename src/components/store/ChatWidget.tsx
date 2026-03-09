@@ -141,9 +141,9 @@ const ChatWidget = () => {
     <>
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-5 right-5 z-50 h-14 w-14 rounded-full brand-gradient text-primary-foreground shadow-lg flex items-center justify-center hover:opacity-90 transition-opacity"
+        className="fixed bottom-4 right-4 sm:bottom-5 sm:right-5 z-50 h-12 w-12 sm:h-14 sm:w-14 rounded-full brand-gradient text-primary-foreground shadow-lg flex items-center justify-center hover:opacity-90 transition-opacity"
       >
-        {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
+        {open ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />}
         {!open && unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-destructive-foreground text-xs flex items-center justify-center font-bold">
             {unreadCount}
@@ -152,10 +152,15 @@ const ChatWidget = () => {
       </button>
 
       {open && (
-        <div className="fixed bottom-24 right-5 z-50 w-[340px] max-h-[480px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-          <div className="brand-gradient text-primary-foreground p-4 shrink-0">
-            <p className="font-display font-bold text-sm">রাফছা স্টোর সাপোর্ট</p>
-            <p className="text-xs opacity-80">আমরা আপনাকে সাহায্য করতে প্রস্তুত</p>
+        <div className="fixed inset-4 sm:inset-auto sm:bottom-20 sm:right-5 z-50 sm:w-[340px] sm:max-h-[480px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+          <div className="brand-gradient text-primary-foreground p-4 shrink-0 flex items-center justify-between">
+            <div>
+              <p className="font-display font-bold text-sm">রাফছা স্টোর সাপোর্ট</p>
+              <p className="text-xs opacity-80">আমরা আপনাকে সাহায্য করতে প্রস্তুত</p>
+            </div>
+            <button onClick={() => setOpen(false)} className="sm:hidden p-1 rounded-full hover:bg-primary-foreground/20">
+              <X className="h-5 w-5" />
+            </button>
           </div>
 
           {!user ? (
@@ -168,7 +173,7 @@ const ChatWidget = () => {
             </div>
           ) : (
             <>
-              <div className="flex-1 overflow-y-auto p-3 space-y-2 min-h-[200px] max-h-[320px]">
+              <div className="flex-1 overflow-y-auto p-3 space-y-2 min-h-[200px]">
                 {messages.length === 0 && (
                   <p className="text-center text-muted-foreground text-xs py-8">
                     আপনার প্রশ্ন লিখুন, আমরা দ্রুত উত্তর দেব!

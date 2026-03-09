@@ -42,41 +42,41 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
         )}
       </Link>
 
-      <div className="p-4 flex flex-col flex-1">
+      <div className="p-3 sm:p-4 flex flex-col flex-1">
         <Link to={`/product/${slug}`}>
-          <h3 className="font-semibold text-foreground text-sm md:text-base line-clamp-2 group-hover:text-primary transition-colors">
+          <h3 className="font-semibold text-foreground text-xs sm:text-sm md:text-base line-clamp-2 group-hover:text-primary transition-colors leading-snug">
             {name}
           </h3>
         </Link>
         {shortDescription && (
-          <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{shortDescription}</p>
+          <p className="text-[10px] sm:text-xs text-muted-foreground mt-1 line-clamp-1">{shortDescription}</p>
         )}
 
-        <div className="mt-auto pt-3 space-y-2">
-          <div className="flex items-baseline gap-2">
-            <span className="text-lg font-bold text-primary">৳{displayPrice}</span>
+        <div className="mt-auto pt-2 sm:pt-3 space-y-2">
+          <div className="flex items-baseline gap-1.5 sm:gap-2">
+            <span className="text-sm sm:text-lg font-bold text-primary">৳{displayPrice}</span>
             {hasDiscount && (
-              <span className="text-sm text-muted-foreground line-through">৳{regularPrice}</span>
+              <span className="text-[10px] sm:text-sm text-muted-foreground line-through">৳{regularPrice}</span>
             )}
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 sm:gap-2">
             <Button
               size="sm"
               variant="outline"
-              className="flex-1 h-8 text-xs"
+              className="flex-1 h-8 sm:h-9 text-[10px] sm:text-xs px-1.5 sm:px-3"
               onClick={(e) => {
                 e.preventDefault();
                 addItem({ productId: id, productName: name, price: displayPrice, image: imageUrl || undefined });
               }}
             >
-              <ShoppingCart className="h-3.5 w-3.5 mr-1" /> কার্ট
+              <ShoppingCart className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-0.5 sm:mr-1" /> কার্ট
             </Button>
             <Button
               size="sm"
-              className="flex-1 h-8 text-xs brand-gradient text-primary-foreground hover:opacity-90"
+              className="flex-1 h-8 sm:h-9 text-[10px] sm:text-xs px-1.5 sm:px-3 brand-gradient text-primary-foreground hover:opacity-90"
               onClick={handleBuyNow}
             >
-              <Zap className="h-3.5 w-3.5 mr-1" /> কিনুন
+              <Zap className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-0.5 sm:mr-1" /> কিনুন
             </Button>
           </div>
         </div>
