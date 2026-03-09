@@ -27,18 +27,18 @@ const CategorySlider = () => {
   if (categories.length === 0) return null;
 
   return (
-    <section className="py-10 md:py-14">
+    <section className="py-6 sm:py-10 md:py-14">
       <div className="container">
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-6">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-foreground mb-4 sm:mb-6">
           ক্যাটাগরি
         </h2>
         <ScrollArea className="w-full">
-          <div className="flex gap-4 pb-4">
+          <div className="flex gap-3 sm:gap-4 pb-4">
             {categories.map((cat) => (
               <a
                 key={cat.id}
                 href={`/products?category=${cat.id}`}
-                className="group shrink-0 w-36 md:w-44"
+                className="group shrink-0 w-28 sm:w-36 md:w-44"
               >
                 <div className="aspect-square rounded-xl overflow-hidden bg-secondary border border-border shadow-sm group-hover:shadow-md transition-shadow">
                   {cat.image_url ? (

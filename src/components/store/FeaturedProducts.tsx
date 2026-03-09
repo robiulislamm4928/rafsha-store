@@ -32,16 +32,16 @@ const FeaturedProducts = () => {
   if (products.length === 0) return null;
 
   return (
-    <section className="py-10 md:py-14 brand-gradient-subtle">
+    <section className="py-6 sm:py-10 md:py-14 brand-gradient-subtle">
       <div className="container">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground flex items-center justify-center gap-2">
-            <Sparkles className="h-6 w-6 text-accent" />
+        <div className="text-center mb-5 sm:mb-8">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-foreground flex items-center justify-center gap-2">
+            <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-accent" />
             বিশেষ পণ্যসমূহ
           </h2>
-          <p className="text-muted-foreground mt-2">আমাদের সবচেয়ে জনপ্রিয় পণ্য কালেকশন</p>
+          <p className="text-muted-foreground mt-1.5 sm:mt-2 text-xs sm:text-base">আমাদের সবচেয়ে জনপ্রিয় পণ্য কালেকশন</p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
           {products.map((p) => (
             <ProductCard
               key={p.id}

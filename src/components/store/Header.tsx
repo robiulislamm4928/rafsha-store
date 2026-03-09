@@ -160,7 +160,7 @@ const Header = () => {
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border shadow-sm">
       <div className="container flex items-center justify-between h-16 gap-4">
         <Link to="/" className="shrink-0 flex items-center gap-2">
-           <img src={logoUrl} alt="রাফছা স্টোর" className="h-14 w-auto" />
+           <img src={logoUrl} alt="রাফছা স্টোর" className="h-10 sm:h-14 w-auto" />
         </Link>
 
         {/* Desktop Search */}

@@ -29,13 +29,13 @@ const PromotionalBanners = () => {
   if (banners.length === 0) return null;
 
   return (
-    <section className="py-10 md:py-14">
+    <section className="py-6 sm:py-10 md:py-14">
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {banners.map((banner) => (
             <div
               key={banner.id}
-              className="relative rounded-xl overflow-hidden h-48 md:h-56 shadow-sm"
+              className="relative rounded-xl overflow-hidden h-36 sm:h-48 md:h-56 shadow-sm"
             >
               <img
                 src={banner.desktop_image_url}

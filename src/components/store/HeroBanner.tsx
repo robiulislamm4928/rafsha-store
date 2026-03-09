@@ -101,26 +101,26 @@ const HeroBanner = () => {
 
       <div className="absolute inset-0 bg-gradient-to-r from-foreground/70 via-foreground/40 to-transparent" />
 
-      <div className="absolute inset-0 container flex items-center">
+      <div className="absolute inset-0 container flex items-end sm:items-center pb-6 sm:pb-0">
         <div
-          className={`max-w-xl text-primary-foreground space-y-3 md:space-y-4 px-1 transition-all duration-500 ease-in-out ${
+          className={`max-w-xl text-primary-foreground space-y-2 sm:space-y-3 md:space-y-4 px-1 transition-all duration-500 ease-in-out ${
             isAnimating ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
           }`}
         >
           {slide?.heading && (
-            <h2 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold leading-tight">
+            <h2 className="text-lg sm:text-3xl md:text-5xl font-display font-bold leading-tight">
               {slide.heading}
             </h2>
           )}
           {slide?.subtext && (
-            <p className="text-sm sm:text-base md:text-lg opacity-90 leading-relaxed">
+            <p className="text-xs sm:text-base md:text-lg opacity-90 leading-relaxed line-clamp-2 sm:line-clamp-none">
               {slide.subtext}
             </p>
           )}
           {slide?.cta_label && slide?.cta_link && (
             <Button
-              size="lg"
-              className="bg-accent text-accent-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity text-sm md:text-base"
+              size="default"
+              className="bg-accent text-accent-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity text-xs sm:text-sm md:text-base h-8 sm:h-10 md:h-11 px-4 sm:px-6"
               asChild
             >
               <a href={slide.cta_link}>{slide.cta_label}</a>

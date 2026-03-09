@@ -32,11 +32,11 @@ const Footer = () => {
 
   return (
     <footer className="bg-primary text-primary-foreground">
-      <div className="container py-10 md:py-14">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="container py-8 sm:py-10 md:py-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
           {/* Brand */}
            <div>
-             <img src={displayLogo} alt={storeName} className="h-20 w-auto mb-4" />
+             <img src={displayLogo} alt={storeName} className="h-14 sm:h-20 w-auto mb-3 sm:mb-4" />
             <p className="text-sm opacity-80 leading-relaxed">
               {settings.about || "আপনার পছন্দের পণ্য সেরা মূল্যে — সারাদেশে দ্রুত ডেলিভারি।"}
             </p>
@@ -104,8 +104,11 @@ const Footer = () => {
 
       {/* Copyright */}
       <div className="border-t border-primary-foreground/10">
-        <div className="container py-4 text-center text-xs opacity-60">
-          © Copyright {new Date().getFullYear()} <strong>{storeName}</strong> | Developed by{" "}
+        <div className="container py-4 text-center text-[10px] sm:text-xs opacity-60 px-4">
+          © Copyright {new Date().getFullYear()} <strong>{storeName}</strong>
+          <span className="hidden sm:inline"> | </span>
+          <br className="sm:hidden" />
+          Developed by{" "}
           <a href="https://digiinvention.com/" target="_blank" rel="noopener noreferrer">
             <strong>DiGi Invention Agency</strong>
           </a>
