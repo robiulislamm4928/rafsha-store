@@ -111,6 +111,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ChatWidget />
+            <WhatsAppButton />
             <CartDrawer />
           </CartProvider>
         </AuthProvider>
