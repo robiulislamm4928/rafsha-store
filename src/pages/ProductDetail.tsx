@@ -114,6 +114,22 @@ const ProductDetail = () => {
       setImages((imgRes.data as ProductImage[]) || []);
       setVariants((varRes.data as Variant[]) || []);
       setReviews((revRes.data as Review[]) || []);
+
+      // Fetch related products from same category
+      if (prod.category_id) {
+        const { data: related } = await supabase
+          .from("products")
+          .select("id, name, slug, regular_price, sale_price, stock_quantity, short_description, product_images(image_url)")
+          .eq("is_active", true)
+          .eq("category_id", prod.category_id)
+          .neq("id", prod.id)
+          .order("created_at", { ascending: false })
+          .limit(4);
+        setRelatedProducts((related as unknown as RelatedProduct[]) || []);
+      } else {
+        setRelatedProducts([]);
+      }
+
       setLoading(false);
     };
     fetchProduct();
