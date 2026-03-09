@@ -10,6 +10,7 @@ interface Product {
   regular_price: number;
   sale_price: number | null;
   short_description: string | null;
+  stock_quantity: number;
   product_images: { image_url: string }[];
 }
 
@@ -19,7 +20,7 @@ const AllProducts = () => {
   useEffect(() => {
     supabase
       .from("products")
-      .select("id, name, slug, regular_price, sale_price, short_description, product_images(image_url)")
+      .select("id, name, slug, regular_price, sale_price, short_description, stock_quantity, product_images(image_url)")
       .eq("is_active", true)
       .order("created_at", { ascending: false })
       .limit(12)
@@ -50,6 +51,7 @@ const AllProducts = () => {
                 salePrice={p.sale_price}
                 imageUrl={p.product_images?.[0]?.image_url || null}
                 shortDescription={p.short_description}
+                stockQuantity={p.stock_quantity}
               />
             ))}
           </div>
