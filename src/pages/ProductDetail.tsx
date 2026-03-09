@@ -90,6 +90,7 @@ const ProductDetail = () => {
   const [reviewText, setReviewText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [userProfileImage, setUserProfileImage] = useState<string | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
 
   useEffect(() => {
     if (!user) { setUserProfileImage(null); return; }
