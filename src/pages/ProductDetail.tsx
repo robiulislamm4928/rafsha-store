@@ -10,11 +10,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, Minus, Plus, Star, ChevronLeft, MessageSquare, ImageOff, AlertTriangle, Zap } from "lucide-react";
+import { ShoppingCart, Minus, Plus, Star, ChevronLeft, MessageSquare, ImageOff, AlertTriangle, Zap, Package } from "lucide-react";
 import { z } from "zod";
 import Header from "@/components/store/Header";
 import TopBar from "@/components/store/TopBar";
 import Footer from "@/components/store/Footer";
+import ProductCard from "@/components/store/ProductCard";
 
 interface Product {
   id: string;
@@ -26,6 +27,18 @@ interface Product {
   sale_price: number | null;
   stock_quantity: number;
   sku: string | null;
+  category_id: string | null;
+}
+
+interface RelatedProduct {
+  id: string;
+  name: string;
+  slug: string;
+  regular_price: number;
+  sale_price: number | null;
+  stock_quantity: number;
+  short_description: string | null;
+  product_images: { image_url: string }[];
 }
 
 interface Variant {
@@ -78,6 +91,7 @@ const ProductDetail = () => {
   const [reviewText, setReviewText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [userProfileImage, setUserProfileImage] = useState<string | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
 
   useEffect(() => {
     if (!user) { setUserProfileImage(null); return; }
@@ -90,7 +104,7 @@ const ProductDetail = () => {
     if (!slug) return;
     setLoading(true);
     const fetchProduct = async () => {
-      const { data: prod } = await supabase.from("products").select("id, name, slug, short_description, full_description, regular_price, sale_price, stock_quantity, sku").eq("slug", slug).eq("is_active", true).single();
+      const { data: prod } = await supabase.from("products").select("id, name, slug, short_description, full_description, regular_price, sale_price, stock_quantity, sku, category_id").eq("slug", slug).eq("is_active", true).single();
       if (!prod) { setLoading(false); return; }
       setProduct(prod);
       const [imgRes, varRes, revRes] = await Promise.all([
@@ -101,6 +115,22 @@ const ProductDetail = () => {
       setImages((imgRes.data as ProductImage[]) || []);
       setVariants((varRes.data as Variant[]) || []);
       setReviews((revRes.data as Review[]) || []);
+
+      // Fetch related products from same category
+      if (prod.category_id) {
+        const { data: related } = await supabase
+          .from("products")
+          .select("id, name, slug, regular_price, sale_price, stock_quantity, short_description, product_images(image_url)")
+          .eq("is_active", true)
+          .eq("category_id", prod.category_id)
+          .neq("id", prod.id)
+          .order("created_at", { ascending: false })
+          .limit(4);
+        setRelatedProducts((related as unknown as RelatedProduct[]) || []);
+      } else {
+        setRelatedProducts([]);
+      }
+
       setLoading(false);
     };
     fetchProduct();
@@ -296,6 +326,31 @@ const ProductDetail = () => {
             </div>
           )}
         </section>
+
+        {/* Related Products */}
+        {relatedProducts.length > 0 && (
+          <section className="mt-12">
+            <h2 className="text-xl font-display font-bold text-foreground mb-6 flex items-center gap-2">
+              <Package className="h-5 w-5 text-primary" />
+              সম্পর্কিত পণ্য
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+              {relatedProducts.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  id={p.id}
+                  name={p.name}
+                  slug={p.slug}
+                  regularPrice={p.regular_price}
+                  salePrice={p.sale_price}
+                  imageUrl={p.product_images?.[0]?.image_url || null}
+                  shortDescription={p.short_description}
+                  stockQuantity={p.stock_quantity}
+                />
+              ))}
+            </div>
+          </section>
+        )}
       </main>
       <Footer />
     </div>
