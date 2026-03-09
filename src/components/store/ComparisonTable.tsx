@@ -80,13 +80,13 @@ const StatusIcon = ({ status }: { status: Status }) => {
 };
 
 const ComparisonTable = () => (
-  <section className="py-10 md:py-16 bg-secondary/20">
+  <section className="py-6 sm:py-10 md:py-16 bg-secondary/20">
     <div className="container">
-      <div className="text-center mb-8 md:mb-10">
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">
+      <div className="text-center mb-5 sm:mb-8 md:mb-10">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-foreground">
           কেন আমরা আলাদা?
         </h2>
-        <p className="text-muted-foreground mt-2 max-w-xl mx-auto text-sm md:text-base">
+        <p className="text-muted-foreground mt-1.5 sm:mt-2 max-w-xl mx-auto text-xs sm:text-sm md:text-base">
           রাফছা স্টোর এবং অন্যান্য অনলাইন শপের মধ্যে পার্থক্য দেখুন
         </p>
       </div>
