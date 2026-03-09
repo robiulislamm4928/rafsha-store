@@ -122,6 +122,15 @@ const Products = () => {
     return result;
   }, [products, selectedCategory, sortBy, priceRange]);
 
+  const totalPages = Math.ceil(filtered.length / PRODUCTS_PER_PAGE);
+  const paginatedProducts = useMemo(
+    () => filtered.slice((currentPage - 1) * PRODUCTS_PER_PAGE, currentPage * PRODUCTS_PER_PAGE),
+    [filtered, currentPage]
+  );
+
+  // Reset page when filters change
+  useEffect(() => { setCurrentPage(1); }, [selectedCategory, sortBy, priceRange]);
+
   const handleCategoryClick = (catId: string | null) => {
     setSelectedCategory(catId);
     setMobileFilterOpen(false);
@@ -131,6 +140,10 @@ const Products = () => {
       setSearchParams({});
     }
   };
+
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   const CategorySidebar = ({ className }: { className?: string }) => (
     <div className={cn("space-y-1", className)}>
