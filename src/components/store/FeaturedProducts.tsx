@@ -53,6 +53,7 @@ const FeaturedProducts = () => {
               salePrice={p.sale_price}
               imageUrl={p.product_images?.[0]?.image_url || null}
               shortDescription={p.short_description}
+              stockQuantity={p.stock_quantity}
             />
           ))}
         </div>
