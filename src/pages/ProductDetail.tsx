@@ -305,6 +305,9 @@ const ProductDetail = () => {
                 </>
               );
             })()}
+
+            {/* Social Share */}
+            <SocialShareButtons productName={product.name} />
           </div>
         </div>
 
