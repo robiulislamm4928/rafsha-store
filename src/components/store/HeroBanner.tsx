@@ -30,6 +30,7 @@ const HeroBanner = () => {
       .order("display_order")
       .then(({ data }) => {
         if (data && data.length > 0) setBanners(data);
+        setLoading(false);
       });
   }, []);
 
