@@ -76,6 +76,14 @@ const HeroBanner = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <section className="relative w-full overflow-hidden bg-secondary animate-pulse">
+        <div className="w-full aspect-[16/6] sm:aspect-[16/5]" />
+      </section>
+    );
+  }
+
   const slide = banners[current];
 
   return (
