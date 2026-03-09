@@ -33,7 +33,7 @@ const CategorySlider = () => {
           ক্যাটাগরি
         </h2>
         <ScrollArea className="w-full">
-          <div className="flex gap-4 pb-4">
+          <div className="flex gap-3 sm:gap-4 pb-4">
             {categories.map((cat) => (
               <a
                 key={cat.id}
