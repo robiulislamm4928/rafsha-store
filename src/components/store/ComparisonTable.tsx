@@ -123,10 +123,10 @@ const ComparisonTable = () => (
       </div>
 
       {/* Mobile Cards */}
-      <div className="md:hidden space-y-3">
-        <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground px-2 mb-1">
+      <div className="md:hidden space-y-2 sm:space-y-3">
+        <div className="flex items-center justify-between text-[10px] sm:text-xs font-semibold text-muted-foreground px-2 mb-1">
           <span>বৈশিষ্ট্য</span>
-          <div className="flex gap-8">
+          <div className="flex gap-6 sm:gap-8">
             <span className="text-primary">রাফছা</span>
             <span>অন্যান্য</span>
           </div>
@@ -134,14 +134,14 @@ const ComparisonTable = () => (
         {rows.map((row, i) => (
           <div
             key={row.feature}
-            className={`rounded-lg border border-border p-3.5 ${i % 2 === 0 ? "bg-card" : "bg-secondary/30"}`}
+            className={`rounded-lg border border-border p-2.5 sm:p-3.5 ${i % 2 === 0 ? "bg-card" : "bg-secondary/30"}`}
           >
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start justify-between gap-2 sm:gap-3">
               <div className="flex-1 min-w-0">
-                <span className="text-sm font-medium text-foreground block">{row.feature}</span>
-                <span className="text-xs text-muted-foreground mt-0.5 block">{row.description}</span>
+                <span className="text-xs sm:text-sm font-medium text-foreground block">{row.feature}</span>
+                <span className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 block leading-snug">{row.description}</span>
               </div>
-              <div className="flex items-center gap-6 shrink-0 pt-0.5">
+              <div className="flex items-center gap-4 sm:gap-6 shrink-0 pt-0.5">
                 <StatusIcon status={row.ours} />
                 <StatusIcon status={row.others} />
               </div>
