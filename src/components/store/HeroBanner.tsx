@@ -14,6 +14,7 @@ interface Banner {
 
 const HeroBanner = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
+  const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState<"left" | "right">("right");
   const [isAnimating, setIsAnimating] = useState(false);
