@@ -6,10 +6,47 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, Save, User } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Camera, Save, User, Package, Eye, ChevronDown, ChevronUp } from "lucide-react";
+import { Link } from "react-router-dom";
 import Header from "@/components/store/Header";
 import TopBar from "@/components/store/TopBar";
 import Footer from "@/components/store/Footer";
+import { format } from "date-fns";
+
+interface OrderItem {
+  product_name_snapshot: string;
+  variant_label_snapshot: string | null;
+  unit_price_snapshot: number;
+  quantity: number;
+  item_total: number;
+}
+
+interface Order {
+  id: string;
+  order_number: string;
+  order_status: string;
+  payment_status: string;
+  total_amount: number;
+  created_at: string;
+  order_items: OrderItem[];
+}
+
+const statusColors: Record<string, string> = {
+  Pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
+  Processing: "bg-blue-100 text-blue-800 border-blue-200",
+  Shipped: "bg-purple-100 text-purple-800 border-purple-200",
+  Delivered: "bg-green-100 text-green-800 border-green-200",
+  Cancelled: "bg-red-100 text-red-800 border-red-200",
+};
+
+const statusLabels: Record<string, string> = {
+  Pending: "অপেক্ষমান",
+  Processing: "প্রসেসিং",
+  Shipped: "শিপড",
+  Delivered: "ডেলিভারড",
+  Cancelled: "বাতিল",
+};
 
 const Profile = () => {
   const { user } = useAuth();
@@ -18,6 +55,9 @@ const Profile = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
+  const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -28,6 +68,17 @@ const Profile = () => {
           setPhone(data.phone || "");
           setProfileImage(data.profile_image_url || null);
         }
+      });
+
+    // Fetch orders
+    supabase
+      .from("orders")
+      .select("id, order_number, order_status, payment_status, total_amount, created_at, order_items(product_name_snapshot, variant_label_snapshot, unit_price_snapshot, quantity, item_total)")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => {
+        setOrders((data as unknown as Order[]) || []);
+        setOrdersLoading(false);
       });
   }, [user]);
 
@@ -60,9 +111,11 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-background">
       <TopBar /><Header />
-      <main className="container py-6 md:py-10 max-w-lg mx-auto">
+      <main className="container py-6 md:py-10 max-w-2xl mx-auto px-4">
         <h1 className="text-2xl font-display font-bold text-foreground mb-6">আমার প্রোফাইল</h1>
-        <div className="bg-card rounded-xl border border-border p-6 space-y-6">
+        
+        {/* Profile Card */}
+        <div className="bg-card rounded-xl border border-border p-6 space-y-6 mb-8">
           <div className="flex flex-col items-center gap-3">
             <div className="relative">
               <Avatar className="h-24 w-24">
@@ -91,6 +144,85 @@ const Profile = () => {
             <Save className="h-4 w-4 mr-2" /> {saving ? "সংরক্ষণ হচ্ছে..." : "সংরক্ষণ করুন"}
           </Button>
         </div>
+
+        {/* Order History */}
+        <h2 className="text-xl font-display font-bold text-foreground mb-4 flex items-center gap-2">
+          <Package className="h-5 w-5 text-primary" /> অর্ডার হিস্ট্রি
+        </h2>
+
+        {ordersLoading ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="bg-card rounded-xl border border-border p-4 animate-pulse">
+                <div className="h-4 bg-secondary rounded w-1/3 mb-2" />
+                <div className="h-3 bg-secondary rounded w-1/2" />
+              </div>
+            ))}
+          </div>
+        ) : orders.length === 0 ? (
+          <div className="bg-card rounded-xl border border-border p-8 text-center">
+            <Package className="h-10 w-10 mx-auto text-muted-foreground/30 mb-3" />
+            <p className="text-muted-foreground text-sm">আপনার কোনো অর্ডার নেই</p>
+            <Button asChild variant="outline" size="sm" className="mt-4">
+              <Link to="/products">পণ্য দেখুন</Link>
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {orders.map((order) => (
+              <div key={order.id} className="bg-card rounded-xl border border-border overflow-hidden">
+                <button
+                  onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)}
+                  className="w-full p-4 flex items-center justify-between text-left hover:bg-secondary/30 transition-colors"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-semibold text-sm text-foreground">{order.order_number}</span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full border font-medium ${statusColors[order.order_status] || "bg-secondary text-foreground border-border"}`}>
+                        {statusLabels[order.order_status] || order.order_status}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+                      <span>{format(new Date(order.created_at), "dd MMM yyyy")}</span>
+                      <span className="font-semibold text-foreground">৳{order.total_amount.toLocaleString()}</span>
+                    </div>
+                  </div>
+                  {expandedOrder === order.id ? <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" /> : <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />}
+                </button>
+
+                {expandedOrder === order.id && (
+                  <div className="border-t border-border px-4 py-3 bg-secondary/20">
+                    <div className="space-y-2">
+                      {order.order_items.map((item, idx) => (
+                        <div key={idx} className="flex justify-between items-start text-sm">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-foreground truncate">{item.product_name_snapshot}</p>
+                            {item.variant_label_snapshot && (
+                              <p className="text-xs text-muted-foreground">{item.variant_label_snapshot}</p>
+                            )}
+                          </div>
+                          <div className="text-right shrink-0 ml-3">
+                            <p className="text-foreground">৳{item.unit_price_snapshot} × {item.quantity}</p>
+                            <p className="text-xs text-muted-foreground">৳{item.item_total.toLocaleString()}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-3 pt-2 border-t border-border flex justify-between items-center">
+                      <span className="text-xs text-muted-foreground">পেমেন্ট: {order.payment_status}</span>
+                      <Link
+                        to={`/track-order?order=${order.order_number}`}
+                        className="text-xs text-primary hover:underline flex items-center gap-1"
+                      >
+                        <Eye className="h-3 w-3" /> বিস্তারিত
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </main>
       <Footer />
     </div>
