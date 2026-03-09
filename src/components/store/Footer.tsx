@@ -53,6 +53,7 @@ const Footer = () => {
               <li><a href="/return-policy" className="opacity-80 hover:opacity-100 transition-opacity">রিটার্ন পলিসি</a></li>
               <li><a href="/terms" className="opacity-80 hover:opacity-100 transition-opacity">শর্তাবলী</a></li>
               <li><a href="/privacy" className="opacity-80 hover:opacity-100 transition-opacity">প্রাইভেসি পলিসি</a></li>
+              <li><a href="/faq" className="opacity-80 hover:opacity-100 transition-opacity">সাধারণ জিজ্ঞাসা</a></li>
             </ul>
 
             {/* Social Links */}
