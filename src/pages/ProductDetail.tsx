@@ -225,17 +225,29 @@ const ProductDetail = () => {
                 <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => setQuantity(quantity + 1)}><Plus className="h-4 w-4" /></Button>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button size="lg" className="flex-1 brand-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart} disabled={product.stock_quantity === 0}>
-                <ShoppingCart className="h-5 w-5 mr-2" />{product.stock_quantity === 0 ? "স্টকে নেই" : "কার্টে যোগ করুন"}
-              </Button>
-              {product.stock_quantity !== 0 && (
-                <Button size="lg" variant="outline" className="flex-1 border-primary text-primary font-semibold hover:bg-primary/10" onClick={handleBuyNow}>
-                  <Zap className="h-5 w-5 mr-2" /> সরাসরি কিনুন
-                </Button>
-              )}
-            </div>
-            {product.stock_quantity > 0 && product.stock_quantity <= 10 && product.stock_quantity !== -1 && <p className="text-sm text-destructive font-medium flex items-center gap-1"><AlertTriangle className="h-4 w-4" /> মাত্র {product.stock_quantity}টি বাকি আছে!</p>}
+            {(() => {
+              const isOutOfStock = product.stock_quantity !== -1 && product.stock_quantity <= 0;
+              return isOutOfStock ? (
+                <div className="space-y-3">
+                  <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 text-center">
+                    <p className="text-destructive font-bold text-lg">স্টক শেষ</p>
+                    <p className="text-sm text-muted-foreground mt-1">এই পণ্যটি বর্তমানে স্টকে নেই</p>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Button size="lg" className="flex-1 brand-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart}>
+                      <ShoppingCart className="h-5 w-5 mr-2" /> কার্টে যোগ করুন
+                    </Button>
+                    <Button size="lg" variant="outline" className="flex-1 border-primary text-primary font-semibold hover:bg-primary/10" onClick={handleBuyNow}>
+                      <Zap className="h-5 w-5 mr-2" /> সরাসরি কিনুন
+                    </Button>
+                  </div>
+                  {product.stock_quantity > 0 && product.stock_quantity <= 10 && product.stock_quantity !== -1 && <p className="text-sm text-destructive font-medium flex items-center gap-1"><AlertTriangle className="h-4 w-4" /> মাত্র {product.stock_quantity}টি বাকি আছে!</p>}
+                </>
+              );
+            })()}
           </div>
         </div>
 
