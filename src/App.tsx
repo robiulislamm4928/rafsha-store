@@ -93,6 +93,8 @@ const App = () => (
                 <Route path="key-points" element={<AdminKeyPoints />} />
               </Route>
 
+
+              <Route path="/:categorySlug" element={<CategoryPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ChatWidget />
