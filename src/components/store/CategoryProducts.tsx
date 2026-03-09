@@ -67,7 +67,7 @@ const CategoryProducts = () => {
                 {cat.name}
               </h2>
               <a
-                href={`/products?category=${cat.id}`}
+                href={`/${cat.slug}`}
                 className="text-sm text-primary hover:underline font-medium"
               >
                 সবগুলো দেখুন →
