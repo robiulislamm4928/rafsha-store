@@ -27,7 +27,7 @@ const SETTING_KEYS = [
 ];
 
 const SOCIAL_KEYS = ["facebook_url", "youtube_url", "instagram_url", "tiktok_url", "twitter_url"];
-const PAYMENT_KEYS = ["bkash_number", "nagad_number"];
+const PAYMENT_KEYS = ["bkash_number", "nagad_number", "whatsapp_number"];
 const NOTIFICATION_KEYS = ["notification_sound_url"];
 const DELIVERY_KEYS = ["free_delivery_threshold"];
 
