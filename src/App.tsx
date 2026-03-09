@@ -84,6 +84,7 @@ const App = () => (
               <Route path="/return-policy" element={<ReturnPolicy />} />
               <Route path="/terms" element={<TermsConditions />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/faq" element={<FAQ />} />
 
               {/* Admin routes */}
               <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout /></ProtectedRoute>}>
