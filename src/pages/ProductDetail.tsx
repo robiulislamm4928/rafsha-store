@@ -86,6 +86,7 @@ const SocialShareButtons = ({ productName }: { productName: string }) => {
   );
 };
 
+interface Product {
   id: string;
   name: string;
   slug: string;
