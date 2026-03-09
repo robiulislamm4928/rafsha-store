@@ -23,6 +23,7 @@ import OrderSuccess from "./pages/OrderSuccess";
 import TrackOrder from "./pages/TrackOrder";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import CategoryPage from "./pages/CategoryPage";
 
 // Admin
 import AdminLayout from "@/components/admin/AdminLayout";
@@ -92,6 +93,8 @@ const App = () => (
                 <Route path="key-points" element={<AdminKeyPoints />} />
               </Route>
 
+
+              <Route path="/:categorySlug" element={<CategoryPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ChatWidget />
