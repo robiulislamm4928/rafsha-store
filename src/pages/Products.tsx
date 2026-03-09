@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,7 +6,7 @@ import TopBar from "@/components/store/TopBar";
 import Header from "@/components/store/Header";
 import Footer from "@/components/store/Footer";
 import ProductCard from "@/components/store/ProductCard";
-import { Package, Filter, X, ArrowUpDown } from "lucide-react";
+import { Package, Filter, X, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
@@ -33,6 +33,7 @@ interface Product {
 }
 
 type SortOption = "newest" | "price_low" | "price_high" | "rating";
+const PRODUCTS_PER_PAGE = 12;
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -44,6 +45,7 @@ const Products = () => {
   const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
   const [maxPrice, setMaxPrice] = useState(50000);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -120,6 +122,15 @@ const Products = () => {
     return result;
   }, [products, selectedCategory, sortBy, priceRange]);
 
+  const totalPages = Math.ceil(filtered.length / PRODUCTS_PER_PAGE);
+  const paginatedProducts = useMemo(
+    () => filtered.slice((currentPage - 1) * PRODUCTS_PER_PAGE, currentPage * PRODUCTS_PER_PAGE),
+    [filtered, currentPage]
+  );
+
+  // Reset page when filters change
+  useEffect(() => { setCurrentPage(1); }, [selectedCategory, sortBy, priceRange]);
+
   const handleCategoryClick = (catId: string | null) => {
     setSelectedCategory(catId);
     setMobileFilterOpen(false);
@@ -129,6 +140,10 @@ const Products = () => {
       setSearchParams({});
     }
   };
+
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   const CategorySidebar = ({ className }: { className?: string }) => (
     <div className={cn("space-y-1", className)}>
@@ -328,8 +343,9 @@ const Products = () => {
                   </Button>
                 </div>
               ) : (
+                <>
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-                  {filtered.map((p) => (
+                  {paginatedProducts.map((p) => (
                     <ProductCard
                       key={p.id}
                       id={p.id}
@@ -343,6 +359,53 @@ const Products = () => {
                     />
                   ))}
                 </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-8">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-9 w-9"
+                      disabled={currentPage === 1}
+                      onClick={() => { setCurrentPage((p) => p - 1); scrollToTop(); }}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter((page) => {
+                        if (totalPages <= 7) return true;
+                        if (page === 1 || page === totalPages) return true;
+                        if (Math.abs(page - currentPage) <= 1) return true;
+                        return false;
+                      })
+                      .map((page, idx, arr) => (
+                        <span key={page} className="contents">
+                          {idx > 0 && arr[idx - 1] !== page - 1 && (
+                            <span className="text-muted-foreground text-sm px-1">…</span>
+                          )}
+                          <Button
+                            variant={currentPage === page ? "default" : "outline"}
+                            size="icon"
+                            className="h-9 w-9 text-sm"
+                            onClick={() => { setCurrentPage(page); scrollToTop(); }}
+                          >
+                            {page}
+                          </Button>
+                        </span>
+                      ))}
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-9 w-9"
+                      disabled={currentPage === totalPages}
+                      onClick={() => { setCurrentPage((p) => p + 1); scrollToTop(); }}
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+              </>
               )}
             </div>
           </div>
