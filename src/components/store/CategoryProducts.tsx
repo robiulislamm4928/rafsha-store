@@ -37,7 +37,7 @@ const CategoryProducts = () => {
           .order("display_order"),
         supabase
           .from("products")
-          .select("id, name, slug, regular_price, sale_price, short_description, category_id, product_images(image_url)")
+          .select("id, name, slug, regular_price, sale_price, short_description, stock_quantity, category_id, product_images(image_url)")
           .eq("is_active", true)
           .order("created_at", { ascending: false }),
       ]);
