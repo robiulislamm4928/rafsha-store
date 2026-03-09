@@ -33,6 +33,7 @@ interface Product {
 }
 
 type SortOption = "newest" | "price_low" | "price_high" | "rating";
+const PRODUCTS_PER_PAGE = 12;
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
