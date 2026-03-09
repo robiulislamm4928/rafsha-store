@@ -27,9 +27,9 @@ const CategorySlider = () => {
   if (categories.length === 0) return null;
 
   return (
-    <section className="py-10 md:py-14">
+    <section className="py-6 sm:py-10 md:py-14">
       <div className="container">
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-6">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-foreground mb-4 sm:mb-6">
           ক্যাটাগরি
         </h2>
         <ScrollArea className="w-full">
