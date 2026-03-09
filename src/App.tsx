@@ -13,6 +13,8 @@ import DynamicMeta from "@/components/DynamicMeta";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import AdminLogin from "./pages/AdminLogin";
 import About from "./pages/About";
 import Products from "./pages/Products";
