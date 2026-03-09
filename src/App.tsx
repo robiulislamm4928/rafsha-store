@@ -26,6 +26,9 @@ import TrackOrder from "./pages/TrackOrder";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import CategoryPage from "./pages/CategoryPage";
+import ReturnPolicy from "./pages/ReturnPolicy";
+import TermsConditions from "./pages/TermsConditions";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 // Admin
 import AdminLayout from "@/components/admin/AdminLayout";
