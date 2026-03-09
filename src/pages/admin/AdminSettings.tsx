@@ -17,6 +17,7 @@ const SETTING_KEYS = [
   { key: "free_delivery_threshold", label: "ফ্রি ডেলিভারি মিনিমাম অর্ডার (৳)", type: "number" },
   { key: "bkash_number", label: "বিকাশ নম্বর", type: "text" },
   { key: "nagad_number", label: "নগদ নম্বর", type: "text" },
+  { key: "whatsapp_number", label: "WhatsApp নম্বর", type: "text" },
   { key: "notification_sound_url", label: "নোটিফিকেশন সাউন্ড", type: "sound" },
   { key: "facebook_url", label: "ফেসবুক URL", type: "text" },
   { key: "youtube_url", label: "ইউটিউব URL", type: "text" },
