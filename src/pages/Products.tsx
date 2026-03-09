@@ -344,7 +344,7 @@ const Products = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-                  {filtered.map((p) => (
+                  {paginatedProducts.map((p) => (
                     <ProductCard
                       key={p.id}
                       id={p.id}
@@ -358,6 +358,53 @@ const Products = () => {
                     />
                   ))}
                 </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-8">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-9 w-9"
+                      disabled={currentPage === 1}
+                      onClick={() => { setCurrentPage((p) => p - 1); scrollToTop(); }}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter((page) => {
+                        if (totalPages <= 7) return true;
+                        if (page === 1 || page === totalPages) return true;
+                        if (Math.abs(page - currentPage) <= 1) return true;
+                        return false;
+                      })
+                      .map((page, idx, arr) => (
+                        <span key={page} className="contents">
+                          {idx > 0 && arr[idx - 1] !== page - 1 && (
+                            <span className="text-muted-foreground text-sm px-1">…</span>
+                          )}
+                          <Button
+                            variant={currentPage === page ? "default" : "outline"}
+                            size="icon"
+                            className="h-9 w-9 text-sm"
+                            onClick={() => { setCurrentPage(page); scrollToTop(); }}
+                          >
+                            {page}
+                          </Button>
+                        </span>
+                      ))}
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-9 w-9"
+                      disabled={currentPage === totalPages}
+                      onClick={() => { setCurrentPage((p) => p + 1); scrollToTop(); }}
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+              </>
               )}
             </div>
           </div>
