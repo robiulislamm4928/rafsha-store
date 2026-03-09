@@ -50,6 +50,9 @@ const Footer = () => {
               <li><a href="/products" className="opacity-80 hover:opacity-100 transition-opacity">সকল পণ্য</a></li>
               <li><a href="/about" className="opacity-80 hover:opacity-100 transition-opacity">About Us</a></li>
               <li><a href="/track-order" className="opacity-80 hover:opacity-100 transition-opacity">অর্ডার ট্র্যাক</a></li>
+              <li><a href="/return-policy" className="opacity-80 hover:opacity-100 transition-opacity">রিটার্ন পলিসি</a></li>
+              <li><a href="/terms" className="opacity-80 hover:opacity-100 transition-opacity">শর্তাবলী</a></li>
+              <li><a href="/privacy" className="opacity-80 hover:opacity-100 transition-opacity">প্রাইভেসি পলিসি</a></li>
             </ul>
 
             {/* Social Links */}
