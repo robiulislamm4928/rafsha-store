@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Download, Smartphone, CheckCircle2, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/store/Header";
-import { Footer } from "@/components/store/Footer";
+import Footer from "@/components/store/Footer";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
