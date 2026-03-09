@@ -20,7 +20,7 @@ const AllProducts = () => {
   useEffect(() => {
     supabase
       .from("products")
-      .select("id, name, slug, regular_price, sale_price, short_description, product_images(image_url)")
+      .select("id, name, slug, regular_price, sale_price, short_description, stock_quantity, product_images(image_url)")
       .eq("is_active", true)
       .order("created_at", { ascending: false })
       .limit(12)
