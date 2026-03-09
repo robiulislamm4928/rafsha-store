@@ -32,8 +32,8 @@ const Footer = () => {
 
   return (
     <footer className="bg-primary text-primary-foreground">
-      <div className="container py-10 md:py-14">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="container py-8 sm:py-10 md:py-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
           {/* Brand */}
            <div>
              <img src={displayLogo} alt={storeName} className="h-20 w-auto mb-4" />
