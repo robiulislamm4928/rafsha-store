@@ -17,6 +17,7 @@ const SETTING_KEYS = [
   { key: "free_delivery_threshold", label: "ফ্রি ডেলিভারি মিনিমাম অর্ডার (৳)", type: "number" },
   { key: "bkash_number", label: "বিকাশ নম্বর", type: "text" },
   { key: "nagad_number", label: "নগদ নম্বর", type: "text" },
+  { key: "whatsapp_number", label: "WhatsApp নম্বর", type: "text" },
   { key: "notification_sound_url", label: "নোটিফিকেশন সাউন্ড", type: "sound" },
   { key: "facebook_url", label: "ফেসবুক URL", type: "text" },
   { key: "youtube_url", label: "ইউটিউব URL", type: "text" },
@@ -26,7 +27,7 @@ const SETTING_KEYS = [
 ];
 
 const SOCIAL_KEYS = ["facebook_url", "youtube_url", "instagram_url", "tiktok_url", "twitter_url"];
-const PAYMENT_KEYS = ["bkash_number", "nagad_number"];
+const PAYMENT_KEYS = ["bkash_number", "nagad_number", "whatsapp_number"];
 const NOTIFICATION_KEYS = ["notification_sound_url"];
 const DELIVERY_KEYS = ["free_delivery_threshold"];
 

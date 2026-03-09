@@ -8,6 +8,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import { useTracking } from "@/hooks/useTracking";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import ChatWidget from "@/components/store/ChatWidget";
+import WhatsAppButton from "@/components/store/WhatsAppButton";
 import CartDrawer from "@/components/store/CartDrawer";
 import DynamicMeta from "@/components/DynamicMeta";
 import Index from "./pages/Index";
@@ -110,6 +111,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ChatWidget />
+            <WhatsAppButton />
             <CartDrawer />
           </CartProvider>
         </AuthProvider>
