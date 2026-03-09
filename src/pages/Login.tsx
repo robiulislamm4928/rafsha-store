@@ -43,7 +43,10 @@ const Login = () => {
               <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@example.com" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">পাসওয়ার্ড</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">পাসওয়ার্ড</Label>
+                <Link to="/forgot-password" className="text-xs text-primary hover:underline">পাসওয়ার্ড ভুলে গেছেন?</Link>
+              </div>
               <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="••••••••" />
             </div>
           </CardContent>
