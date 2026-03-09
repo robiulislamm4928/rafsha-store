@@ -344,6 +344,7 @@ const Products = () => {
                 </div>
               ) : (
                 <>
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                   {paginatedProducts.map((p) => (
                     <ProductCard
                       key={p.id}
