@@ -14,6 +14,7 @@ interface Banner {
 
 const HeroBanner = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
+  const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState<"left" | "right">("right");
   const [isAnimating, setIsAnimating] = useState(false);
@@ -29,6 +30,7 @@ const HeroBanner = () => {
       .order("display_order")
       .then(({ data }) => {
         if (data && data.length > 0) setBanners(data);
+        setLoading(false);
       });
   }, []);
 
@@ -73,6 +75,14 @@ const HeroBanner = () => {
       else goPrev();
     }
   };
+
+  if (loading) {
+    return (
+      <section className="relative w-full overflow-hidden bg-secondary animate-pulse">
+        <div className="w-full aspect-[16/6] sm:aspect-[16/5]" />
+      </section>
+    );
+  }
 
   const slide = banners[current];
 
