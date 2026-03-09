@@ -29,6 +29,7 @@ import CategoryPage from "./pages/CategoryPage";
 import ReturnPolicy from "./pages/ReturnPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import FAQ from "./pages/FAQ";
 
 // Admin
 import AdminLayout from "@/components/admin/AdminLayout";
