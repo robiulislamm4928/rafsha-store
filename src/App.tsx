@@ -31,6 +31,7 @@ import ReturnPolicy from "./pages/ReturnPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import FAQ from "./pages/FAQ";
+import Install from "./pages/Install";
 
 // Admin
 import AdminLayout from "@/components/admin/AdminLayout";
@@ -86,6 +87,7 @@ const App = () => (
               <Route path="/terms" element={<TermsConditions />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/faq" element={<FAQ />} />
+              <Route path="/install" element={<Install />} />
 
               {/* Admin routes */}
               <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout /></ProtectedRoute>}>
