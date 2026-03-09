@@ -23,6 +23,7 @@ interface Product {
   regular_price: number;
   sale_price: number | null;
   short_description: string | null;
+  stock_quantity: number;
   product_images: { image_url: string }[];
 }
 
