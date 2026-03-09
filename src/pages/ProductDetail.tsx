@@ -103,7 +103,7 @@ const ProductDetail = () => {
     if (!slug) return;
     setLoading(true);
     const fetchProduct = async () => {
-      const { data: prod } = await supabase.from("products").select("id, name, slug, short_description, full_description, regular_price, sale_price, stock_quantity, sku").eq("slug", slug).eq("is_active", true).single();
+      const { data: prod } = await supabase.from("products").select("id, name, slug, short_description, full_description, regular_price, sale_price, stock_quantity, sku, category_id").eq("slug", slug).eq("is_active", true).single();
       if (!prod) { setLoading(false); return; }
       setProduct(prod);
       const [imgRes, varRes, revRes] = await Promise.all([
