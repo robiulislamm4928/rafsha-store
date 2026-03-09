@@ -274,6 +274,7 @@ const ProductDetail = () => {
                       <Zap className="h-5 w-5 mr-2" /> সরাসরি কিনুন
                     </Button>
                   </div>
+                  <WhatsAppOrderButton product={product} variant={activeVariant} quantity={quantity} finalPrice={finalPrice} />
                   {product.stock_quantity > 0 && product.stock_quantity <= 10 && product.stock_quantity !== -1 && <p className="text-sm text-destructive font-medium flex items-center gap-1"><AlertTriangle className="h-4 w-4" /> মাত্র {product.stock_quantity}টি বাকি আছে!</p>}
                 </>
               );
