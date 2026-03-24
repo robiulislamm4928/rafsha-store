@@ -58,6 +58,8 @@ const Profile = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+  const [wishlistItems, setWishlistItems] = useState<{ id: string; product_id: string; name: string; slug: string; price: number; image?: string }[]>([]);
+  const [wishlistLoading, setWishlistLoading] = useState(true);
 
   useEffect(() => {
     if (!user) return;
