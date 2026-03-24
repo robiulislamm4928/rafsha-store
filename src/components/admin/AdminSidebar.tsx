@@ -25,6 +25,7 @@ const menuItems = [
   { title: "শিপিং জোন", url: "/admin/shipping", icon: Truck },
   { title: "সাইট সেটিংস", url: "/admin/settings", icon: Settings },
   { title: "অ্যানালিটিক্স", url: "/admin/analytics", icon: BarChart3 },
+  { title: "অসম্পূর্ণ অর্ডার", url: "/admin/incomplete-orders", icon: AlertTriangle },
   { title: "টিম", url: "/admin/team", icon: Shield },
 ];
 
