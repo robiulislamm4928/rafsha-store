@@ -165,6 +165,54 @@ const Profile = () => {
           </Button>
         </div>
 
+        {/* Wishlist */}
+        <h2 className="text-xl font-display font-bold text-foreground mb-4 flex items-center gap-2">
+          <Heart className="h-5 w-5 text-destructive" /> উইশলিস্ট
+        </h2>
+        {wishlistLoading ? (
+          <div className="bg-card rounded-xl border border-border p-4 animate-pulse mb-8">
+            <div className="h-4 bg-secondary rounded w-1/3 mb-2" />
+            <div className="h-3 bg-secondary rounded w-1/2" />
+          </div>
+        ) : wishlistItems.length === 0 ? (
+          <div className="bg-card rounded-xl border border-border p-8 text-center mb-8">
+            <Heart className="h-10 w-10 mx-auto text-muted-foreground/30 mb-3" />
+            <p className="text-muted-foreground text-sm">আপনার উইশলিস্ট খালি</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 mb-8">
+            {wishlistItems.map((item) => (
+              <div key={item.id} className="bg-card rounded-xl border border-border overflow-hidden group">
+                <Link to={`/product/${item.slug}`} className="block aspect-square bg-secondary overflow-hidden">
+                  {item.image ? (
+                    <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground/20">
+                      <Package className="h-8 w-8" />
+                    </div>
+                  )}
+                </Link>
+                <div className="p-3">
+                  <Link to={`/product/${item.slug}`} className="text-sm font-medium text-foreground line-clamp-1 hover:text-primary">{item.name}</Link>
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-sm font-bold text-primary">৳{item.price}</span>
+                    <button
+                      onClick={async () => {
+                        await supabase.from("wishlists").delete().eq("id", item.id);
+                        setWishlistItems((prev) => prev.filter((w) => w.id !== item.id));
+                        toast.success("উইশলিস্ট থেকে সরানো হয়েছে");
+                      }}
+                      className="text-muted-foreground hover:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Order History */}
         <h2 className="text-xl font-display font-bold text-foreground mb-4 flex items-center gap-2">
           <Package className="h-5 w-5 text-primary" /> অর্ডার হিস্ট্রি
