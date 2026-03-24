@@ -91,6 +91,7 @@ const App = () => (
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/install" element={<Install />} />
+              <Route path="/sitemap" element={<Sitemap />} />
 
               {/* Admin routes */}
               <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout /></ProtectedRoute>}>
