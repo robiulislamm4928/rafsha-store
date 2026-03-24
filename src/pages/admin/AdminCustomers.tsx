@@ -3,8 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, ShieldOff, Shield, Users } from "lucide-react";
+import { Search, ShieldOff, Shield, Users, FileDown } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 interface UserProfile { id: string; full_name: string; email: string; phone: string | null; is_blocked: boolean; created_at: string; }
 
