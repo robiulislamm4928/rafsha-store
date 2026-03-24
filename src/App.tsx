@@ -51,6 +51,8 @@ import AdminChat from "./pages/admin/AdminChat";
 import AdminCoupons from "./pages/admin/AdminCoupons";
 import AdminKeyPoints from "./pages/admin/AdminKeyPoints";
 import AdminIncompleteOrders from "./pages/admin/AdminIncompleteOrders";
+import AdminQA from "./pages/admin/AdminQA";
+import Sitemap from "./pages/Sitemap";
 
 const queryClient = new QueryClient();
 
