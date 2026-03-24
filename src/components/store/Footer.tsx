@@ -54,7 +54,7 @@ const Footer = () => {
               <li><a href="/terms" className="opacity-80 hover:opacity-100 transition-opacity">শর্তাবলী</a></li>
               <li><a href="/privacy" className="opacity-80 hover:opacity-100 transition-opacity">প্রাইভেসি পলিসি</a></li>
               <li><a href="/faq" className="opacity-80 hover:opacity-100 transition-opacity">সাধারণ জিজ্ঞাসা</a></li>
-            </ul>
+              <li><a href="/sitemap" className="opacity-80 hover:opacity-100 transition-opacity">সাইটম্যাপ</a></li>
 
             {/* Social Links */}
             {socialLinks.length > 0 && (
