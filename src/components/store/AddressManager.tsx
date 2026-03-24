@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MapPin, Plus, Trash2, Star, Edit2, X } from "lucide-react";
-import { DISTRICTS } from "@/lib/districts";
+import { BD_DISTRICTS as DISTRICTS } from "@/lib/districts";
 
 interface Address {
   id: string;
