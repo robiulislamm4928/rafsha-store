@@ -35,11 +35,12 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchStats = async () => {
-    const [ordersRes, pendingRes, productsRes, recentRes] = await Promise.all([
+    const [ordersRes, pendingRes, productsRes, recentRes, lowStockRes] = await Promise.all([
       supabase.from("orders").select("total_amount"),
       supabase.from("orders").select("id", { count: "exact", head: true }).eq("order_status", "Pending"),
       supabase.from("products").select("id", { count: "exact", head: true }),
       supabase.from("orders").select("id, order_number, customer_name, total_amount, order_status, created_at").order("created_at", { ascending: false }).limit(10),
+      supabase.from("products").select("id, name, slug, stock_quantity").gt("stock_quantity", 0).lte("stock_quantity", 10).eq("is_active", true).order("stock_quantity"),
     ]);
 
     const orders = ordersRes.data || [];
