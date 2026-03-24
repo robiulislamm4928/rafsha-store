@@ -21,6 +21,13 @@ interface RecentOrder {
   created_at: string;
 }
 
+interface LowStockProduct {
+  id: string;
+  name: string;
+  slug: string;
+  stock_quantity: number;
+}
+
 const AdminDashboard = () => {
   const [stats, setStats] = useState<Stats>({ totalOrders: 0, totalRevenue: 0, pendingOrders: 0, totalProducts: 0 });
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
