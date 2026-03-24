@@ -160,6 +160,29 @@ const AdminDashboard = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Low Stock Alerts */}
+      {lowStockProducts.length > 0 && (
+        <Card className="border-destructive/30">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2 text-destructive">
+              <AlertTriangle className="h-5 w-5" /> স্টক কম আছে ({lowStockProducts.length}টি পণ্য)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {lowStockProducts.map((p) => (
+                <div key={p.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                  <Link to="/admin/products" className="text-sm text-foreground hover:text-primary font-medium">{p.name}</Link>
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${p.stock_quantity <= 3 ? "bg-destructive/10 text-destructive" : "bg-accent/20 text-accent"}`}>
+                    {p.stock_quantity}টি বাকি
+                  </span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
