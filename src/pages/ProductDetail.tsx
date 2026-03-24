@@ -292,7 +292,7 @@ const ProductDetail = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
           <div className="space-y-4">
             <div className="aspect-square rounded-xl overflow-hidden bg-secondary border border-border">
-              {mainImage ? <img src={mainImage} alt={product.name} className="w-full h-full object-cover" loading="lazy" /> : <div className="w-full h-full brand-gradient-subtle flex items-center justify-center"><ImageOff className="h-16 w-16 text-muted-foreground/30" /></div>}
+              {mainImage ? <ImageZoom src={mainImage} alt={product.name} className="w-full h-full" /> : <div className="w-full h-full brand-gradient-subtle flex items-center justify-center"><ImageOff className="h-16 w-16 text-muted-foreground/30" /></div>}
             </div>
             {images.length > 1 && (
               <div className="flex gap-3 overflow-x-auto pb-2">
