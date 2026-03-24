@@ -306,9 +306,18 @@ const ProductDetail = () => {
           </div>
 
           <div className="space-y-5">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground">{product.name}</h1>
-              {product.sku && <p className="text-xs text-muted-foreground mt-1">SKU: {product.sku}</p>}
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground">{product.name}</h1>
+                {product.sku && <p className="text-xs text-muted-foreground mt-1">SKU: {product.sku}</p>}
+              </div>
+              <button
+                onClick={() => toggleWishlist(product.id)}
+                className={`shrink-0 h-10 w-10 rounded-full border flex items-center justify-center transition-colors ${isWishlisted(product.id) ? "bg-destructive border-destructive text-destructive-foreground" : "border-border text-muted-foreground hover:text-destructive hover:border-destructive"}`}
+                title="উইশলিস্ট"
+              >
+                <Heart className={`h-5 w-5 ${isWishlisted(product.id) ? "fill-current" : ""}`} />
+              </button>
             </div>
             {reviews.length > 0 && (
               <div className="flex items-center gap-2">
