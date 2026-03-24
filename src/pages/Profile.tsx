@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Camera, Save, User, Package, Eye, ChevronDown, ChevronUp } from "lucide-react";
+import { Camera, Save, User, Package, Eye, ChevronDown, ChevronUp, Heart, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "@/components/store/Header";
 import TopBar from "@/components/store/TopBar";
