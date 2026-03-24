@@ -50,6 +50,7 @@ import AdminAnnouncements from "./pages/admin/AdminAnnouncements";
 import AdminChat from "./pages/admin/AdminChat";
 import AdminCoupons from "./pages/admin/AdminCoupons";
 import AdminKeyPoints from "./pages/admin/AdminKeyPoints";
+import AdminIncompleteOrders from "./pages/admin/AdminIncompleteOrders";
 
 const queryClient = new QueryClient();
 
@@ -106,6 +107,7 @@ const App = () => (
                 <Route path="chat" element={<AdminChat />} />
                 <Route path="coupons" element={<AdminCoupons />} />
                 <Route path="key-points" element={<AdminKeyPoints />} />
+                <Route path="incomplete-orders" element={<AdminIncompleteOrders />} />
               </Route>
 
 

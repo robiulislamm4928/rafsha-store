@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShoppingCart, Package, DollarSign, Clock, Inbox } from "lucide-react";
+import { ShoppingCart, Package, DollarSign, Clock, Inbox, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -21,17 +21,26 @@ interface RecentOrder {
   created_at: string;
 }
 
+interface LowStockProduct {
+  id: string;
+  name: string;
+  slug: string;
+  stock_quantity: number;
+}
+
 const AdminDashboard = () => {
   const [stats, setStats] = useState<Stats>({ totalOrders: 0, totalRevenue: 0, pendingOrders: 0, totalProducts: 0 });
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
+  const [lowStockProducts, setLowStockProducts] = useState<LowStockProduct[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchStats = async () => {
-    const [ordersRes, pendingRes, productsRes, recentRes] = await Promise.all([
+    const [ordersRes, pendingRes, productsRes, recentRes, lowStockRes] = await Promise.all([
       supabase.from("orders").select("total_amount"),
       supabase.from("orders").select("id", { count: "exact", head: true }).eq("order_status", "Pending"),
       supabase.from("products").select("id", { count: "exact", head: true }),
       supabase.from("orders").select("id, order_number, customer_name, total_amount, order_status, created_at").order("created_at", { ascending: false }).limit(10),
+      supabase.from("products").select("id, name, slug, stock_quantity").gt("stock_quantity", 0).lte("stock_quantity", 10).eq("is_active", true).order("stock_quantity"),
     ]);
 
     const orders = ordersRes.data || [];
@@ -42,6 +51,7 @@ const AdminDashboard = () => {
       totalProducts: productsRes.count || 0,
     });
     setRecentOrders((recentRes.data as RecentOrder[]) || []);
+    setLowStockProducts((lowStockRes.data as LowStockProduct[]) || []);
     setLoading(false);
   };
 
@@ -150,6 +160,29 @@ const AdminDashboard = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Low Stock Alerts */}
+      {lowStockProducts.length > 0 && (
+        <Card className="border-destructive/30">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2 text-destructive">
+              <AlertTriangle className="h-5 w-5" /> স্টক কম আছে ({lowStockProducts.length}টি পণ্য)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {lowStockProducts.map((p) => (
+                <div key={p.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                  <Link to="/admin/products" className="text-sm text-foreground hover:text-primary font-medium">{p.name}</Link>
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${p.stock_quantity <= 3 ? "bg-destructive/10 text-destructive" : "bg-accent/20 text-accent"}`}>
+                    {p.stock_quantity}টি বাকি
+                  </span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

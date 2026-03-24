@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Search, Eye, Trash2, Download, Inbox } from "lucide-react";
+import { Search, Eye, Trash2, Download, Inbox, FileDown } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Order {
@@ -191,9 +191,25 @@ const AdminOrders = () => {
     return map[s] || "bg-secondary text-secondary-foreground";
   };
 
+  const exportCSV = () => {
+    const headers = ["Order Number","Customer","Phone","Email","District","Total","Delivery","Discount","Payment Method","Payment Status","Order Status","Date"];
+    const rows = filtered.map(o => [o.order_number, o.customer_name, o.customer_phone, o.customer_email || "", o.district, o.total_amount, o.delivery_charge, o.discount_amount, o.payment_method, o.payment_status, o.order_status, new Date(o.created_at).toLocaleDateString("en-GB")]);
+    const csv = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = `orders-${Date.now()}.csv`; a.click();
+    URL.revokeObjectURL(url);
+    toast.success("CSV ডাউনলোড হয়েছে");
+  };
+
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-display font-bold text-foreground">অর্ডার ম্যানেজমেন্ট</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-display font-bold text-foreground">অর্ডার ম্যানেজমেন্ট</h1>
+        <Button variant="outline" size="sm" onClick={exportCSV}>
+          <FileDown className="h-4 w-4 mr-1.5" /> CSV এক্সপোর্ট
+        </Button>
+      </div>
 
       <div className="flex flex-col md:flex-row gap-3">
         <div className="relative flex-1">

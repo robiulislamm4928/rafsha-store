@@ -3,6 +3,8 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useWishlist } from "@/hooks/useWishlist";
+import { useRecentlyViewed } from "@/hooks/useRecentlyViewed";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,12 +12,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, Minus, Plus, Star, ChevronLeft, MessageSquare, ImageOff, AlertTriangle, Zap, Package, Share2, Copy, Check } from "lucide-react";
+import { ShoppingCart, Minus, Plus, Star, ChevronLeft, MessageSquare, ImageOff, AlertTriangle, Zap, Package, Share2, Copy, Check, Heart } from "lucide-react";
 import { z } from "zod";
 import Header from "@/components/store/Header";
 import TopBar from "@/components/store/TopBar";
 import Footer from "@/components/store/Footer";
 import ProductCard from "@/components/store/ProductCard";
+import RecentlyViewedProducts from "@/components/store/RecentlyViewedProducts";
+import ImageZoom from "@/components/store/ImageZoom";
 
 const WhatsAppOrderButton = ({ product, variant, quantity, finalPrice }: { product: { name: string }; variant?: { variant_label: string } | null; quantity: number; finalPrice: number }) => {
   const [phone, setPhone] = useState<string | null>(null);
@@ -143,6 +147,8 @@ const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { addItem } = useCart();
   const { user } = useAuth();
+  const { isWishlisted, toggleWishlist } = useWishlist();
+  const { addProduct: addRecentlyViewed } = useRecentlyViewed();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState<Product | null>(null);
@@ -201,6 +207,15 @@ const ProductDetail = () => {
       }
 
       setLoading(false);
+
+      // Track recently viewed
+      addRecentlyViewed({
+        id: prod.id,
+        name: prod.name,
+        slug: prod.slug,
+        price: prod.sale_price ?? prod.regular_price,
+        image: undefined, // will be set after images load
+      });
     };
     fetchProduct();
   }, [slug]);
@@ -272,12 +287,35 @@ const ProductDetail = () => {
     <div className="min-h-screen bg-background">
       <TopBar /><Header />
       <main className="container py-6 md:py-10">
+        {/* JSON-LD Structured Data */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": product.name,
+          "description": product.short_description || product.full_description || "",
+          "image": mainImage || "",
+          "sku": product.sku || undefined,
+          "offers": {
+            "@type": "Offer",
+            "price": finalPrice,
+            "priceCurrency": "BDT",
+            "availability": (product.stock_quantity === -1 || product.stock_quantity > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          },
+          ...(reviews.length > 0 ? {
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": avgRating.toFixed(1),
+              "reviewCount": reviews.length,
+            },
+          } : {}),
+        }) }} />
+
         <Link to="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6"><ChevronLeft className="h-4 w-4 mr-1" /> হোমে ফিরুন</Link>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
           <div className="space-y-4">
             <div className="aspect-square rounded-xl overflow-hidden bg-secondary border border-border">
-              {mainImage ? <img src={mainImage} alt={product.name} className="w-full h-full object-cover" loading="lazy" /> : <div className="w-full h-full brand-gradient-subtle flex items-center justify-center"><ImageOff className="h-16 w-16 text-muted-foreground/30" /></div>}
+              {mainImage ? <ImageZoom src={mainImage} alt={product.name} className="w-full h-full" /> : <div className="w-full h-full brand-gradient-subtle flex items-center justify-center"><ImageOff className="h-16 w-16 text-muted-foreground/30" /></div>}
             </div>
             {images.length > 1 && (
               <div className="flex gap-3 overflow-x-auto pb-2">
@@ -291,9 +329,18 @@ const ProductDetail = () => {
           </div>
 
           <div className="space-y-5">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground">{product.name}</h1>
-              {product.sku && <p className="text-xs text-muted-foreground mt-1">SKU: {product.sku}</p>}
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground">{product.name}</h1>
+                {product.sku && <p className="text-xs text-muted-foreground mt-1">SKU: {product.sku}</p>}
+              </div>
+              <button
+                onClick={() => toggleWishlist(product.id)}
+                className={`shrink-0 h-10 w-10 rounded-full border flex items-center justify-center transition-colors ${isWishlisted(product.id) ? "bg-destructive border-destructive text-destructive-foreground" : "border-border text-muted-foreground hover:text-destructive hover:border-destructive"}`}
+                title="উইশলিস্ট"
+              >
+                <Heart className={`h-5 w-5 ${isWishlisted(product.id) ? "fill-current" : ""}`} />
+              </button>
             </div>
             {reviews.length > 0 && (
               <div className="flex items-center gap-2">
@@ -424,6 +471,9 @@ const ProductDetail = () => {
             </div>
           </section>
         )}
+
+        {/* Recently Viewed */}
+        <RecentlyViewedProducts />
       </main>
       <Footer />
     </div>

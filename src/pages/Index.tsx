@@ -10,6 +10,7 @@ import CategoryProducts from "@/components/store/CategoryProducts";
 import CustomerReviews from "@/components/store/CustomerReviews";
 import ComparisonTable from "@/components/store/ComparisonTable";
 import MoneybackBanner from "@/components/store/MoneybackBanner";
+import RecentlyViewedProducts from "@/components/store/RecentlyViewedProducts";
 import Footer from "@/components/store/Footer";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
@@ -38,6 +39,7 @@ const Index = () => {
       <ScrollSection><FeaturedProducts /></ScrollSection>
       <ScrollSection><PromotionalBanners /></ScrollSection>
       <ScrollSection><CategoryProducts /></ScrollSection>
+      <ScrollSection><RecentlyViewedProducts /></ScrollSection>
       <ScrollSection><CustomerReviews /></ScrollSection>
       <ScrollSection><ComparisonTable /></ScrollSection>
       <ScrollSection><MoneybackBanner /></ScrollSection>
