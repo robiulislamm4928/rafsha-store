@@ -207,6 +207,15 @@ const ProductDetail = () => {
       }
 
       setLoading(false);
+
+      // Track recently viewed
+      addRecentlyViewed({
+        id: prod.id,
+        name: prod.name,
+        slug: prod.slug,
+        price: prod.sale_price ?? prod.regular_price,
+        image: undefined, // will be set after images load
+      });
     };
     fetchProduct();
   }, [slug]);
