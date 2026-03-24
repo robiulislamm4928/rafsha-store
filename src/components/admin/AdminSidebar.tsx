@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, ShoppingCart, Package, FolderTree, Users, Star,
-  Truck, Settings, BarChart3, Shield, Image, Megaphone, MessageCircle, Tag, Sparkles, AlertTriangle,
+  Truck, Settings, BarChart3, Shield, Image, Megaphone, MessageCircle, Tag, Sparkles, AlertTriangle, HelpCircle,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
