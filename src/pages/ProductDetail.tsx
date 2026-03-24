@@ -448,6 +448,9 @@ const ProductDetail = () => {
             </div>
           </section>
         )}
+
+        {/* Recently Viewed */}
+        <RecentlyViewedProducts />
       </main>
       <Footer />
     </div>
