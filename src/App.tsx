@@ -107,6 +107,7 @@ const App = () => (
                 <Route path="chat" element={<AdminChat />} />
                 <Route path="coupons" element={<AdminCoupons />} />
                 <Route path="key-points" element={<AdminKeyPoints />} />
+                <Route path="incomplete-orders" element={<AdminIncompleteOrders />} />
               </Route>
 
 
