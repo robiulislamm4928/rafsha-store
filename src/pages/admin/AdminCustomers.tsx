@@ -34,9 +34,25 @@ const AdminCustomers = () => {
     return u.full_name.toLowerCase().includes(s) || u.email.toLowerCase().includes(s) || (u.phone || "").includes(s);
   });
 
+  const exportCSV = () => {
+    const headers = ["Name","Email","Phone","Status","Joined"];
+    const rows = filtered.map(u => [u.full_name, u.email, u.phone || "", u.is_blocked ? "Blocked" : "Active", new Date(u.created_at).toLocaleDateString("en-GB")]);
+    const csv = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = `customers-${Date.now()}.csv`; a.click();
+    URL.revokeObjectURL(url);
+    toast.success("CSV ডাউনলোড হয়েছে");
+  };
+
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-display font-bold text-foreground">গ্রাহক ম্যানেজমেন্ট</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-display font-bold text-foreground">গ্রাহক ম্যানেজমেন্ট</h1>
+        <Button variant="outline" size="sm" onClick={exportCSV}>
+          <FileDown className="h-4 w-4 mr-1.5" /> CSV এক্সপোর্ট
+        </Button>
+      </div>
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input placeholder="নাম, ইমেইল বা ফোন খুঁজুন..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
