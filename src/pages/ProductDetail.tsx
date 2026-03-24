@@ -147,6 +147,8 @@ const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { addItem } = useCart();
   const { user } = useAuth();
+  const { isWishlisted, toggleWishlist } = useWishlist();
+  const { addProduct: addRecentlyViewed } = useRecentlyViewed();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState<Product | null>(null);
