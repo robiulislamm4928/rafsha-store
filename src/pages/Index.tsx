@@ -41,7 +41,7 @@ const Index = () => {
       <ScrollSection><CategoryProducts /></ScrollSection>
       <ScrollSection><RecentlyViewedProducts /></ScrollSection>
       <ScrollSection><CustomerReviews /></ScrollSection>
-      <ScrollSection><ComparisonTable /></ScrollSection>
+      
       <ScrollSection><MoneybackBanner /></ScrollSection>
       <Footer />
     </div>
