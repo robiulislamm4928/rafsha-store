@@ -82,6 +82,24 @@ const Profile = () => {
         setOrders((data as unknown as Order[]) || []);
         setOrdersLoading(false);
       });
+
+    // Fetch wishlist
+    supabase
+      .from("wishlists")
+      .select("id, product_id, products(name, slug, sale_price, regular_price, product_images(image_url))")
+      .eq("user_id", user.id)
+      .then(({ data }) => {
+        const items = (data || []).map((w: any) => ({
+          id: w.id,
+          product_id: w.product_id,
+          name: w.products?.name || "",
+          slug: w.products?.slug || "",
+          price: w.products?.sale_price ?? w.products?.regular_price ?? 0,
+          image: w.products?.product_images?.[0]?.image_url,
+        }));
+        setWishlistItems(items);
+        setWishlistLoading(false);
+      });
   }, [user]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
