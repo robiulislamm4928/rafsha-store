@@ -547,6 +547,53 @@ export type Database = {
           },
         ]
       }
+      product_questions: {
+        Row: {
+          answer_text: string | null
+          answered_at: string | null
+          asked_by_name: string
+          created_at: string
+          id: string
+          is_answered: boolean
+          is_visible: boolean
+          product_id: string
+          question_text: string
+          user_id: string | null
+        }
+        Insert: {
+          answer_text?: string | null
+          answered_at?: string | null
+          asked_by_name: string
+          created_at?: string
+          id?: string
+          is_answered?: boolean
+          is_visible?: boolean
+          product_id: string
+          question_text: string
+          user_id?: string | null
+        }
+        Update: {
+          answer_text?: string | null
+          answered_at?: string | null
+          asked_by_name?: string
+          created_at?: string
+          id?: string
+          is_answered?: boolean
+          is_visible?: boolean
+          product_id?: string
+          question_text?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_questions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_variants: {
         Row: {
           created_at: string
@@ -739,6 +786,42 @@ export type Database = {
           key?: string
           updated_at?: string
           value?: string
+        }
+        Relationships: []
+      }
+      user_addresses: {
+        Row: {
+          address: string
+          created_at: string
+          district: string
+          full_name: string
+          id: string
+          is_default: boolean
+          label: string
+          phone: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          district: string
+          full_name: string
+          id?: string
+          is_default?: boolean
+          label?: string
+          phone: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          district?: string
+          full_name?: string
+          id?: string
+          is_default?: boolean
+          label?: string
+          phone?: string
+          user_id?: string
         }
         Relationships: []
       }

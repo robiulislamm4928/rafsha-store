@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Camera, Save, User, Package, Eye, ChevronDown, ChevronUp, Heart, Trash2 } from "lucide-react";
+import AddressManager from "@/components/store/AddressManager";
 import { Link } from "react-router-dom";
 import Header from "@/components/store/Header";
 import TopBar from "@/components/store/TopBar";
@@ -163,6 +164,11 @@ const Profile = () => {
           <Button onClick={handleSave} disabled={saving} className="w-full brand-gradient text-primary-foreground hover:opacity-90">
             <Save className="h-4 w-4 mr-2" /> {saving ? "সংরক্ষণ হচ্ছে..." : "সংরক্ষণ করুন"}
           </Button>
+        </div>
+
+        {/* Saved Addresses */}
+        <div className="mb-8">
+          <AddressManager />
         </div>
 
         {/* Wishlist */}

@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, ShoppingCart, Package, FolderTree, Users, Star,
-  Truck, Settings, BarChart3, Shield, Image, Megaphone, MessageCircle, Tag, Sparkles, AlertTriangle,
+  Truck, Settings, BarChart3, Shield, Image, Megaphone, MessageCircle, Tag, Sparkles, AlertTriangle, HelpCircle,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -26,6 +26,7 @@ const menuItems = [
   { title: "সাইট সেটিংস", url: "/admin/settings", icon: Settings },
   { title: "অ্যানালিটিক্স", url: "/admin/analytics", icon: BarChart3 },
   { title: "অসম্পূর্ণ অর্ডার", url: "/admin/incomplete-orders", icon: AlertTriangle },
+  { title: "প্রশ্ন-উত্তর", url: "/admin/qa", icon: HelpCircle },
   { title: "টিম", url: "/admin/team", icon: Shield },
 ];
 

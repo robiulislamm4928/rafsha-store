@@ -51,6 +51,8 @@ import AdminChat from "./pages/admin/AdminChat";
 import AdminCoupons from "./pages/admin/AdminCoupons";
 import AdminKeyPoints from "./pages/admin/AdminKeyPoints";
 import AdminIncompleteOrders from "./pages/admin/AdminIncompleteOrders";
+import AdminQA from "./pages/admin/AdminQA";
+import Sitemap from "./pages/Sitemap";
 
 const queryClient = new QueryClient();
 
@@ -89,6 +91,7 @@ const App = () => (
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/install" element={<Install />} />
+              <Route path="/sitemap" element={<Sitemap />} />
 
               {/* Admin routes */}
               <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout /></ProtectedRoute>}>
@@ -108,6 +111,7 @@ const App = () => (
                 <Route path="coupons" element={<AdminCoupons />} />
                 <Route path="key-points" element={<AdminKeyPoints />} />
                 <Route path="incomplete-orders" element={<AdminIncompleteOrders />} />
+                <Route path="qa" element={<AdminQA />} />
               </Route>
 
 

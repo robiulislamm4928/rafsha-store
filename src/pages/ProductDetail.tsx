@@ -20,6 +20,8 @@ import Footer from "@/components/store/Footer";
 import ProductCard from "@/components/store/ProductCard";
 import RecentlyViewedProducts from "@/components/store/RecentlyViewedProducts";
 import ImageZoom from "@/components/store/ImageZoom";
+import ProductQA from "@/components/store/ProductQA";
+import ComparisonTable from "@/components/store/ComparisonTable";
 
 const WhatsAppOrderButton = ({ product, variant, quantity, finalPrice }: { product: { name: string }; variant?: { variant_label: string } | null; quantity: number; finalPrice: number }) => {
   const [phone, setPhone] = useState<string | null>(null);
@@ -445,6 +447,16 @@ const ProductDetail = () => {
               <p className="text-muted-foreground">এখনো কোনো রিভিউ নেই। প্রথম রিভিউ দিন!</p>
             </div>
           )}
+        </section>
+
+        {/* Product Q&A */}
+        <section className="mt-12 bg-card rounded-xl border border-border p-6 md:p-8">
+          <ProductQA productId={product.id} />
+        </section>
+
+        {/* Product Comparison */}
+        <section className="mt-12 bg-card rounded-xl border border-border p-6 md:p-8">
+          <ComparisonTable currentProductId={product.id} categoryId={product.category_id} />
         </section>
 
         {/* Related Products */}
