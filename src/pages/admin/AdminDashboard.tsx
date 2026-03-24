@@ -51,6 +51,7 @@ const AdminDashboard = () => {
       totalProducts: productsRes.count || 0,
     });
     setRecentOrders((recentRes.data as RecentOrder[]) || []);
+    setLowStockProducts((lowStockRes.data as LowStockProduct[]) || []);
     setLoading(false);
   };
 

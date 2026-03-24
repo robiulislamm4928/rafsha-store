@@ -92,6 +92,38 @@ const TrackOrder = () => {
 
         {result?.success && result.order && (
           <div className="space-y-6 animate-fade-in-up">
+            {/* Step Progress Tracker */}
+            {(() => {
+              const steps = ["Pending", "Processing", "Confirmed", "Shipped", "Delivered"];
+              const currentIdx = steps.indexOf(result.order.order_status);
+              const isCancelled = result.order.order_status === "Cancelled";
+              return (
+                <div className="bg-card rounded-xl border border-border p-6">
+                  {isCancelled ? (
+                    <div className="text-center py-4">
+                      <span className="px-4 py-2 rounded-full bg-destructive/10 text-destructive font-bold">অর্ডার বাতিল হয়েছে</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between relative">
+                      {/* Progress line */}
+                      <div className="absolute top-4 left-0 right-0 h-0.5 bg-border" />
+                      <div className="absolute top-4 left-0 h-0.5 bg-primary transition-all" style={{ width: `${Math.max(0, (currentIdx / (steps.length - 1)) * 100)}%` }} />
+                      {steps.map((step, i) => (
+                        <div key={step} className="relative flex flex-col items-center z-10" style={{ width: `${100 / steps.length}%` }}>
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${i <= currentIdx ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground border border-border"}`}>
+                            {i <= currentIdx ? "✓" : i + 1}
+                          </div>
+                          <span className={`text-[10px] sm:text-xs mt-2 text-center ${i <= currentIdx ? "text-primary font-medium" : "text-muted-foreground"}`}>
+                            {step === "Pending" ? "গৃহীত" : step === "Processing" ? "প্রসেসিং" : step === "Confirmed" ? "নিশ্চিত" : step === "Shipped" ? "শিপড" : "ডেলিভারড"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+
             <div className="bg-card rounded-xl border border-border p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
