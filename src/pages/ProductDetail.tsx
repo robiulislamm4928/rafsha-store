@@ -20,6 +20,8 @@ import Footer from "@/components/store/Footer";
 import ProductCard from "@/components/store/ProductCard";
 import RecentlyViewedProducts from "@/components/store/RecentlyViewedProducts";
 import ImageZoom from "@/components/store/ImageZoom";
+import ProductQA from "@/components/store/ProductQA";
+import ComparisonTable from "@/components/store/ComparisonTable";
 
 const WhatsAppOrderButton = ({ product, variant, quantity, finalPrice }: { product: { name: string }; variant?: { variant_label: string } | null; quantity: number; finalPrice: number }) => {
   const [phone, setPhone] = useState<string | null>(null);
