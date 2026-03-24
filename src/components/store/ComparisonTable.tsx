@@ -1,163 +1,130 @@
-import { Check, X, Minus } from "lucide-react";
-import logo from "@/assets/logo.png";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { X, ArrowLeftRight } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-type Status = true | false | "partial";
-
-interface ComparisonRow {
-  feature: string;
-  description: string;
-  ours: Status;
-  others: Status;
+interface CompareProduct {
+  id: string;
+  name: string;
+  slug: string;
+  regular_price: number;
+  sale_price: number | null;
+  stock_quantity: number;
+  short_description: string | null;
+  image_url?: string;
+  category_name?: string;
 }
 
-const rows: ComparisonRow[] = [
-  {
-    feature: "১০০% অথেনটিক পণ্য",
-    description: "প্রতিটি পণ্য সরাসরি নির্ভরযোগ্য সোর্স থেকে সংগ্রহ করা হয়",
-    ours: true,
-    others: false,
-  },
-  {
-    feature: "কঠোর মান যাচাই",
-    description: "ডেলিভারির আগে প্রতিটি পণ্য পরীক্ষা ও যাচাই করা হয়",
-    ours: true,
-    others: false,
-  },
-  {
-    feature: "দ্রুত ডেলিভারি (২৪-৭২ ঘণ্টা)",
-    description: "ঢাকায় ২৪ ঘণ্টা এবং ঢাকার বাইরে ৪৮-৭২ ঘণ্টায় ডেলিভারি",
-    ours: true,
-    others: "partial",
-  },
-  {
-    feature: "মানি-ব্যাক গ্যারান্টি",
-    description: "পণ্যে সমস্যা হলে সম্পূর্ণ টাকা ফেরত দেওয়া হয়",
-    ours: true,
-    others: false,
-  },
-  {
-    feature: "২৪/৭ কাস্টমার সাপোর্ট",
-    description: "যেকোনো সমস্যায় সব সময় লাইভ চ্যাট ও ফোন সাপোর্ট পাবেন",
-    ours: true,
-    others: "partial",
-  },
-  {
-    feature: "সেরা মূল্যের নিশ্চয়তা",
-    description: "বাজারের সবচেয়ে প্রতিযোগিতামূলক দামে পণ্য পাচ্ছেন",
-    ours: true,
-    others: false,
-  },
-  {
-    feature: "ক্যাশ অন ডেলিভারি",
-    description: "পণ্য হাতে পেয়ে মূল্য পরিশোধের সুবিধা",
-    ours: true,
-    others: "partial",
-  },
-  {
-    feature: "নিরাপদ অনলাইন পেমেন্ট",
-    description: "বিকাশ, নগদ ও অন্যান্য নিরাপদ পেমেন্ট মাধ্যম",
-    ours: true,
-    others: "partial",
-  },
-  {
-    feature: "সারাদেশে ডেলিভারি",
-    description: "বাংলাদেশের যেকোনো জেলায় পণ্য পৌঁছে দেওয়া হয়",
-    ours: true,
-    others: "partial",
-  },
-  {
-    feature: "অর্ডার ট্র্যাকিং",
-    description: "রিয়েল-টাইমে আপনার অর্ডারের অবস্থা জানতে পারবেন",
-    ours: true,
-    others: false,
-  },
-];
+const ComparisonTable = ({ currentProductId, categoryId }: { currentProductId: string; categoryId: string | null }) => {
+  const [products, setProducts] = useState<CompareProduct[]>([]);
+  const [selectedId, setSelectedId] = useState<string>("");
+  const [compareProduct, setCompareProduct] = useState<CompareProduct | null>(null);
+  const [currentProduct, setCurrentProduct] = useState<CompareProduct | null>(null);
+  const [show, setShow] = useState(false);
 
-const StatusIcon = ({ status }: { status: Status }) => {
-  if (status === true) return <Check className="h-5 w-5 text-green-500 mx-auto" />;
-  if (status === "partial") return <Minus className="h-5 w-5 text-amber-500 mx-auto" />;
-  return <X className="h-5 w-5 text-destructive mx-auto" />;
-};
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const { data } = await supabase
+        .from("products")
+        .select("id, name, slug, regular_price, sale_price, stock_quantity, short_description, category_id")
+        .eq("is_active", true)
+        .neq("id", currentProductId)
+        .limit(50);
 
-const ComparisonTable = () => (
-  <section className="py-6 sm:py-10 md:py-16 bg-secondary/20">
-    <div className="container">
-      <div className="text-center mb-5 sm:mb-8 md:mb-10">
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-foreground">
-          কেন আমরা আলাদা?
-        </h2>
-        <p className="text-muted-foreground mt-1.5 sm:mt-2 max-w-xl mx-auto text-xs sm:text-sm md:text-base">
-          রাফছা স্টোর এবং অন্যান্য অনলাইন শপের মধ্যে পার্থক্য দেখুন
-        </p>
+      if (data) {
+        const ids = [currentProductId, ...data.map((p: any) => p.id)];
+        const { data: images } = await supabase.from("product_images").select("product_id, image_url").in("product_id", ids).order("display_order");
+        const imgMap: Record<string, string> = {};
+        images?.forEach((i: any) => { if (!imgMap[i.product_id]) imgMap[i.product_id] = i.image_url; });
+
+        const { data: cats } = await supabase.from("categories").select("id, name");
+        const catMap: Record<string, string> = {};
+        cats?.forEach((c: any) => { catMap[c.id] = c.name; });
+
+        setProducts(data.map((p: any) => ({ ...p, image_url: imgMap[p.id], category_name: catMap[p.category_id] })));
+
+        const { data: cur } = await supabase.from("products").select("id, name, slug, regular_price, sale_price, stock_quantity, short_description, category_id").eq("id", currentProductId).single();
+        if (cur) setCurrentProduct({ ...cur, image_url: imgMap[cur.id], category_name: catMap[cur.category_id || ""] });
+      }
+    };
+    fetchProducts();
+  }, [currentProductId]);
+
+  const handleCompare = () => {
+    const prod = products.find(p => p.id === selectedId);
+    if (prod) { setCompareProduct(prod); setShow(true); }
+  };
+
+  if (!currentProduct) return null;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3 flex-wrap">
+        <h3 className="text-lg font-display font-bold text-foreground flex items-center gap-2">
+          <ArrowLeftRight className="h-5 w-5 text-primary" /> পণ্য তুলনা
+        </h3>
+        <div className="flex items-center gap-2 flex-1 min-w-[200px]">
+          <Select value={selectedId} onValueChange={setSelectedId}>
+            <SelectTrigger className="flex-1"><SelectValue placeholder="তুলনা করতে পণ্য নির্বাচন করুন" /></SelectTrigger>
+            <SelectContent>
+              {products.map((p) => (
+                <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button size="sm" onClick={handleCompare} disabled={!selectedId}>তুলনা</Button>
+        </div>
       </div>
 
-      {/* Desktop Table */}
-      <div className="hidden md:block rounded-xl border border-border overflow-hidden shadow-sm bg-card">
-        <table className="w-full">
-          <thead>
-            <tr className="brand-gradient text-primary-foreground">
-              <th className="text-left p-4 lg:p-5 text-sm font-semibold w-[50%]">বৈশিষ্ট্য</th>
-              <th className="text-center p-4 lg:p-5 text-sm font-semibold w-[25%]">
-                <img src={logo} alt="রাফছা স্টোর" className="h-7 w-auto mx-auto brightness-0 invert" />
-              </th>
-              <th className="text-center p-4 lg:p-5 text-sm font-semibold w-[25%]">অন্যান্য শপ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, i) => (
-              <tr key={row.feature} className={`${i % 2 === 0 ? "bg-card" : "bg-secondary/30"} hover:bg-secondary/50 transition-colors`}>
-                <td className="p-4 lg:p-5">
-                  <span className="text-sm font-medium text-foreground block">{row.feature}</span>
-                  <span className="text-xs text-muted-foreground mt-0.5 block">{row.description}</span>
-                </td>
-                <td className="p-4 lg:p-5 text-center">
-                  <StatusIcon status={row.ours} />
-                </td>
-                <td className="p-4 lg:p-5 text-center">
-                  <StatusIcon status={row.others} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Mobile Cards */}
-      <div className="md:hidden space-y-2 sm:space-y-3">
-        <div className="flex items-center justify-between text-[10px] sm:text-xs font-semibold text-muted-foreground px-2 mb-1">
-          <span>বৈশিষ্ট্য</span>
-          <div className="flex gap-6 sm:gap-8">
-            <span className="text-primary">রাফছা</span>
-            <span>অন্যান্য</span>
+      {show && compareProduct && (
+        <div className="border border-border rounded-xl overflow-hidden">
+          <div className="flex items-center justify-between bg-secondary/30 px-4 py-2">
+            <span className="text-sm font-medium">তুলনা রেজাল্ট</span>
+            <button onClick={() => setShow(false)}><X className="h-4 w-4 text-muted-foreground" /></button>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left p-3 text-muted-foreground font-medium w-28">বিবরণ</th>
+                  <th className="p-3 text-center">{currentProduct.name}</th>
+                  <th className="p-3 text-center">{compareProduct.name}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-border">
+                  <td className="p-3 text-muted-foreground">ছবি</td>
+                  <td className="p-3 text-center">{currentProduct.image_url ? <img src={currentProduct.image_url} alt="" className="w-20 h-20 object-cover rounded mx-auto" /> : "—"}</td>
+                  <td className="p-3 text-center">{compareProduct.image_url ? <img src={compareProduct.image_url} alt="" className="w-20 h-20 object-cover rounded mx-auto" /> : "—"}</td>
+                </tr>
+                <tr className="border-b border-border bg-secondary/20">
+                  <td className="p-3 text-muted-foreground">মূল্য</td>
+                  <td className="p-3 text-center font-bold text-primary">৳{currentProduct.sale_price ?? currentProduct.regular_price}</td>
+                  <td className="p-3 text-center font-bold text-primary">৳{compareProduct.sale_price ?? compareProduct.regular_price}</td>
+                </tr>
+                <tr className="border-b border-border">
+                  <td className="p-3 text-muted-foreground">ক্যাটাগরি</td>
+                  <td className="p-3 text-center">{currentProduct.category_name || "—"}</td>
+                  <td className="p-3 text-center">{compareProduct.category_name || "—"}</td>
+                </tr>
+                <tr className="border-b border-border bg-secondary/20">
+                  <td className="p-3 text-muted-foreground">স্টক</td>
+                  <td className="p-3 text-center">{currentProduct.stock_quantity > 0 ? <span className="text-green-600">ইন স্টক</span> : <span className="text-destructive">স্টক আউট</span>}</td>
+                  <td className="p-3 text-center">{compareProduct.stock_quantity > 0 ? <span className="text-green-600">ইন স্টক</span> : <span className="text-destructive">স্টক আউট</span>}</td>
+                </tr>
+                <tr>
+                  <td className="p-3 text-muted-foreground">বিবরণ</td>
+                  <td className="p-3 text-center text-xs">{currentProduct.short_description || "—"}</td>
+                  <td className="p-3 text-center text-xs">{compareProduct.short_description || "—"}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-        {rows.map((row, i) => (
-          <div
-            key={row.feature}
-            className={`rounded-lg border border-border p-2.5 sm:p-3.5 ${i % 2 === 0 ? "bg-card" : "bg-secondary/30"}`}
-          >
-            <div className="flex items-start justify-between gap-2 sm:gap-3">
-              <div className="flex-1 min-w-0">
-                <span className="text-xs sm:text-sm font-medium text-foreground block">{row.feature}</span>
-                <span className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 block leading-snug">{row.description}</span>
-              </div>
-              <div className="flex items-center gap-4 sm:gap-6 shrink-0 pt-0.5">
-                <StatusIcon status={row.ours} />
-                <StatusIcon status={row.others} />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Legend */}
-      <div className="flex items-center justify-center gap-5 mt-6 text-xs text-muted-foreground">
-        <span className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-green-500" /> সম্পূর্ণ</span>
-        <span className="flex items-center gap-1.5"><Minus className="h-3.5 w-3.5 text-amber-500" /> আংশিক</span>
-        <span className="flex items-center gap-1.5"><X className="h-3.5 w-3.5 text-destructive" /> নেই</span>
-      </div>
+      )}
     </div>
-  </section>
-);
+  );
+};
 
 export default ComparisonTable;
