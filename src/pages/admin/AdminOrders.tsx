@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Search, Eye, Trash2, Download, Inbox } from "lucide-react";
+import { Search, Eye, Trash2, Download, Inbox, FileDown } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Order {
