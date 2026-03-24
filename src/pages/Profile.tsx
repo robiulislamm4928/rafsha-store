@@ -166,6 +166,11 @@ const Profile = () => {
           </Button>
         </div>
 
+        {/* Saved Addresses */}
+        <div className="mb-8">
+          <AddressManager />
+        </div>
+
         {/* Wishlist */}
         <h2 className="text-xl font-display font-bold text-foreground mb-4 flex items-center gap-2">
           <Heart className="h-5 w-5 text-destructive" /> উইশলিস্ট

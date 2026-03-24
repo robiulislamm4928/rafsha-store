@@ -449,6 +449,16 @@ const ProductDetail = () => {
           )}
         </section>
 
+        {/* Product Q&A */}
+        <section className="mt-12 bg-card rounded-xl border border-border p-6 md:p-8">
+          <ProductQA productId={product.id} />
+        </section>
+
+        {/* Product Comparison */}
+        <section className="mt-12 bg-card rounded-xl border border-border p-6 md:p-8">
+          <ComparisonTable currentProductId={product.id} categoryId={product.category_id} />
+        </section>
+
         {/* Related Products */}
         {relatedProducts.length > 0 && (
           <section className="mt-12">
