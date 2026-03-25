@@ -39,12 +39,6 @@ const Header = () => {
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    supabase.from("site_settings").select("key, value").eq("key", "store_logo_url").single().then(({ data }) => {
-      if (data?.value) setLogoUrl(data.value);
-    });
-  }, []);
-
   // Scroll detection for glassmorphism
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
