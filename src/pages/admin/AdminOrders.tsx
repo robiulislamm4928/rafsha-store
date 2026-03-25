@@ -140,6 +140,16 @@ const AdminOrders = () => {
     return map[s] || "bg-gray-100 text-gray-600";
   };
 
+  const paymentStatusColor = (s: string) => {
+    const map: Record<string, string> = {
+      Pending: "bg-red-100 text-red-700 border-red-200",
+      Partial: "bg-orange-100 text-orange-700 border-orange-200",
+      Paid: "bg-emerald-100 text-emerald-700 border-emerald-200",
+      Refunded: "bg-purple-100 text-purple-700 border-purple-200",
+    };
+    return map[s] || "bg-gray-100 text-gray-600 border-gray-200";
+  };
+
   const exportCSV = () => {
     const headers = ["Order Number","Customer","Phone","Email","District","Total","Delivery","Discount","Payment Method","Payment Status","Order Status","Date"];
     const rows = filtered.map(o => [o.order_number, o.customer_name, o.customer_phone, o.customer_email || "", o.district, o.total_amount, o.delivery_charge, o.discount_amount, o.payment_method, o.payment_status, o.order_status, new Date(o.created_at).toLocaleDateString("en-GB")]);
@@ -216,10 +226,18 @@ const AdminOrders = () => {
                 <td className="p-4 text-gray-600">{o.customer_phone}</td>
                 <td className="p-4 font-bold text-gray-800">৳{o.total_amount.toLocaleString()}</td>
                 <td className="p-4">
-                  <Select value={o.payment_status} onValueChange={(v) => updatePaymentStatus(o.id, v)}>
-                    <SelectTrigger className="h-7 text-xs w-24 rounded-lg border-gray-200"><SelectValue /></SelectTrigger>
-                    <SelectContent>{PAYMENT_STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
-                  </Select>
+                  <div className="space-y-1">
+                    <Select value={o.payment_status} onValueChange={(v) => updatePaymentStatus(o.id, v)}>
+                      <SelectTrigger className={`h-7 text-xs w-28 rounded-full font-bold border ${paymentStatusColor(o.payment_status)}`}><SelectValue /></SelectTrigger>
+                      <SelectContent>{PAYMENT_STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                    </Select>
+                    {o.advance_paid > 0 && (
+                      <p className="text-[10px] text-emerald-600 font-medium">অগ্রিম: ৳{o.advance_paid.toLocaleString()}</p>
+                    )}
+                    {o.due_on_delivery > 0 && (
+                      <p className="text-[10px] text-red-500 font-medium">বাকি: ৳{o.due_on_delivery.toLocaleString()}</p>
+                    )}
+                  </div>
                 </td>
                 <td className="p-4">
                   <Select value={o.order_status} onValueChange={(v) => updateStatus(o.id, v)}>
