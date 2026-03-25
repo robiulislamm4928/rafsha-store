@@ -10,6 +10,16 @@ interface Category {
   image_url: string | null;
 }
 
+const ImageWithSkeleton = ({ src, alt, className }: { src: string; alt: string; className: string }) => {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className="relative w-full h-full">
+      {!loaded && <div className="absolute inset-0 bg-muted animate-pulse rounded-xl" />}
+      <img src={src} alt={alt} className={`${className} transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`} onLoad={() => setLoaded(true)} loading="lazy" />
+    </div>
+  );
+};
+
 const CategorySlider = () => {
   const [categories, setCategories] = useState<Category[]>([]);
 
