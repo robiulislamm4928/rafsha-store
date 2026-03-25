@@ -1,26 +1,12 @@
-import { useEffect, useState } from "react";
 import TopBar from "@/components/store/TopBar";
 import Header from "@/components/store/Header";
 import Footer from "@/components/store/Footer";
 import { Helmet } from "react-helmet-async";
-import { supabase } from "@/integrations/supabase/client";
-import { Phone, Mail, MapPin, Truck, ShieldCheck, HeartHandshake, Clock } from "lucide-react";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { MapPin, Truck, ShieldCheck, HeartHandshake, Clock } from "lucide-react";
 
 const About = () => {
-  const [settings, setSettings] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    supabase
-      .from("site_settings")
-      .select("key, value")
-      .then(({ data }) => {
-        if (data) {
-          const map: Record<string, string> = {};
-          data.forEach((s) => (map[s.key] = s.value));
-          setSettings(map);
-        }
-      });
-  }, []);
+  const { settings } = useSiteSettings();
 
   const storeName = settings.store_name || "রাফছা স্টোর";
 

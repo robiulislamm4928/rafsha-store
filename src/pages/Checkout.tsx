@@ -38,6 +38,7 @@ const steps = [
 const Checkout = () => {
   const { items, total, clearCart } = useCart();
   const { user } = useAuth();
+  const { settings: siteSettings } = useSiteSettings();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -51,8 +52,8 @@ const Checkout = () => {
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [mobileBankingMethod, setMobileBankingMethod] = useState<"bkash" | "nagad" | null>(null);
-  const [bkashNumber, setBkashNumber] = useState("");
-  const [nagadNumber, setNagadNumber] = useState("");
+  const bkashNumber = siteSettings.bkash_number || "";
+  const nagadNumber = siteSettings.nagad_number || "";
   const [copiedNumber, setCopiedNumber] = useState(false);
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount_type: string; discount_value: number } | null>(null);
@@ -62,14 +63,8 @@ const Checkout = () => {
 
   useEffect(() => {
     supabase.from("shipping_zones").select("zone_name, delivery_charge").eq("is_active", true).order("zone_name").then(({ data }) => { if (data) setShippingZones(data); });
-    supabase.from("site_settings").select("key, value").in("key", ["bkash_number", "nagad_number", "free_delivery_threshold"]).then(({ data }) => {
-      data?.forEach((s) => {
-        if (s.key === "bkash_number") setBkashNumber(s.value);
-        if (s.key === "nagad_number") setNagadNumber(s.value);
-        if (s.key === "free_delivery_threshold") setFreeDeliveryThreshold(Number(s.value) || 0);
-      });
-    });
-  }, []);
+    setFreeDeliveryThreshold(Number(siteSettings.free_delivery_threshold) || 0);
+  }, [siteSettings]);
 
   useEffect(() => {
     if (!form.district) { setDeliveryCharge(0); return; }
