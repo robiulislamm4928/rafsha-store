@@ -25,8 +25,8 @@ import ComparisonTable from "@/components/store/ComparisonTable";
 
 // --- WhatsApp & Social Share (same as before, kept compact) ---
 const WhatsAppOrderButton = ({ product, variant, quantity, finalPrice }: { product: { name: string }; variant?: { variant_label: string } | null; quantity: number; finalPrice: number }) => {
-  const [phone, setPhone] = useState<string | null>(null);
-  useEffect(() => { supabase.from("site_settings").select("value").eq("key", "whatsapp_number").maybeSingle().then(({ data }) => { if (data?.value) setPhone(data.value); }); }, []);
+  const { settings } = useSiteSettings();
+  const phone = settings.whatsapp_number || null;
   if (!phone) return null;
   const cleaned = phone.replace(/\D/g, "");
   const intlNumber = cleaned.startsWith("0") ? "88" + cleaned : cleaned;
