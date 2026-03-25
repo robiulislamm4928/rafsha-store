@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { MapPin, Phone, Mail, Facebook, Youtube, Instagram } from "lucide-react";
+import { MapPin, Phone, Mail, Facebook, Youtube, Instagram, Send } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import logo from "@/assets/logo.png";
 
 const Footer = () => {
   const [settings, setSettings] = useState<Record<string, string>>({});
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     supabase
@@ -20,23 +24,30 @@ const Footer = () => {
   }, []);
 
   const socialLinks = [
-    { key: "facebook_url", icon: Facebook, label: "Facebook" },
-    { key: "youtube_url", icon: Youtube, label: "YouTube" },
-    { key: "instagram_url", icon: Instagram, label: "Instagram" },
-    { key: "tiktok_url", icon: null, label: "TikTok" },
-    { key: "twitter_url", icon: null, label: "X / Twitter" },
+    { key: "facebook_url", icon: Facebook, label: "Facebook", hoverColor: "hover:bg-[#1877F2] hover:text-white" },
+    { key: "youtube_url", icon: Youtube, label: "YouTube", hoverColor: "hover:bg-[#FF0000] hover:text-white" },
+    { key: "instagram_url", icon: Instagram, label: "Instagram", hoverColor: "hover:bg-[#E4405F] hover:text-white" },
+    { key: "tiktok_url", icon: null, label: "TikTok", hoverColor: "hover:bg-[#000000] hover:text-white" },
+    { key: "twitter_url", icon: null, label: "X / Twitter", hoverColor: "hover:bg-[#1DA1F2] hover:text-white" },
   ].filter((s) => settings[s.key]);
 
   const displayLogo = settings.store_logo_url || logo;
   const storeName = settings.store_name || "রাফছা স্টোর";
 
+  const handleNewsletter = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    toast.success("নিউজলেটারে সাবস্ক্রাইব করেছেন!");
+    setEmail("");
+  };
+
   return (
-    <footer className="bg-primary text-primary-foreground">
-      <div className="container py-8 sm:py-10 md:py-14">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+    <footer className="bg-primary text-primary-foreground relative wave-divider mt-10">
+      <div className="container py-10 sm:py-12 md:py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
-           <div>
-             <img src={displayLogo} alt={storeName} className="h-14 sm:h-20 w-auto mb-3 sm:mb-4" />
+          <div>
+            <img src={displayLogo} alt={storeName} className="h-14 sm:h-20 w-auto mb-3 sm:mb-4" />
             <p className="text-sm opacity-80 leading-relaxed">
               {settings.about || "আপনার পছন্দের পণ্য সেরা মূল্যে — সারাদেশে দ্রুত ডেলিভারি।"}
             </p>
@@ -44,39 +55,30 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold mb-4">দ্রুত লিঙ্ক</h4>
-            <ul className="space-y-2 text-sm">
-              <li><a href="/" className="opacity-80 hover:opacity-100 transition-opacity">হোম</a></li>
-              <li><a href="/products" className="opacity-80 hover:opacity-100 transition-opacity">সকল পণ্য</a></li>
-              <li><a href="/about" className="opacity-80 hover:opacity-100 transition-opacity">About Us</a></li>
-              
-              <li><a href="/return-policy" className="opacity-80 hover:opacity-100 transition-opacity">রিটার্ন পলিসি</a></li>
-              <li><a href="/terms" className="opacity-80 hover:opacity-100 transition-opacity">শর্তাবলী</a></li>
-              <li><a href="/privacy" className="opacity-80 hover:opacity-100 transition-opacity">প্রাইভেসি পলিসি</a></li>
-              <li><a href="/faq" className="opacity-80 hover:opacity-100 transition-opacity">সাধারণ জিজ্ঞাসা</a></li>
-              <li><a href="/sitemap" className="opacity-80 hover:opacity-100 transition-opacity">সাইটম্যাপ</a></li>
+            <h4 className="font-semibold mb-4 text-lg">দ্রুত লিঙ্ক</h4>
+            <ul className="space-y-2.5 text-sm">
+              {[
+                { href: "/", label: "হোম" },
+                { href: "/products", label: "সকল পণ্য" },
+                { href: "/about", label: "About Us" },
+                { href: "/return-policy", label: "রিটার্ন পলিসি" },
+                { href: "/terms", label: "শর্তাবলী" },
+                { href: "/privacy", label: "প্রাইভেসি পলিসি" },
+                { href: "/faq", label: "সাধারণ জিজ্ঞাসা" },
+                { href: "/sitemap", label: "সাইটম্যাপ" },
+              ].map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} className="opacity-80 hover:opacity-100 hover:translate-x-1 transition-all duration-200 inline-block">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
             </ul>
-
-            {/* Social Links */}
-            {socialLinks.length > 0 && (
-              <div className="mt-6">
-                <h4 className="font-semibold mb-3">সোশ্যাল মিডিয়া</h4>
-                <div className="flex gap-3">
-                  {socialLinks.map((s) => (
-                    <a key={s.key} href={settings[s.key]} target="_blank" rel="noopener noreferrer"
-                      className="w-9 h-9 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 flex items-center justify-center transition-colors"
-                      title={s.label}>
-                      {s.icon ? <s.icon className="h-4 w-4" /> : <span className="text-xs font-bold">{s.label[0]}</span>}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Contact */}
           <div>
-            <h4 className="font-semibold mb-4">যোগাযোগ</h4>
+            <h4 className="font-semibold mb-4 text-lg">যোগাযোগ</h4>
             <ul className="space-y-3 text-sm">
               {settings.phone && (
                 <li className="flex items-center gap-2 opacity-80">
@@ -103,6 +105,40 @@ const Footer = () => {
                 </li>
               )}
             </ul>
+
+            {/* Social Links */}
+            {socialLinks.length > 0 && (
+              <div className="mt-6">
+                <h4 className="font-semibold mb-3">সোশ্যাল মিডিয়া</h4>
+                <div className="flex gap-3">
+                  {socialLinks.map((s) => (
+                    <a key={s.key} href={settings[s.key]} target="_blank" rel="noopener noreferrer"
+                      className={`w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center transition-all duration-300 ${s.hoverColor} hover:scale-110`}
+                      title={s.label}>
+                      {s.icon ? <s.icon className="h-4 w-4" /> : <span className="text-xs font-bold">{s.label[0]}</span>}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Newsletter */}
+          <div>
+            <h4 className="font-semibold mb-4 text-lg">নিউজলেটার</h4>
+            <p className="text-sm opacity-80 mb-4">নতুন পণ্য ও অফারের আপডেট পেতে সাবস্ক্রাইব করুন</p>
+            <form onSubmit={handleNewsletter} className="flex gap-2">
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="আপনার ইমেইল"
+                className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 text-sm"
+              />
+              <Button type="submit" size="icon" variant="secondary" className="shrink-0">
+                <Send className="h-4 w-4" />
+              </Button>
+            </form>
           </div>
         </div>
       </div>

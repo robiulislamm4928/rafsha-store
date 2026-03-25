@@ -95,10 +95,56 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        "pulse-badge": {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.2)" },
+        },
+        "star-fill": {
+          "0%": { transform: "scale(0)", opacity: "0" },
+          "50%": { transform: "scale(1.2)" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
+        "slide-up": {
+          "0%": { opacity: "0", transform: "translateY(30px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "slide-left": {
+          "0%": { opacity: "0", transform: "translateX(30px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
+        "slide-right": {
+          "0%": { opacity: "0", transform: "translateX(-30px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
+        "scale-up": {
+          "0%": { opacity: "0", transform: "scale(0.9)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
+        "glow": {
+          "0%, 100%": { boxShadow: "0 0 5px hsl(var(--accent) / 0.3), 0 0 20px hsl(var(--accent) / 0.1)" },
+          "50%": { boxShadow: "0 0 10px hsl(var(--accent) / 0.5), 0 0 40px hsl(var(--accent) / 0.2)" },
+        },
+        ripple: {
+          "0%": { transform: "scale(0)", opacity: "0.5" },
+          "100%": { transform: "scale(4)", opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        shimmer: "shimmer 2s linear infinite",
+        "pulse-badge": "pulse-badge 2s ease-in-out infinite",
+        "star-fill": "star-fill 0.3s ease-out forwards",
+        "slide-up": "slide-up 0.5s ease-out forwards",
+        "slide-left": "slide-left 0.5s ease-out forwards",
+        "slide-right": "slide-right 0.5s ease-out forwards",
+        "scale-up": "scale-up 0.4s ease-out forwards",
+        "glow": "glow 2s ease-in-out infinite",
+        ripple: "ripple 0.6s linear",
       },
     },
   },

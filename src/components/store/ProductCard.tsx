@@ -36,15 +36,18 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
 
   return (
     <>
-      <div className={`group bg-card rounded-xl border border-border shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col ${isOutOfStock ? "opacity-75" : ""}`}>
+      <div className={`group bg-card rounded-xl border border-border shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col gradient-border-hover ${isOutOfStock ? "opacity-75" : ""}`}>
         <Link to={`/product/${slug}`} className="block aspect-square overflow-hidden bg-secondary relative">
           {imageUrl ? (
-            <img src={imageUrl} alt={name} className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${isOutOfStock ? "grayscale-[30%]" : ""}`} />
+            <img src={imageUrl} alt={name} className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 ${isOutOfStock ? "grayscale-[30%]" : ""}`} />
           ) : (
             <div className="w-full h-full brand-gradient-subtle flex items-center justify-center">
               <ImageOff className="h-12 w-12 text-muted-foreground/30" />
             </div>
           )}
+          {/* Overlay on hover */}
+          {!isOutOfStock && <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-colors duration-300" />}
+          
           {isOutOfStock && (
             <div className="absolute inset-0 bg-background/40 flex items-center justify-center">
               <span className="bg-destructive text-destructive-foreground text-xs sm:text-sm font-bold px-3 py-1.5 rounded-md shadow-lg">
@@ -52,23 +55,28 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
               </span>
             </div>
           )}
+          
+          {/* Discount ribbon */}
           {!isOutOfStock && hasDiscount && (
-            <span className="absolute top-3 left-3 bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded-md">
-              {Math.round(((regularPrice - salePrice!) / regularPrice) * 100)}% ছাড়
-            </span>
+            <div className="absolute top-0 left-0">
+              <div className="bg-destructive text-destructive-foreground text-[10px] sm:text-xs font-bold px-3 py-1 rounded-br-lg shadow-md">
+                {Math.round(((regularPrice - salePrice!) / regularPrice) * 100)}% ছাড়
+              </div>
+            </div>
           )}
-          {/* Wishlist & Quick View buttons */}
-          <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+
+          {/* Wishlist & Quick View */}
+          <div className="absolute top-2 right-2 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-x-2 group-hover:translate-x-0">
             <button
               onClick={(e) => { e.preventDefault(); toggleWishlist(id); }}
-              className={`h-8 w-8 rounded-full flex items-center justify-center shadow-md transition-colors ${wishlisted ? "bg-destructive text-destructive-foreground" : "bg-card/90 text-foreground hover:bg-card"}`}
+              className={`h-8 w-8 rounded-full flex items-center justify-center shadow-md transition-all duration-200 hover:scale-110 ${wishlisted ? "bg-destructive text-destructive-foreground" : "bg-card/90 text-foreground hover:bg-card"}`}
               title="উইশলিস্ট"
             >
               <Heart className={`h-4 w-4 ${wishlisted ? "fill-current" : ""}`} />
             </button>
             <button
               onClick={(e) => { e.preventDefault(); setQuickViewId(id); }}
-              className="h-8 w-8 rounded-full bg-card/90 text-foreground hover:bg-card flex items-center justify-center shadow-md transition-colors"
+              className="h-8 w-8 rounded-full bg-card/90 text-foreground hover:bg-card flex items-center justify-center shadow-md transition-all duration-200 hover:scale-110"
               title="কুইক ভিউ"
             >
               <Eye className="h-4 w-4" />

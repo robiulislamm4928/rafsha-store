@@ -62,26 +62,22 @@ const CustomerReviews = () => {
             className="w-full"
           >
             <CarouselContent className="-ml-3">
-              {reviews.map((r) => (
+              {reviews.map((r, idx) => (
                 <CarouselItem key={r.id} className="pl-3 basis-full sm:basis-1/2 lg:basis-1/3">
-                  <div className="bg-card rounded-xl border border-border p-5 shadow-sm h-full flex flex-col relative transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
+                  <div className={`bg-card rounded-xl border border-border p-5 shadow-sm h-full flex flex-col relative transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 gradient-border-hover ${idx % 3 === 1 ? "sm:mt-4" : ""}`}>
+                    {/* Decorative quote mark */}
+                    <div className="absolute top-3 left-4 text-5xl font-display text-primary/10 leading-none select-none pointer-events-none">
+                      "
+                    </div>
+
                     {/* Social icon - top right */}
                     <div className="absolute top-3 right-3">
                       {r.user_id && !r.social_link ? (
                         <Globe className="h-4 w-4 text-muted-foreground" />
                       ) : r.social_link ? (
-                        <a
-                          href={r.social_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary hover:text-primary/80 transition-colors"
-                        >
+                        <a href={r.social_link} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-colors">
                           {r.social_platform && platformIcons[r.social_platform] ? (
-                            <img
-                              src={platformIcons[r.social_platform]}
-                              alt={r.social_platform}
-                              className="h-4 w-4 opacity-60 hover:opacity-100 transition-opacity dark:invert"
-                            />
+                            <img src={platformIcons[r.social_platform]} alt={r.social_platform} className="h-4 w-4 opacity-60 hover:opacity-100 transition-opacity dark:invert" />
                           ) : (
                             <ExternalLink className="h-4 w-4" />
                           )}
@@ -89,25 +85,23 @@ const CustomerReviews = () => {
                       ) : null}
                     </div>
 
-                    {/* Stars */}
-                    <div className="flex gap-0.5 mb-3">
+                    {/* Stars with animation */}
+                    <div className="flex gap-0.5 mb-3 mt-1">
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`h-4 w-4 ${i < r.rating ? "text-accent fill-accent" : "text-border"}`}
+                          className={`h-4 w-4 transition-all duration-300 ${i < r.rating ? "text-accent fill-accent" : "text-border"}`}
+                          style={i < r.rating ? { animationDelay: `${i * 0.1}s` } : undefined}
                         />
                       ))}
                     </div>
 
                     {/* Review text */}
                     {r.review_text && (
-                      <p className="text-sm text-foreground/80 mb-3 flex-1 line-clamp-4">
-                        "{r.review_text}"
+                      <p className="text-sm text-foreground/80 mb-3 flex-1 line-clamp-4 italic pl-2">
+                        {r.review_text}
                       </p>
                     )}
-
-
-
 
                     {/* Reviewer info */}
                     <div className="border-t border-border pt-3 flex items-center gap-3">
