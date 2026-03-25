@@ -122,6 +122,7 @@ const App = () => (
             <ChatWidget />
             <WhatsAppButton />
             <CartDrawer />
+            <PWAInstallPrompt />
           </CartProvider>
         </AuthProvider>
       </BrowserRouter>
