@@ -119,6 +119,21 @@ const ProductDetail = () => {
         const { data: related } = await supabase.from("products").select("id, name, slug, regular_price, sale_price, stock_quantity, short_description, product_images(image_url)").eq("is_active", true).eq("category_id", prod.category_id).neq("id", prod.id).order("created_at", { ascending: false }).limit(4);
         setRelatedProducts((related as unknown as RelatedProduct[]) || []);
       } else { setRelatedProducts([]); }
+
+      // Fetch top selling products (most ordered)
+      const { data: topItems } = await supabase
+        .from("order_items")
+        .select("product_id, quantity")
+        .limit(500);
+      if (topItems && topItems.length > 0) {
+        const salesMap: Record<string, number> = {};
+        topItems.forEach((item: any) => { salesMap[item.product_id] = (salesMap[item.product_id] || 0) + item.quantity; });
+        const topIds = Object.entries(salesMap).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([id]) => id).filter(id => id !== prod.id);
+        if (topIds.length > 0) {
+          const { data: topProds } = await supabase.from("products").select("id, name, slug, regular_price, sale_price, stock_quantity, short_description, product_images(image_url)").eq("is_active", true).in("id", topIds).limit(10);
+          setTopSellingProducts((topProds as unknown as RelatedProduct[]) || []);
+        }
+      }
       setLoading(false);
       addRecentlyViewed({ id: prod.id, name: prod.name, slug: prod.slug, price: prod.sale_price ?? prod.regular_price, image: undefined });
     };
