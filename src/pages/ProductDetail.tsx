@@ -57,7 +57,7 @@ const SocialShareButtons = ({ productName }: { productName: string }) => {
 
 interface Product { id: string; name: string; slug: string; short_description: string | null; full_description: string | null; regular_price: number; sale_price: number | null; stock_quantity: number; sku: string | null; category_id: string | null; }
 interface RelatedProduct { id: string; name: string; slug: string; regular_price: number; sale_price: number | null; stock_quantity: number; short_description: string | null; product_images: { image_url: string }[]; }
-interface Variant { id: string; variant_label: string; price_adjustment: number; stock_quantity: number; }
+interface Variant { id: string; variant_label: string; variant_type: string; price_adjustment: number; stock_quantity: number; }
 interface ProductImage { id: string; image_url: string; display_order: number; }
 interface Review { id: string; reviewer_name: string; reviewer_location: string | null; rating: number; review_text: string | null; created_at: string; }
 
@@ -261,15 +261,61 @@ const ProductDetail = () => {
               ))}
             </div>
 
-            {variants.length > 0 && (
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">ভ্যারিয়েন্ট নির্বাচন করুন</Label>
-                <Select value={selectedVariant} onValueChange={setSelectedVariant}>
-                  <SelectTrigger className="w-full max-w-xs"><SelectValue placeholder="ভ্যারিয়েন্ট বেছে নিন" /></SelectTrigger>
-                  <SelectContent>{variants.map((v) => <SelectItem key={v.id} value={v.id}>{v.variant_label} {v.price_adjustment > 0 ? `(+৳${v.price_adjustment})` : v.price_adjustment < 0 ? `(-৳${Math.abs(v.price_adjustment)})` : ""}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-            )}
+            {/* Variants grouped by type */}
+            {["size", "color", "weight"].map(type => {
+              const typeVariants = variants.filter(v => v.variant_type === type);
+              if (typeVariants.length === 0) return null;
+              const typeLabel = type === "size" ? "সাইজ নির্বাচন করুন" : type === "color" ? "কালার নির্বাচন করুন" : "ওজন নির্বাচন করুন";
+              return (
+                <div key={type} className="space-y-2">
+                  <Label className="text-sm font-medium">{typeLabel}</Label>
+                  {type === "color" ? (
+                    <div className="flex flex-wrap gap-2">
+                      {typeVariants.map((v) => (
+                        <button
+                          key={v.id}
+                          onClick={() => setSelectedVariant(v.id)}
+                          className={`relative flex flex-col items-center gap-1 p-2 rounded-lg border-2 transition-all ${
+                            selectedVariant === v.id
+                              ? "border-primary ring-2 ring-primary/20 bg-primary/5"
+                              : "border-border hover:border-foreground/30"
+                          }`}
+                          title={v.variant_label}
+                        >
+                          {v.variant_label.startsWith("#") ? (
+                            <div className="w-8 h-8 rounded-full border border-border shadow-sm" style={{ backgroundColor: v.variant_label }} />
+                          ) : (
+                            <span className="text-sm font-medium px-2">{v.variant_label}</span>
+                          )}
+                          {v.price_adjustment !== 0 && (
+                            <span className="text-[10px] text-muted-foreground">{v.price_adjustment > 0 ? "+" : ""}৳{v.price_adjustment}</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {typeVariants.map((v) => (
+                        <button
+                          key={v.id}
+                          onClick={() => setSelectedVariant(v.id)}
+                          className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all ${
+                            selectedVariant === v.id
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border hover:border-foreground/30 text-foreground"
+                          }`}
+                        >
+                          {v.variant_label}
+                          {v.price_adjustment !== 0 && (
+                            <span className="text-xs ml-1 opacity-70">({v.price_adjustment > 0 ? "+" : ""}৳{v.price_adjustment})</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
             <div className="space-y-2">
               <Label className="text-sm font-medium">পরিমাণ</Label>
               <div className="flex items-center gap-3">

@@ -19,7 +19,7 @@ interface Product {
   stock_quantity: number; is_active: boolean; is_featured: boolean;
 }
 interface Category { id: string; name: string; }
-interface Variant { id: string; variant_label: string; price_adjustment: number; stock_quantity: number; is_active: boolean; }
+interface Variant { id: string; variant_label: string; variant_type: string; price_adjustment: number; stock_quantity: number; is_active: boolean; }
 interface ProductImage { id: string; image_url: string; display_order: number; }
 
 const emptyProduct = (): Partial<Product> => ({
@@ -33,7 +33,7 @@ const AdminProducts = () => {
   const [editing, setEditing] = useState<Partial<Product> | null>(null);
   const [variants, setVariants] = useState<Variant[]>([]);
   const [images, setImages] = useState<ProductImage[]>([]);
-  const [newVariant, setNewVariant] = useState({ variant_label: "", price_adjustment: 0, stock_quantity: 0 });
+  const [newVariant, setNewVariant] = useState({ variant_label: "", variant_type: "size", price_adjustment: 0, stock_quantity: 0 });
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
 
@@ -94,7 +94,7 @@ const AdminProducts = () => {
   const addVariant = async () => {
     if (!editing?.id || !newVariant.variant_label) return;
     await supabase.from("product_variants").insert({ ...newVariant, product_id: editing.id, id: crypto.randomUUID() });
-    setNewVariant({ variant_label: "", price_adjustment: 0, stock_quantity: 0 });
+    setNewVariant({ variant_label: "", variant_type: "size", price_adjustment: 0, stock_quantity: 0 });
     const { data } = await supabase.from("product_variants").select("*").eq("product_id", editing.id);
     setVariants((data as Variant[]) || []);
     toast.success("ভ্যারিয়েন্ট যোগ হয়েছে");
@@ -238,21 +238,61 @@ const AdminProducts = () => {
                 )}
               </TabsContent>
 
-              <TabsContent value="variants" className="space-y-3 mt-4">
-                {variants.map((v) => (
-                  <div key={v.id} className="flex items-center gap-2 bg-secondary/50 rounded-lg p-3">
-                    <span className="flex-1 font-medium text-sm">{v.variant_label}</span>
-                    <span className="text-xs text-muted-foreground">মূল্য: {v.price_adjustment >= 0 ? "+" : ""}৳{v.price_adjustment}</span>
-                    <span className="text-xs text-muted-foreground">স্টক: {v.stock_quantity}</span>
-                    <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => deleteVariant(v.id)}><X className="h-3.5 w-3.5" /></Button>
+              <TabsContent value="variants" className="space-y-4 mt-4">
+                {/* Existing variants grouped by type */}
+                {["size", "color", "weight"].map(type => {
+                  const typeVariants = variants.filter(v => v.variant_type === type);
+                  if (typeVariants.length === 0) return null;
+                  const typeLabel = type === "size" ? "সাইজ" : type === "color" ? "কালার" : "ওজন";
+                  return (
+                    <div key={type} className="space-y-2">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{typeLabel}</p>
+                      {typeVariants.map((v) => (
+                        <div key={v.id} className="flex items-center gap-2 bg-secondary/50 rounded-lg p-3">
+                          {v.variant_type === "color" && (
+                            <div className="w-5 h-5 rounded-full border border-border" style={{ backgroundColor: v.variant_label.startsWith("#") ? v.variant_label : undefined }} />
+                          )}
+                          <span className="flex-1 font-medium text-sm">{v.variant_label}</span>
+                          <span className="text-xs text-muted-foreground">মূল্য: {v.price_adjustment >= 0 ? "+" : ""}৳{v.price_adjustment}</span>
+                          <span className="text-xs text-muted-foreground">স্টক: {v.stock_quantity}</span>
+                          <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => deleteVariant(v.id)}><X className="h-3.5 w-3.5" /></Button>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
+
+                <div className="border-t border-border pt-3 space-y-3">
+                  <p className="text-sm font-medium text-foreground">নতুন ভ্যারিয়েন্ট যোগ করুন</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <Label className="text-xs">ধরন</Label>
+                      <Select value={newVariant.variant_type} onValueChange={(v) => setNewVariant({ ...newVariant, variant_type: v })}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="size">সাইজ</SelectItem>
+                          <SelectItem value="color">কালার</SelectItem>
+                          <SelectItem value="weight">ওজন</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">লেবেল {newVariant.variant_type === "size" ? "(S, M, L, XL)" : newVariant.variant_type === "color" ? "(লাল, নীল বা #hex)" : "(500g, 1kg)"}</Label>
+                      <Input placeholder="লেবেল" value={newVariant.variant_label} onChange={(e) => setNewVariant({ ...newVariant, variant_label: e.target.value })} />
+                    </div>
                   </div>
-                ))}
-                <div className="grid grid-cols-3 gap-2">
-                  <Input placeholder="লেবেল" value={newVariant.variant_label} onChange={(e) => setNewVariant({ ...newVariant, variant_label: e.target.value })} />
-                  <Input type="number" placeholder="মূল্য ±" value={newVariant.price_adjustment} onChange={(e) => setNewVariant({ ...newVariant, price_adjustment: Number(e.target.value) })} />
-                  <Input type="number" placeholder="স্টক" value={newVariant.stock_quantity} onChange={(e) => setNewVariant({ ...newVariant, stock_quantity: Number(e.target.value) })} />
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <Label className="text-xs">মূল্য সমন্বয় (±)</Label>
+                      <Input type="number" value={newVariant.price_adjustment} onChange={(e) => setNewVariant({ ...newVariant, price_adjustment: Number(e.target.value) })} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">স্টক</Label>
+                      <Input type="number" value={newVariant.stock_quantity} onChange={(e) => setNewVariant({ ...newVariant, stock_quantity: Number(e.target.value) })} />
+                    </div>
+                  </div>
+                  <Button size="sm" onClick={addVariant} disabled={!newVariant.variant_label}><Plus className="h-3.5 w-3.5 mr-1" /> যোগ করুন</Button>
                 </div>
-                <Button size="sm" onClick={addVariant} disabled={!newVariant.variant_label}><Plus className="h-3.5 w-3.5 mr-1" /> যোগ করুন</Button>
               </TabsContent>
 
               <TabsContent value="media" className="space-y-3 mt-4">

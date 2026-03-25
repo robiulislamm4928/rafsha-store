@@ -603,6 +603,7 @@ export type Database = {
           product_id: string
           stock_quantity: number
           variant_label: string
+          variant_type: string
         }
         Insert: {
           created_at?: string
@@ -612,6 +613,7 @@ export type Database = {
           product_id: string
           stock_quantity?: number
           variant_label: string
+          variant_type?: string
         }
         Update: {
           created_at?: string
@@ -621,6 +623,7 @@ export type Database = {
           product_id?: string
           stock_quantity?: number
           variant_label?: string
+          variant_type?: string
         }
         Relationships: [
           {
