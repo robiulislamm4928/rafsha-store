@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Search, Eye, Trash2, Download, Inbox, FileDown } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { openInvoice } from "@/lib/generateInvoice";
 
 interface Order {
   id: string; order_number: string; customer_name: string; customer_phone: string;
