@@ -34,10 +34,6 @@ const Header = () => {
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
   const logoUrl = siteSettings.store_logo_url || fallbackLogo;
-  const [scrolled, setScrolled] = useState(false);
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
-  const searchRef = useRef<HTMLDivElement>(null);
-  const mobileSearchRef = useRef<HTMLDivElement>(null);
 
   // Scroll detection for glassmorphism
   useEffect(() => {
