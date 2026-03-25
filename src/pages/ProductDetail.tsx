@@ -479,10 +479,10 @@ const ProductDetail = () => {
               <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setQuantity(quantity + 1)}><Plus className="h-3.5 w-3.5" /></Button>
             </div>
             {/* Action buttons with periodic wiggle */}
-            <div className="flex items-center gap-2 shrink-0">
+            <div className={`flex items-center gap-2 shrink-0 transition-transform ${stickyWiggle ? "animate-wiggle" : ""}`}>
               <Button
                 size="sm"
-                className="brand-gradient text-primary-foreground font-semibold animate-[wiggle_0.5s_ease-in-out_infinite_4s]"
+                className="brand-gradient text-primary-foreground font-semibold"
                 onClick={handleAddToCart}
               >
                 <ShoppingCart className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">কার্টে যোগ</span><span className="sm:hidden">কার্ট</span>
@@ -490,7 +490,7 @@ const ProductDetail = () => {
               <Button
                 size="sm"
                 variant="outline"
-                className="font-semibold border-primary text-primary hover:bg-primary hover:text-primary-foreground animate-[wiggle_0.5s_ease-in-out_infinite_4.2s]"
+                className="font-semibold border-primary text-primary hover:bg-primary hover:text-primary-foreground"
                 onClick={handleBuyNow}
               >
                 <Zap className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">এখনই কিনুন</span><span className="sm:hidden">কিনুন</span>
