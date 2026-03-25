@@ -157,7 +157,7 @@ const Header = () => {
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-0.5 sm:gap-1.5">
           {/* Dark mode toggle */}
           <button onClick={toggleDarkMode} className="p-2 hover:bg-secondary rounded-lg transition-colors" title={darkMode ? "Light mode" : "Dark mode"}>
             {darkMode ? <Sun className="h-5 w-5 text-foreground" /> : <Moon className="h-5 w-5 text-foreground" />}
