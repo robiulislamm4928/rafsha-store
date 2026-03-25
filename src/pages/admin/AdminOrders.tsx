@@ -226,10 +226,18 @@ const AdminOrders = () => {
                 <td className="p-4 text-gray-600">{o.customer_phone}</td>
                 <td className="p-4 font-bold text-gray-800">৳{o.total_amount.toLocaleString()}</td>
                 <td className="p-4">
-                  <Select value={o.payment_status} onValueChange={(v) => updatePaymentStatus(o.id, v)}>
-                    <SelectTrigger className="h-7 text-xs w-24 rounded-lg border-gray-200"><SelectValue /></SelectTrigger>
-                    <SelectContent>{PAYMENT_STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
-                  </Select>
+                  <div className="space-y-1">
+                    <Select value={o.payment_status} onValueChange={(v) => updatePaymentStatus(o.id, v)}>
+                      <SelectTrigger className={`h-7 text-xs w-28 rounded-full font-bold border ${paymentStatusColor(o.payment_status)}`}><SelectValue /></SelectTrigger>
+                      <SelectContent>{PAYMENT_STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                    </Select>
+                    {o.advance_paid > 0 && (
+                      <p className="text-[10px] text-emerald-600 font-medium">অগ্রিম: ৳{o.advance_paid.toLocaleString()}</p>
+                    )}
+                    {o.due_on_delivery > 0 && (
+                      <p className="text-[10px] text-red-500 font-medium">বাকি: ৳{o.due_on_delivery.toLocaleString()}</p>
+                    )}
+                  </div>
                 </td>
                 <td className="p-4">
                   <Select value={o.order_status} onValueChange={(v) => updateStatus(o.id, v)}>
