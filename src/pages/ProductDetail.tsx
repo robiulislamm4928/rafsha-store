@@ -225,7 +225,7 @@ const ProductDetail = () => {
             <div id="image-zoom-result" className="aspect-square rounded-xl overflow-hidden sticky top-24" />
           </div>
 
-          <div className="space-y-5">
+          <div className="space-y-5 lg:col-span-1 md:col-span-1">
             <div className="flex items-start justify-between gap-2">
               <div>
                 <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground">{product.name}</h1>
