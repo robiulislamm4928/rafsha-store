@@ -218,21 +218,8 @@ const Products = () => {
           <div className="flex gap-6 md:gap-8">
             {/* Desktop Sidebar */}
             <aside className="hidden md:block w-56 lg:w-64 shrink-0">
-              <div className="sticky top-20 space-y-6">
-                <div className="bg-card rounded-xl border border-border p-4">
-                  <h3 className="font-semibold text-foreground mb-3 text-sm">ক্যাটাগরি</h3>
-                  <CategorySidebar />
-                </div>
-                <div className="bg-card rounded-xl border border-border p-4">
-                  <h3 className="font-semibold text-foreground mb-3 text-sm">মূল্য পরিসীমা</h3>
-                  <div className="px-1">
-                    <Slider min={0} max={maxPrice} step={50} value={priceRange} onValueChange={(v) => setPriceRange(v as [number, number])} className="mb-3" />
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <span>৳{priceRange[0].toLocaleString()}</span>
-                      <span>৳{priceRange[1].toLocaleString()}</span>
-                    </div>
-                  </div>
-                </div>
+              <div className="sticky top-20">
+                <BrowseSidebar />
               </div>
             </aside>
 
@@ -246,18 +233,7 @@ const Products = () => {
                     <h3 className="font-semibold text-foreground">ফিল্টার</h3>
                     <button onClick={() => setMobileFilterOpen(false)} className="p-1 rounded-lg hover:bg-secondary"><X className="h-5 w-5" /></button>
                   </div>
-                  <div className="mb-5">
-                    <h4 className="text-sm font-medium text-foreground mb-3">মূল্য পরিসীমা</h4>
-                    <div className="px-1">
-                      <Slider min={0} max={maxPrice} step={50} value={priceRange} onValueChange={(v) => setPriceRange(v as [number, number])} className="mb-3" />
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>৳{priceRange[0].toLocaleString()}</span>
-                        <span>৳{priceRange[1].toLocaleString()}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <h4 className="text-sm font-medium text-foreground mb-3">ক্যাটাগরি</h4>
-                  <CategorySidebar />
+                  <BrowseSidebar />
                 </div>
               </div>
             )}
