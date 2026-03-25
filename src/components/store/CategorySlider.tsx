@@ -43,7 +43,7 @@ const CategorySlider = () => {
                 <div className="aspect-square rounded-xl overflow-hidden bg-secondary shadow-sm transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1 gradient-border-hover" style={{ perspective: "600px" }}>
                   <div className="w-full h-full transition-transform duration-300 group-hover:[transform:rotateY(5deg)_rotateX(3deg)]">
                     {cat.image_url ? (
-                      <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                      <ImageWithSkeleton src={cat.image_url} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                     ) : (
                       <div className="w-full h-full brand-gradient-subtle flex items-center justify-center">
                         <FolderOpen className="h-10 w-10 text-muted-foreground/30" />

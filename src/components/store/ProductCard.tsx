@@ -40,7 +40,18 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
       <div className={`group bg-card rounded-xl border border-border shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col gradient-border-hover ${isOutOfStock ? "opacity-75" : ""}`}>
         <Link to={`/product/${slug}`} className="block aspect-square overflow-hidden bg-secondary relative">
           {imageUrl ? (
-            <img src={imageUrl} alt={name} className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 ${isOutOfStock ? "grayscale-[30%]" : ""}`} />
+            <>
+              {!imgLoaded && (
+                <div className="absolute inset-0 skeleton-shimmer bg-muted animate-pulse" />
+              )}
+              <img
+                src={imageUrl}
+                alt={name}
+                className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${isOutOfStock ? "grayscale-[30%]" : ""} ${imgLoaded ? "opacity-100" : "opacity-0"}`}
+                onLoad={() => setImgLoaded(true)}
+                loading="lazy"
+              />
+            </>
           ) : (
             <div className="w-full h-full brand-gradient-subtle flex items-center justify-center">
               <ImageOff className="h-12 w-12 text-muted-foreground/30" />
