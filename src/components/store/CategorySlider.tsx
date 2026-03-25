@@ -10,6 +10,16 @@ interface Category {
   image_url: string | null;
 }
 
+const ImageWithSkeleton = ({ src, alt, className }: { src: string; alt: string; className: string }) => {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className="relative w-full h-full">
+      {!loaded && <div className="absolute inset-0 bg-muted animate-pulse rounded-xl" />}
+      <img src={src} alt={alt} className={`${className} transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`} onLoad={() => setLoaded(true)} loading="lazy" />
+    </div>
+  );
+};
+
 const CategorySlider = () => {
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -43,7 +53,7 @@ const CategorySlider = () => {
                 <div className="aspect-square rounded-xl overflow-hidden bg-secondary shadow-sm transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1 gradient-border-hover" style={{ perspective: "600px" }}>
                   <div className="w-full h-full transition-transform duration-300 group-hover:[transform:rotateY(5deg)_rotateX(3deg)]">
                     {cat.image_url ? (
-                      <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                      <ImageWithSkeleton src={cat.image_url} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                     ) : (
                       <div className="w-full h-full brand-gradient-subtle flex items-center justify-center">
                         <FolderOpen className="h-10 w-10 text-muted-foreground/30" />

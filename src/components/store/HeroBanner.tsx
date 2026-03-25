@@ -15,6 +15,7 @@ interface Banner {
 const HeroBanner = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [loading, setLoading] = useState(true);
+  const [imgLoaded, setImgLoaded] = useState(false);
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState<"left" | "right">("right");
   const [isAnimating, setIsAnimating] = useState(false);
@@ -56,6 +57,7 @@ const HeroBanner = () => {
     setIsAnimating(true);
     setTimeout(() => {
       setCurrent(next);
+      setImgLoaded(false);
       setTimeout(() => setIsAnimating(false), 50);
     }, 300);
   }, [isAnimating]);
@@ -108,11 +110,16 @@ const HeroBanner = () => {
             : "opacity-100 translate-x-0"
         }`}
       >
+        {!imgLoaded && (
+          <div className="absolute inset-0 bg-muted animate-pulse" />
+        )}
         <img
           src={slide?.desktop_image_url || heroFallback}
           alt={slide?.heading || "Hero Banner"}
-          className="w-full h-auto object-cover"
+          className={`w-full h-auto object-cover transition-opacity duration-500 ${imgLoaded ? "opacity-100" : "opacity-0"}`}
           style={{ transform: `translateY(${parallaxY}px)`, willChange: "transform" }}
+          onLoad={() => setImgLoaded(true)}
+          key={slide?.id || "fallback"}
         />
       </div>
 
