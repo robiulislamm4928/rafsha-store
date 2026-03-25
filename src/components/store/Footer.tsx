@@ -43,12 +43,12 @@ const Footer = () => {
 
   return (
     <footer className="bg-primary text-primary-foreground relative wave-divider mt-10">
-      <div className="container py-10 sm:py-12 md:py-16">
+      <div className="container px-4 py-10 sm:py-12 md:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
-          <div>
-            <img src={displayLogo} alt={storeName} className="h-24 sm:h-28 w-auto mb-3 sm:mb-4 brightness-0 invert" />
-            <p className="text-sm opacity-80 leading-relaxed">
+          <div className="text-center sm:text-left">
+            <img src={displayLogo} alt={storeName} className="h-16 sm:h-20 md:h-24 w-auto mb-3 sm:mb-4 brightness-0 invert mx-auto sm:mx-0" />
+            <p className="text-sm opacity-80 leading-relaxed max-w-xs mx-auto sm:mx-0">
               {settings.about || "আপনার পছন্দের পণ্য সেরা মূল্যে — সারাদেশে দ্রুত ডেলিভারি।"}
             </p>
           </div>
@@ -127,15 +127,15 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4 text-lg">নিউজলেটার</h4>
             <p className="text-sm opacity-80 mb-4">নতুন পণ্য ও অফারের আপডেট পেতে সাবস্ক্রাইব করুন</p>
-            <form onSubmit={handleNewsletter} className="flex gap-2">
+            <form onSubmit={handleNewsletter} className="flex gap-2 pb-16 sm:pb-0">
               <Input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="আপনার ইমেইল"
-                className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 text-sm"
+                className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 text-sm h-11"
               />
-              <Button type="submit" size="icon" variant="secondary" className="shrink-0">
+              <Button type="submit" size="icon" variant="secondary" className="shrink-0 h-11 w-11">
                 <Send className="h-4 w-4" />
               </Button>
             </form>

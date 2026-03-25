@@ -110,20 +110,20 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
                 <Button
                   size="sm"
                   variant="outline"
-                  className="flex-1 h-8 sm:h-9 text-[10px] sm:text-xs px-1.5 sm:px-3"
+                  className="flex-1 h-9 sm:h-9 text-xs sm:text-xs px-2 sm:px-3"
                   onClick={(e) => {
                     e.preventDefault();
                     addItem({ productId: id, productName: name, price: displayPrice, image: imageUrl || undefined });
                   }}
                 >
-                  <ShoppingCart className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-0.5 sm:mr-1" /> কার্ট
+                  <ShoppingCart className="h-3.5 w-3.5 mr-1" /> কার্ট
                 </Button>
                 <Button
                   size="sm"
-                  className="flex-1 h-8 sm:h-9 text-[10px] sm:text-xs px-1.5 sm:px-3 brand-gradient text-primary-foreground hover:opacity-90"
+                  className="flex-1 h-9 sm:h-9 text-xs sm:text-xs px-2 sm:px-3 brand-gradient text-primary-foreground hover:opacity-90"
                   onClick={handleBuyNow}
                 >
-                  <Zap className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-0.5 sm:mr-1" /> কিনুন
+                  <Zap className="h-3.5 w-3.5 mr-1" /> কিনুন
                 </Button>
               </div>
             )}
