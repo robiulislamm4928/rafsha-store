@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, ShoppingCart, Package, FolderTree, Users, Star,
-  Truck, Settings, BarChart3, Shield, Image, Megaphone, MessageCircle, Tag, Sparkles, AlertTriangle, HelpCircle,
+  Truck, Settings, BarChart3, Shield, Image, Megaphone, MessageCircle, Tag, Sparkles, AlertTriangle, HelpCircle, ChevronLeft,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -36,33 +36,60 @@ const AdminSidebar = () => {
   const location = useLocation();
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border">
-      <SidebarContent>
+    <Sidebar collapsible="icon" className="border-r-0 bg-[hsl(230,25%,18%)] [&>div]:bg-[hsl(230,25%,18%)]">
+      <SidebarContent className="bg-[hsl(230,25%,18%)]">
         {!collapsed && (
-          <div className="p-4 border-b border-border">
-            <img src={logo} alt="রাফছা স্টোর" className="h-10 w-auto" />
-            <p className="text-xs text-muted-foreground mt-1">অ্যাডমিন প্যানেল</p>
+          <div className="p-5 pb-4 border-b border-white/10">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-white p-1.5 shadow-lg shadow-white/10">
+                <img src={logo} alt="রাফছা স্টোর" className="w-full h-full object-contain" />
+              </div>
+              <div>
+                <h2 className="text-white font-bold text-base tracking-tight">রাফছা স্টোর</h2>
+                <p className="text-white/40 text-[10px] uppercase tracking-widest font-semibold">Admin Panel</p>
+              </div>
+            </div>
           </div>
         )}
         <SidebarGroup>
-          <SidebarGroupLabel>মেনু</SidebarGroupLabel>
-          <SidebarGroupContent>
+          <SidebarGroupLabel className="text-white/30 text-[10px] uppercase tracking-[0.15em] font-bold px-5 pt-4 pb-1">
+            ✦ নেভিগেশন
+          </SidebarGroupLabel>
+          <SidebarGroupContent className="px-2">
             <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      end={item.url === "/admin"}
-                      className="hover:bg-muted/50"
-                      activeClassName="bg-primary/10 text-primary font-medium"
-                    >
-                      <item.icon className="mr-2 h-4 w-4 shrink-0" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {menuItems.map((item) => {
+                const isActive = item.url === "/admin"
+                  ? location.pathname === "/admin"
+                  : location.pathname.startsWith(item.url);
+                return (
+                  <SidebarMenuItem key={item.url}>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={item.url}
+                        end={item.url === "/admin"}
+                        className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                          isActive
+                            ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-white shadow-lg shadow-blue-500/10"
+                            : "text-white/60 hover:text-white hover:bg-white/5"
+                        }`}
+                        activeClassName=""
+                      >
+                        {isActive && (
+                          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-gradient-to-b from-blue-400 to-purple-500 rounded-r-full" />
+                        )}
+                        <div className={`flex items-center justify-center w-8 h-8 rounded-lg transition-all ${
+                          isActive
+                            ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md shadow-blue-500/30"
+                            : "bg-white/5 text-white/50 group-hover:bg-white/10 group-hover:text-white/80"
+                        }`}>
+                          <item.icon className="h-4 w-4" />
+                        </div>
+                        {!collapsed && <span>{item.title}</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

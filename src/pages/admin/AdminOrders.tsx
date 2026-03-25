@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Search, Eye, Trash2, Download, Inbox, FileDown } from "lucide-react";
+import { Search, Eye, Trash2, Download, Inbox, FileDown, ShoppingCart } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { openInvoice } from "@/lib/generateInvoice";
 
@@ -129,13 +129,15 @@ const AdminOrders = () => {
 
   const statusColor = (s: string) => {
     const map: Record<string, string> = {
-      Pending: "bg-accent/20 text-accent",
-      Processing: "bg-primary/10 text-primary",
-      Shipped: "bg-info/10 text-info",
-      Delivered: "bg-success/10 text-success",
-      Cancelled: "bg-destructive/10 text-destructive",
+      Pending: "bg-amber-100 text-amber-700",
+      Processing: "bg-blue-100 text-blue-700",
+      Confirmed: "bg-indigo-100 text-indigo-700",
+      Shipped: "bg-cyan-100 text-cyan-700",
+      Delivered: "bg-emerald-100 text-emerald-700",
+      Cancelled: "bg-red-100 text-red-700",
+      Returned: "bg-orange-100 text-orange-700",
     };
-    return map[s] || "bg-secondary text-secondary-foreground";
+    return map[s] || "bg-gray-100 text-gray-600";
   };
 
   const exportCSV = () => {
@@ -150,21 +152,31 @@ const AdminOrders = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-display font-bold text-foreground">অর্ডার ম্যানেজমেন্ট</h1>
-        <Button variant="outline" size="sm" onClick={exportCSV}>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/25">
+            <ShoppingCart className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">অর্ডার ম্যানেজমেন্ট</h1>
+            <p className="text-sm text-gray-400">Order Management</p>
+          </div>
+        </div>
+        <Button onClick={exportCSV} className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all">
           <FileDown className="h-4 w-4 mr-1.5" /> CSV এক্সপোর্ট
         </Button>
       </div>
 
+      {/* Search & Filter */}
       <div className="flex flex-col md:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="নাম, ফোন বা অর্ডার নম্বর খুঁজুন..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Input placeholder="নাম, ফোন বা অর্ডার নম্বর খুঁজুন..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 bg-white border-gray-200 rounded-xl h-11" />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full md:w-44"><SelectValue placeholder="স্ট্যাটাস" /></SelectTrigger>
+          <SelectTrigger className="w-full md:w-44 bg-white border-gray-200 rounded-xl h-11"><SelectValue placeholder="স্ট্যাটাস" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">সব স্ট্যাটাস</SelectItem>
             {STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
@@ -172,55 +184,61 @@ const AdminOrders = () => {
         </Select>
       </div>
 
-      <div className="bg-card rounded-xl border border-border overflow-x-auto">
+      {/* Orders Table */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border text-left">
-              <th className="p-3 font-medium text-muted-foreground">অর্ডার</th>
-              <th className="p-3 font-medium text-muted-foreground">গ্রাহক</th>
-              <th className="p-3 font-medium text-muted-foreground">ফোন</th>
-              <th className="p-3 font-medium text-muted-foreground">মোট</th>
-              <th className="p-3 font-medium text-muted-foreground">পেমেন্ট</th>
-              <th className="p-3 font-medium text-muted-foreground">স্ট্যাটাস</th>
-              <th className="p-3 font-medium text-muted-foreground">তারিখ</th>
-              <th className="p-3 font-medium text-muted-foreground">অ্যাকশন</th>
+            <tr className="border-b border-gray-100">
+              <th className="p-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">অর্ডার</th>
+              <th className="p-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">গ্রাহক</th>
+              <th className="p-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">ফোন</th>
+              <th className="p-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">মোট</th>
+              <th className="p-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">পেমেন্ট</th>
+              <th className="p-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">স্ট্যাটাস</th>
+              <th className="p-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">তারিখ</th>
+              <th className="p-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">অ্যাকশন</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={8} className="p-4"><div className="space-y-3">{[1,2,3].map(i => <Skeleton key={i} className="h-10 w-full" />)}</div></td></tr>
+              <tr><td colSpan={8} className="p-4"><div className="space-y-3">{[1,2,3].map(i => <Skeleton key={i} className="h-10 w-full rounded-lg" />)}</div></td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={8} className="p-8 text-center"><Inbox className="h-10 w-10 mx-auto text-muted-foreground/30 mb-2" /><p className="text-muted-foreground">কোনো অর্ডার পাওয়া যায়নি</p></td></tr>
-            ) : filtered.map((o) => (
-              <tr key={o.id} className="border-b border-border last:border-0 hover:bg-muted/30">
-                <td className="p-3 font-medium text-primary">{o.order_number}</td>
-                <td className="p-3 text-foreground">{o.customer_name}</td>
-                <td className="p-3 text-foreground">{o.customer_phone}</td>
-                <td className="p-3 font-medium">৳{o.total_amount}</td>
-                <td className="p-3">
+              <tr><td colSpan={8} className="p-12 text-center">
+                <div className="w-16 h-16 mx-auto rounded-2xl bg-gray-50 flex items-center justify-center mb-3">
+                  <Inbox className="h-8 w-8 text-gray-300" />
+                </div>
+                <p className="text-gray-400">কোনো অর্ডার পাওয়া যায়নি</p>
+              </td></tr>
+            ) : filtered.map((o, i) => (
+              <tr key={o.id} className={`hover:bg-gray-50/50 transition-colors ${i !== filtered.length - 1 ? "border-b border-gray-50" : ""}`}>
+                <td className="p-4 font-semibold text-blue-600">{o.order_number}</td>
+                <td className="p-4 text-gray-700 font-medium">{o.customer_name}</td>
+                <td className="p-4 text-gray-600">{o.customer_phone}</td>
+                <td className="p-4 font-bold text-gray-800">৳{o.total_amount.toLocaleString()}</td>
+                <td className="p-4">
                   <Select value={o.payment_status} onValueChange={(v) => updatePaymentStatus(o.id, v)}>
-                    <SelectTrigger className="h-7 text-xs w-24"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="h-7 text-xs w-24 rounded-lg border-gray-200"><SelectValue /></SelectTrigger>
                     <SelectContent>{PAYMENT_STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
                   </Select>
                 </td>
-                <td className="p-3">
+                <td className="p-4">
                   <Select value={o.order_status} onValueChange={(v) => updateStatus(o.id, v)}>
-                    <SelectTrigger className={`h-7 text-xs w-28 ${statusColor(o.order_status)}`}><SelectValue /></SelectTrigger>
+                    <SelectTrigger className={`h-7 text-xs w-28 rounded-full font-bold ${statusColor(o.order_status)}`}><SelectValue /></SelectTrigger>
                     <SelectContent>{STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
                   </Select>
                 </td>
-                <td className="p-3 text-xs text-muted-foreground">{new Date(o.created_at).toLocaleDateString("bn-BD")}</td>
-                <td className="p-3">
+                <td className="p-4 text-xs text-gray-400">{new Date(o.created_at).toLocaleDateString("bn-BD")}</td>
+                <td className="p-4">
                   <div className="flex gap-1">
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openDetail(o)}><Eye className="h-3.5 w-3.5" /></Button>
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => downloadInvoice(o)}><Download className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg hover:bg-blue-50 hover:text-blue-600" onClick={() => openDetail(o)}><Eye className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg hover:bg-green-50 hover:text-green-600" onClick={() => downloadInvoice(o)}><Download className="h-4 w-4" /></Button>
                     <AlertDialog>
-                      <AlertDialogTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button></AlertDialogTrigger>
+                      <AlertDialogTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg hover:bg-red-50 text-red-400 hover:text-red-600"><Trash2 className="h-4 w-4" /></Button></AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader><AlertDialogTitle>অর্ডার মুছে ফেলতে চান?</AlertDialogTitle></AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>বাতিল</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => deleteOrder(o.id)} className="bg-destructive text-destructive-foreground">মুছুন</AlertDialogAction>
+                          <AlertDialogAction onClick={() => deleteOrder(o.id)} className="bg-red-500 text-white hover:bg-red-600">মুছুন</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
