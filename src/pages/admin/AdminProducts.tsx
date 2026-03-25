@@ -19,7 +19,7 @@ interface Product {
   stock_quantity: number; is_active: boolean; is_featured: boolean;
 }
 interface Category { id: string; name: string; }
-interface Variant { id: string; variant_label: string; price_adjustment: number; stock_quantity: number; is_active: boolean; }
+interface Variant { id: string; variant_label: string; variant_type: string; price_adjustment: number; stock_quantity: number; is_active: boolean; }
 interface ProductImage { id: string; image_url: string; display_order: number; }
 
 const emptyProduct = (): Partial<Product> => ({
