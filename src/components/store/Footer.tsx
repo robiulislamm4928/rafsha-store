@@ -1,27 +1,14 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { MapPin, Phone, Mail, Facebook, Youtube, Instagram, Send } from "lucide-react";
+import { useState } from "react";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { MapPin, Facebook, Youtube, Instagram, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import logo from "@/assets/logo.png";
 
 const Footer = () => {
-  const [settings, setSettings] = useState<Record<string, string>>({});
+  const { settings } = useSiteSettings();
   const [email, setEmail] = useState("");
-
-  useEffect(() => {
-    supabase
-      .from("site_settings")
-      .select("key, value")
-      .then(({ data }) => {
-        if (data) {
-          const map: Record<string, string> = {};
-          data.forEach((s) => (map[s.key] = s.value));
-          setSettings(map);
-        }
-      });
-  }, []);
 
   const socialLinks = [
     { key: "facebook_url", icon: Facebook, label: "Facebook", hoverColor: "hover:bg-[#1877F2] hover:text-white" },

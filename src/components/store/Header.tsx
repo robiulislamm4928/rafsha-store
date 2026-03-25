@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 import fallbackLogo from "@/assets/logo.png";
 
 interface SearchResult {
@@ -21,23 +22,18 @@ interface SearchResult {
 const Header = () => {
   const { itemCount, openCart } = useCart();
   const { user, signOut } = useAuth();
+  const { settings: siteSettings } = useSiteSettings();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [searching, setSearching] = useState(false);
-  const [logoUrl, setLogoUrl] = useState(fallbackLogo);
   const [scrolled, setScrolled] = useState(false);
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    supabase.from("site_settings").select("key, value").eq("key", "store_logo_url").single().then(({ data }) => {
-      if (data?.value) setLogoUrl(data.value);
-    });
-  }, []);
+  const logoUrl = siteSettings.store_logo_url || fallbackLogo;
 
   // Scroll detection for glassmorphism
   useEffect(() => {

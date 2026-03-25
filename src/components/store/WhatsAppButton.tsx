@@ -1,20 +1,9 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 import { MessageCircle } from "lucide-react";
 
 const WhatsAppButton = () => {
-  const [phone, setPhone] = useState<string | null>(null);
-
-  useEffect(() => {
-    supabase
-      .from("site_settings")
-      .select("value")
-      .eq("key", "whatsapp_number")
-      .maybeSingle()
-      .then(({ data }) => {
-        if (data?.value) setPhone(data.value);
-      });
-  }, []);
+  const { settings } = useSiteSettings();
+  const phone = settings.whatsapp_number;
 
   if (!phone) return null;
 

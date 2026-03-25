@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
+import { SiteSettingsProvider } from "@/contexts/SiteSettingsContext";
 import { useTracking } from "@/hooks/useTracking";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import ChatWidget from "@/components/store/ChatWidget";
@@ -69,6 +70,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <SiteSettingsProvider>
           <CartProvider>
             <DynamicMeta />
             <TrackingProvider />
@@ -124,6 +126,7 @@ const App = () => (
             <CartDrawer />
             <PWAInstallPrompt />
           </CartProvider>
+          </SiteSettingsProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
