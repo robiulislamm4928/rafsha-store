@@ -126,6 +126,7 @@ const App = () => (
             <CartDrawer />
             <PWAInstallPrompt />
           </CartProvider>
+          </SiteSettingsProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
