@@ -94,7 +94,7 @@ const AdminProducts = () => {
   const addVariant = async () => {
     if (!editing?.id || !newVariant.variant_label) return;
     await supabase.from("product_variants").insert({ ...newVariant, product_id: editing.id, id: crypto.randomUUID() });
-    setNewVariant({ variant_label: "", price_adjustment: 0, stock_quantity: 0 });
+    setNewVariant({ variant_label: "", variant_type: "size", price_adjustment: 0, stock_quantity: 0 });
     const { data } = await supabase.from("product_variants").select("*").eq("product_id", editing.id);
     setVariants((data as Variant[]) || []);
     toast.success("ভ্যারিয়েন্ট যোগ হয়েছে");
