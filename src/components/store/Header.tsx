@@ -22,13 +22,18 @@ interface SearchResult {
 const Header = () => {
   const { itemCount, openCart } = useCart();
   const { user, signOut } = useAuth();
+  const { settings: siteSettings } = useSiteSettings();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [searching, setSearching] = useState(false);
-  const [logoUrl, setLogoUrl] = useState(fallbackLogo);
+  const [scrolled, setScrolled] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const searchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchRef = useRef<HTMLDivElement>(null);
+  const logoUrl = siteSettings.store_logo_url || fallbackLogo;
   const [scrolled, setScrolled] = useState(false);
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const searchRef = useRef<HTMLDivElement>(null);
