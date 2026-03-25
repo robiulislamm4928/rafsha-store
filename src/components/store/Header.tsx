@@ -201,17 +201,38 @@ const Header = () => {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-border bg-card p-4 space-y-3 animate-fade-in-up">
-          <div className="relative" ref={mobileSearchRef}>
-            <Input placeholder="পণ্য খুঁজুন..." className="pr-10 bg-secondary/50" value={query} onChange={(e) => setQuery(e.target.value)} onFocus={() => query.trim().length >= 2 && setShowResults(true)} />
+        <div className="md:hidden border-t border-border bg-card/98 backdrop-blur-lg px-4 pb-5 pt-3 space-y-1 animate-fade-in-up">
+          <div className="relative mb-3" ref={mobileSearchRef}>
+            <Input placeholder="পণ্য খুঁজুন..." className="pr-10 bg-secondary/50 h-11 text-base" value={query} onChange={(e) => setQuery(e.target.value)} onFocus={() => query.trim().length >= 2 && setShowResults(true)} />
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <SearchDropdown />
           </div>
           {navLinks.map((link) => (
-            <button key={link.href} onClick={() => handleNavClick(link.href)} className="block py-2 text-sm font-medium text-foreground/80 hover:text-primary text-left w-full">
+            <button key={link.href} onClick={() => handleNavClick(link.href)} className="flex items-center w-full py-2.5 px-3 text-sm font-medium text-foreground/80 hover:text-primary hover:bg-primary/5 rounded-lg text-left transition-colors">
               {link.label}
             </button>
           ))}
+          <div className="border-t border-border pt-3 mt-2">
+            {user ? (
+              <div className="flex gap-2">
+                <Button asChild variant="outline" size="sm" className="flex-1 h-10">
+                  <Link to="/profile" onClick={() => setMobileOpen(false)}>আমার প্রোফাইল</Link>
+                </Button>
+                <Button variant="ghost" size="sm" className="flex-1 h-10 text-destructive" onClick={() => { signOut(); setMobileOpen(false); }}>
+                  লগআউট
+                </Button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <Button asChild variant="outline" size="sm" className="flex-1 h-10">
+                  <Link to="/login" onClick={() => setMobileOpen(false)}>লগইন</Link>
+                </Button>
+                <Button asChild size="sm" className="flex-1 h-10 brand-gradient text-primary-foreground">
+                  <Link to="/register" onClick={() => setMobileOpen(false)}>রেজিস্ট্রেশন</Link>
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </header>

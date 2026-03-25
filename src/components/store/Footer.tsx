@@ -127,15 +127,15 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4 text-lg">নিউজলেটার</h4>
             <p className="text-sm opacity-80 mb-4">নতুন পণ্য ও অফারের আপডেট পেতে সাবস্ক্রাইব করুন</p>
-            <form onSubmit={handleNewsletter} className="flex gap-2">
+            <form onSubmit={handleNewsletter} className="flex gap-2 pb-16 sm:pb-0">
               <Input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="আপনার ইমেইল"
-                className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 text-sm"
+                className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 text-sm h-11"
               />
-              <Button type="submit" size="icon" variant="secondary" className="shrink-0">
+              <Button type="submit" size="icon" variant="secondary" className="shrink-0 h-11 w-11">
                 <Send className="h-4 w-4" />
               </Button>
             </form>
