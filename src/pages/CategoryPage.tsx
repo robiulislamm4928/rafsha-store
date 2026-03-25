@@ -6,8 +6,9 @@ import TopBar from "@/components/store/TopBar";
 import Header from "@/components/store/Header";
 import Footer from "@/components/store/Footer";
 import ProductCard from "@/components/store/ProductCard";
-import { Package, ChevronLeft } from "lucide-react";
+import { Package, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRef } from "react";
 
 interface Category {
   id: string;
@@ -30,9 +31,11 @@ interface Product {
 const CategoryPage = () => {
   const { categorySlug } = useParams<{ categorySlug: string }>();
   const [category, setCategory] = useState<Category | null>(null);
+  const [subCategories, setSubCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!categorySlug) return;
@@ -55,11 +58,24 @@ const CategoryPage = () => {
 
       setCategory(cat);
 
+      // Fetch sub-categories
+      const { data: subCats } = await supabase
+        .from("categories")
+        .select("id, name, slug, image_url")
+        .eq("parent_id", cat.id)
+        .eq("is_active", true)
+        .order("display_order");
+
+      setSubCategories((subCats as Category[]) || []);
+
+      // Fetch products from this category AND its sub-categories
+      const categoryIds = [cat.id, ...(subCats || []).map((sc) => sc.id)];
+
       const { data: prods } = await supabase
         .from("products")
         .select("id, name, slug, regular_price, sale_price, short_description, stock_quantity, product_images(image_url)")
         .eq("is_active", true)
-        .eq("category_id", cat.id)
+        .in("category_id", categoryIds)
         .order("created_at", { ascending: false });
 
       setProducts((prods as unknown as Product[]) || []);
@@ -68,6 +84,12 @@ const CategoryPage = () => {
 
     fetchData();
   }, [categorySlug]);
+
+  const scrollSlider = (dir: "left" | "right") => {
+    if (!sliderRef.current) return;
+    const amount = 200;
+    sliderRef.current.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
+  };
 
   if (notFound) {
     return (
@@ -94,6 +116,7 @@ const CategoryPage = () => {
       <TopBar /><Header />
 
       <main>
+        {/* Category Header */}
         <div className="bg-primary/5 border-b border-border">
           <div className="container px-4 py-5 sm:py-6 md:py-8">
             <Link to="/products" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-2">
@@ -109,6 +132,54 @@ const CategoryPage = () => {
           </div>
         </div>
 
+        {/* Sub-categories slider */}
+        {!loading && subCategories.length > 0 && (
+          <div className="container px-4 py-4 sm:py-6">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-base sm:text-lg font-semibold text-foreground">সাব-ক্যাটাগরি</h2>
+              <div className="hidden sm:flex gap-1">
+                <button onClick={() => scrollSlider("left")} className="p-1.5 rounded-full bg-secondary hover:bg-secondary/80 transition-colors">
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button onClick={() => scrollSlider("right")} className="p-1.5 rounded-full bg-secondary hover:bg-secondary/80 transition-colors">
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+            <div ref={sliderRef} className="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar pb-2">
+              {subCategories.map((sub) => (
+                <Link
+                  key={sub.id}
+                  to={`/${sub.slug}`}
+                  className="group shrink-0 w-28 sm:w-36 md:w-44"
+                >
+                  <div className="relative rounded-xl overflow-hidden border border-border bg-card shadow-sm hover:shadow-md transition-all duration-300 group-hover:border-primary/30">
+                    <div className="aspect-square bg-secondary/30 overflow-hidden">
+                      {sub.image_url ? (
+                        <img
+                          src={sub.image_url}
+                          alt={sub.name}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Package className="h-8 w-8 text-muted-foreground/30" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-2 text-center">
+                      <p className="text-xs sm:text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
+                        {sub.name}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Products grid */}
         <div className="container px-4 py-4 sm:py-6 md:py-8">
           {loading ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
