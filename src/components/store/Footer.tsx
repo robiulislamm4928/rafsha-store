@@ -82,28 +82,10 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4 text-lg">যোগাযোগ</h4>
             <ul className="space-y-3 text-sm">
-              {settings.phone && (
-                <li className="flex items-center gap-2 opacity-80">
-                  <Phone className="h-4 w-4 shrink-0" />
-                  {settings.phone}
-                </li>
-              )}
-              {settings.email && (
-                <li className="flex items-center gap-2 opacity-80">
-                  <Mail className="h-4 w-4 shrink-0" />
-                  {settings.email}
-                </li>
-              )}
               {settings.address && (
                 <li className="flex items-start gap-2 opacity-80">
                   <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
                   {settings.address}
-                </li>
-              )}
-              {!settings.phone && !settings.email && (
-                <li className="flex items-center gap-2 opacity-80">
-                  <Phone className="h-4 w-4" />
-                  ০১XXXXXXXXX
                 </li>
               )}
             </ul>
