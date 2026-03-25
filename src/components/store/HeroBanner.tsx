@@ -57,6 +57,7 @@ const HeroBanner = () => {
     setIsAnimating(true);
     setTimeout(() => {
       setCurrent(next);
+      setImgLoaded(false);
       setTimeout(() => setIsAnimating(false), 50);
     }, 300);
   }, [isAnimating]);
