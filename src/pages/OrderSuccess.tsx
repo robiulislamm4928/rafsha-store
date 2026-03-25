@@ -28,103 +28,33 @@ const OrderSuccess = () => {
   if (!order) return <Navigate to="/" replace />;
 
   const handleDownloadPDF = async () => {
-    const { default: jsPDF } = await import("jspdf");
-    const doc = new jsPDF();
-
-    // Fetch site settings for branding
     const { data: settings } = await supabase.from("site_settings").select("key, value").in("key", [
-      "store_name", "store_phone", "store_email", "store_address"
+      "store_name", "address"
     ]);
     const s: Record<string, string> = {};
     settings?.forEach((r) => { s[r.key] = r.value; });
-    const storeName = s.store_name || "Rafcha Store";
 
-    // Header
-    doc.setFontSize(22);
-    doc.setFont("helvetica", "bold");
-    doc.text(storeName, 20, 22);
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(100);
-    doc.text("INVOICE", 170, 22, { align: "right" });
-
-    // Store info
-    let headerY = 30;
-    if (s.store_phone) { doc.text(`Phone: ${s.store_phone}`, 20, headerY); headerY += 5; }
-    if (s.store_email) { doc.text(`Email: ${s.store_email}`, 20, headerY); headerY += 5; }
-    if (s.store_address) { doc.text(`Address: ${s.store_address}`, 20, headerY); headerY += 5; }
-
-    // Divider
-    headerY += 3;
-    doc.setDrawColor(200);
-    doc.line(20, headerY, 190, headerY);
-    headerY += 8;
-
-    // Order details
-    doc.setTextColor(0);
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "bold");
-    doc.text("Order Details", 20, headerY);
-    headerY += 6;
-    doc.setFont("helvetica", "normal");
-    doc.text(`Order Number: ${order.orderNumber}`, 20, headerY);
-    doc.text(`Date: ${new Date().toLocaleDateString("en-GB")}`, 140, headerY);
-    headerY += 6;
-    doc.text(`Customer: ${order.customerName}`, 20, headerY);
-    headerY += 5;
-    doc.text(`Phone: ${order.customerPhone}`, 20, headerY);
-    headerY += 5;
-    doc.text(`District: ${order.district}`, 20, headerY);
-    headerY += 5;
-    doc.text(`Address: ${order.address.substring(0, 80)}`, 20, headerY);
-    headerY += 5;
-    doc.text(`Payment: ${order.paymentMethod}`, 20, headerY);
-    headerY += 8;
-
-    // Items table header
-    doc.setDrawColor(180);
-    doc.setFillColor(245, 245, 245);
-    doc.rect(20, headerY - 1, 170, 8, "F");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-    doc.text("Product", 22, headerY + 4);
-    doc.text("Qty", 125, headerY + 4, { align: "center" });
-    doc.text("Price", 150, headerY + 4, { align: "right" });
-    doc.text("Total", 188, headerY + 4, { align: "right" });
-    headerY += 10;
-
-    // Items
-    doc.setFont("helvetica", "normal");
-    order.items.forEach((item) => {
-      const name = `${item.productName}${item.variantLabel ? ` (${item.variantLabel})` : ""}`.substring(0, 50);
-      doc.text(name, 22, headerY + 4);
-      doc.text(String(item.quantity), 125, headerY + 4, { align: "center" });
-      doc.text(`${item.price}`, 150, headerY + 4, { align: "right" });
-      doc.text(`${item.price * item.quantity}`, 188, headerY + 4, { align: "right" });
-      headerY += 7;
+    openInvoice({
+      storeName: s.store_name || "রাফছা স্টোর",
+      storeAddress: s.address,
+      orderNumber: order.orderNumber,
+      date: new Date().toLocaleDateString("bn-BD"),
+      customerName: order.customerName,
+      customerPhone: order.customerPhone,
+      district: order.district,
+      address: order.address,
+      paymentMethod: order.paymentMethod,
+      items: order.items.map(item => ({
+        name: item.productName,
+        variant: item.variantLabel,
+        quantity: item.quantity,
+        unitPrice: item.price,
+        total: item.price * item.quantity,
+      })),
+      subtotal: order.subtotal,
+      deliveryCharge: order.deliveryCharge,
+      total: order.grandTotal,
     });
-
-    // Totals
-    headerY += 3;
-    doc.line(120, headerY, 190, headerY);
-    headerY += 7;
-    doc.setFontSize(10);
-    doc.text("Subtotal:", 140, headerY); doc.text(`${order.subtotal} BDT`, 188, headerY, { align: "right" });
-    headerY += 6;
-    doc.text("Delivery:", 140, headerY); doc.text(`${order.deliveryCharge} BDT`, 188, headerY, { align: "right" });
-    headerY += 6;
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.text("Total:", 140, headerY); doc.text(`${order.grandTotal} BDT`, 188, headerY, { align: "right" });
-
-    // Footer
-    headerY += 15;
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.setTextColor(130);
-    doc.text("Thank you for your order!", 105, headerY, { align: "center" });
-
-    doc.save(`invoice-${order.orderNumber}.pdf`);
   };
 
   return (
