@@ -105,23 +105,7 @@ const About = () => {
           {/* Contact Info */}
           <section className="bg-primary/5 border border-primary/15 rounded-xl p-6 md:p-10">
             <h2 className="text-xl md:text-2xl font-bold text-foreground text-center mb-6">আমাদের সাথে যোগাযোগ</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 max-w-3xl mx-auto">
-              {(settings.phone || true) && (
-                <div className="flex flex-col items-center text-center gap-2 p-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Phone className="h-4 w-4 text-primary" />
-                  </div>
-                  <p className="text-sm font-medium text-foreground">ফোন</p>
-                  <p className="text-xs text-muted-foreground">{settings.phone || "০১XXXXXXXXX"}</p>
-                </div>
-              )}
-              <div className="flex flex-col items-center text-center gap-2 p-4">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Mail className="h-4 w-4 text-primary" />
-                </div>
-                <p className="text-sm font-medium text-foreground">ইমেইল</p>
-                <p className="text-xs text-muted-foreground">{settings.email || "info@rafshastore.com"}</p>
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 md:gap-6 max-w-md mx-auto">
               <div className="flex flex-col items-center text-center gap-2 p-4">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                   <MapPin className="h-4 w-4 text-primary" />
