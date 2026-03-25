@@ -1,5 +1,5 @@
 import { useLocation, Link, Navigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Download, Home } from "lucide-react";
 import { CartItem } from "@/contexts/CartContext";
@@ -24,15 +24,12 @@ interface OrderState {
 const OrderSuccess = () => {
   const location = useLocation();
   const order = location.state as OrderState | null;
+  const { settings: siteSettings } = useSiteSettings();
 
   if (!order) return <Navigate to="/" replace />;
 
   const handleDownloadPDF = async () => {
-    const { data: settings } = await supabase.from("site_settings").select("key, value").in("key", [
-      "store_name", "address"
-    ]);
-    const s: Record<string, string> = {};
-    settings?.forEach((r) => { s[r.key] = r.value; });
+    const s = siteSettings;
 
     openInvoice({
       storeName: s.store_name || "রাফছা স্টোর",
