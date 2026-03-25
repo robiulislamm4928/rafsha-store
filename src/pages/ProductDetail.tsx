@@ -57,7 +57,7 @@ const SocialShareButtons = ({ productName }: { productName: string }) => {
 
 interface Product { id: string; name: string; slug: string; short_description: string | null; full_description: string | null; regular_price: number; sale_price: number | null; stock_quantity: number; sku: string | null; category_id: string | null; }
 interface RelatedProduct { id: string; name: string; slug: string; regular_price: number; sale_price: number | null; stock_quantity: number; short_description: string | null; product_images: { image_url: string }[]; }
-interface Variant { id: string; variant_label: string; price_adjustment: number; stock_quantity: number; }
+interface Variant { id: string; variant_label: string; variant_type: string; price_adjustment: number; stock_quantity: number; }
 interface ProductImage { id: string; image_url: string; display_order: number; }
 interface Review { id: string; reviewer_name: string; reviewer_location: string | null; rating: number; review_text: string | null; created_at: string; }
 
