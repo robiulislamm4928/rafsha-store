@@ -88,6 +88,7 @@ const ProductDetail = () => {
   const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [categoryName, setCategoryName] = useState<string | null>(null);
+  const [topSellingProducts, setTopSellingProducts] = useState<RelatedProduct[]>([]);
 
   useEffect(() => { if (!user) { setUserProfileImage(null); return; } supabase.from("users").select("profile_image_url").eq("id", user.id).single().then(({ data }) => { setUserProfileImage(data?.profile_image_url || null); }); }, [user]);
 
