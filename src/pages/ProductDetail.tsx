@@ -180,22 +180,45 @@ const ProductDetail = () => {
         </nav>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-          <div className="space-y-4">
-            <div className="aspect-square rounded-xl overflow-hidden bg-secondary border border-border cursor-pointer relative group" onClick={() => setLightboxOpen(true)}>
-              {mainImage ? <ImageZoom src={mainImage} alt={product.name} className="w-full h-full" /> : <div className="w-full h-full brand-gradient-subtle flex items-center justify-center"><ImageOff className="h-16 w-16 text-muted-foreground/30" /></div>}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-foreground/10">
-                <span className="bg-card/90 text-foreground text-xs px-3 py-1.5 rounded-full shadow">🔍 বড় করে দেখুন</span>
-              </div>
-            </div>
+          {/* Image Gallery - Vertical thumbnails left + main image right */}
+          <div className="flex flex-col-reverse md:flex-row gap-3">
+            {/* Thumbnails - vertical on desktop, horizontal on mobile */}
             {images.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto pb-2">
+              <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-y-auto md:overflow-x-hidden md:max-h-[500px] pb-2 md:pb-0 md:pr-1 scrollbar-thin">
                 {images.map((img, i) => (
-                  <button key={img.id} onClick={() => setSelectedImage(i)} className={`shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition-all ${i === selectedImage ? "border-primary shadow-md scale-105" : "border-border opacity-70 hover:opacity-100"}`}>
-                    <img src={img.image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
+                  <button
+                    key={img.id}
+                    onClick={() => setSelectedImage(i)}
+                    className={`shrink-0 w-16 h-16 md:w-[72px] md:h-[72px] rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                      i === selectedImage
+                        ? "border-primary shadow-md ring-1 ring-primary/30"
+                        : "border-border/50 opacity-60 hover:opacity-100 hover:border-border"
+                    }`}
+                  >
+                    <img src={img.image_url} alt={`${product.name} - ছবি ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
                   </button>
                 ))}
               </div>
             )}
+            {/* Main Image */}
+            <div className="flex-1 aspect-square rounded-xl overflow-hidden bg-secondary border border-border cursor-pointer relative group" onClick={() => setLightboxOpen(true)}>
+              {mainImage ? (
+                <ImageZoom src={mainImage} alt={product.name} className="w-full h-full" />
+              ) : (
+                <div className="w-full h-full brand-gradient-subtle flex items-center justify-center">
+                  <ImageOff className="h-16 w-16 text-muted-foreground/30" />
+                </div>
+              )}
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-foreground/10">
+                <span className="bg-card/90 text-foreground text-xs px-3 py-1.5 rounded-full shadow">🔍 বড় করে দেখুন</span>
+              </div>
+              {/* Image counter badge */}
+              {images.length > 1 && (
+                <div className="absolute bottom-3 right-3 bg-card/80 backdrop-blur-sm text-foreground text-xs px-2.5 py-1 rounded-full shadow border border-border/50">
+                  {selectedImage + 1} / {images.length}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="space-y-5">
