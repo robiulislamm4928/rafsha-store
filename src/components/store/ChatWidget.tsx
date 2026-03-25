@@ -141,7 +141,7 @@ const ChatWidget = () => {
     <>
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-4 right-4 sm:bottom-5 sm:right-5 z-50 h-12 w-12 sm:h-14 sm:w-14 rounded-full brand-gradient text-primary-foreground shadow-lg flex items-center justify-center hover:opacity-90 transition-opacity"
+        className="fixed bottom-20 right-4 sm:bottom-5 sm:right-5 z-50 h-12 w-12 sm:h-14 sm:w-14 rounded-full brand-gradient text-primary-foreground shadow-lg flex items-center justify-center hover:opacity-90 transition-opacity"
       >
         {open ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />}
         {!open && unreadCount > 0 && (
