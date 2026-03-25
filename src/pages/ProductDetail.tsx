@@ -88,6 +88,7 @@ const ProductDetail = () => {
   const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [categoryName, setCategoryName] = useState<string | null>(null);
+  const [topSellingProducts, setTopSellingProducts] = useState<RelatedProduct[]>([]);
 
   useEffect(() => { if (!user) { setUserProfileImage(null); return; } supabase.from("users").select("profile_image_url").eq("id", user.id).single().then(({ data }) => { setUserProfileImage(data?.profile_image_url || null); }); }, [user]);
 
@@ -118,6 +119,21 @@ const ProductDetail = () => {
         const { data: related } = await supabase.from("products").select("id, name, slug, regular_price, sale_price, stock_quantity, short_description, product_images(image_url)").eq("is_active", true).eq("category_id", prod.category_id).neq("id", prod.id).order("created_at", { ascending: false }).limit(4);
         setRelatedProducts((related as unknown as RelatedProduct[]) || []);
       } else { setRelatedProducts([]); }
+
+      // Fetch top selling products (most ordered)
+      const { data: topItems } = await supabase
+        .from("order_items")
+        .select("product_id, quantity")
+        .limit(500);
+      if (topItems && topItems.length > 0) {
+        const salesMap: Record<string, number> = {};
+        topItems.forEach((item: any) => { salesMap[item.product_id] = (salesMap[item.product_id] || 0) + item.quantity; });
+        const topIds = Object.entries(salesMap).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([id]) => id).filter(id => id !== prod.id);
+        if (topIds.length > 0) {
+          const { data: topProds } = await supabase.from("products").select("id, name, slug, regular_price, sale_price, stock_quantity, short_description, product_images(image_url)").eq("is_active", true).in("id", topIds).limit(10);
+          setTopSellingProducts((topProds as unknown as RelatedProduct[]) || []);
+        }
+      }
       setLoading(false);
       addRecentlyViewed({ id: prod.id, name: prod.name, slug: prod.slug, price: prod.sale_price ?? prod.regular_price, image: undefined });
     };
@@ -398,6 +414,20 @@ const ProductDetail = () => {
             </div>
           </section>
         )}
+
+        {topSellingProducts.length > 0 && (
+          <section className="mt-12">
+            <h2 className="text-xl font-display font-bold text-foreground mb-6 flex items-center gap-2">
+              <Zap className="h-5 w-5 text-accent" /> টপ সেলিং প্রোডাক্ট
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
+              {topSellingProducts.map((p) => (
+                <ProductCard key={p.id} id={p.id} name={p.name} slug={p.slug} regularPrice={p.regular_price} salePrice={p.sale_price} imageUrl={p.product_images?.[0]?.image_url || null} shortDescription={p.short_description} stockQuantity={p.stock_quantity} />
+              ))}
+            </div>
+          </section>
+        )}
+
         <RecentlyViewedProducts />
       </main>
 
