@@ -29,7 +29,7 @@ const Register = () => {
     if (error) {
       toast({ title: "রেজিস্ট্রেশন ব্যর্থ", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "ইমেইল যাচাই করুন", description: "আমরা আপনাকে একটি নিশ্চিতকরণ লিঙ্ক পাঠিয়েছি।" });
+      toast({ title: "সফল!", description: "অ্যাকাউন্ট তৈরি হয়েছে।" });
     }
   };
 
