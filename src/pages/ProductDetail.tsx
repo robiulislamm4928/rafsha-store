@@ -445,17 +445,47 @@ const ProductDetail = () => {
         </div>
       )}
 
-      {/* Sticky mobile Add to Cart bar */}
+      {/* Sticky bottom Add to Cart bar — all screens */}
       {!isOutOfStock && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-card/95 backdrop-blur-md border-t border-border p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
-          <div className="flex items-center gap-3">
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-primary">৳{finalPrice}</p>
-              <p className="text-[10px] text-muted-foreground truncate">{product.name}</p>
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
+          <div className="container py-2.5 flex items-center gap-3 md:gap-4">
+            {/* Product thumbnail */}
+            <div className="hidden sm:block shrink-0 w-12 h-12 rounded-lg overflow-hidden border border-border">
+              {images[0]?.image_url ? (
+                <img src={images[0].image_url} alt={product.name} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full bg-secondary flex items-center justify-center"><Package className="h-5 w-5 text-muted-foreground/40" /></div>
+              )}
             </div>
-            <Button size="sm" className="brand-gradient text-primary-foreground font-semibold shrink-0" onClick={handleAddToCart}>
-              <ShoppingCart className="h-4 w-4 mr-1" /> কার্টে যোগ
-            </Button>
+            {/* Product name + price */}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-foreground truncate">{product.name}</p>
+              <p className="text-xs text-primary font-bold">৳{finalPrice}</p>
+            </div>
+            {/* Quantity controls */}
+            <div className="hidden md:flex items-center gap-1.5 shrink-0">
+              <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setQuantity(Math.max(1, quantity - 1))}><Minus className="h-3.5 w-3.5" /></Button>
+              <span className="text-sm font-semibold w-8 text-center">{quantity}</span>
+              <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setQuantity(quantity + 1)}><Plus className="h-3.5 w-3.5" /></Button>
+            </div>
+            {/* Action buttons with periodic wiggle */}
+            <div className="flex items-center gap-2 shrink-0">
+              <Button
+                size="sm"
+                className="brand-gradient text-primary-foreground font-semibold animate-[wiggle_0.5s_ease-in-out_infinite_4s]"
+                onClick={handleAddToCart}
+              >
+                <ShoppingCart className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">কার্টে যোগ</span><span className="sm:hidden">কার্ট</span>
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="font-semibold border-primary text-primary hover:bg-primary hover:text-primary-foreground animate-[wiggle_0.5s_ease-in-out_infinite_4.2s]"
+                onClick={handleBuyNow}
+              >
+                <Zap className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">এখনই কিনুন</span><span className="sm:hidden">কিনুন</span>
+              </Button>
+            </div>
           </div>
         </div>
       )}
