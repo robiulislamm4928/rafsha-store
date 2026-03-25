@@ -22,6 +22,7 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
   const { isWishlisted, toggleWishlist } = useWishlist();
   const navigate = useNavigate();
   const [quickViewId, setQuickViewId] = useState<string | null>(null);
+  const [imgLoaded, setImgLoaded] = useState(false);
   const displayPrice = salePrice ?? regularPrice;
   const hasDiscount = salePrice !== null && salePrice < regularPrice;
   const isOutOfStock = stockQuantity !== undefined && stockQuantity !== -1 && stockQuantity <= 0;
