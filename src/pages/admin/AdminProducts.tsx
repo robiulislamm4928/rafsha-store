@@ -33,7 +33,7 @@ const AdminProducts = () => {
   const [editing, setEditing] = useState<Partial<Product> | null>(null);
   const [variants, setVariants] = useState<Variant[]>([]);
   const [images, setImages] = useState<ProductImage[]>([]);
-  const [newVariant, setNewVariant] = useState({ variant_label: "", price_adjustment: 0, stock_quantity: 0 });
+  const [newVariant, setNewVariant] = useState({ variant_label: "", variant_type: "size", price_adjustment: 0, stock_quantity: 0 });
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
 
