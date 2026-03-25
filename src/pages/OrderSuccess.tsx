@@ -6,6 +6,7 @@ import { CartItem } from "@/contexts/CartContext";
 import Header from "@/components/store/Header";
 import TopBar from "@/components/store/TopBar";
 import Footer from "@/components/store/Footer";
+import { openInvoice } from "@/lib/generateInvoice";
 
 interface OrderState {
   orderNumber: string;
