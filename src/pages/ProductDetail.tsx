@@ -316,8 +316,6 @@ const ProductDetail = () => {
                 </div>
               );
             })}
-              </div>
-            )}
             <div className="space-y-2">
               <Label className="text-sm font-medium">পরিমাণ</Label>
               <div className="flex items-center gap-3">
