@@ -179,9 +179,9 @@ const ProductDetail = () => {
           <span className="text-foreground font-medium truncate max-w-[200px]">{product.name}</span>
         </nav>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-          {/* Image Gallery - Vertical thumbnails left + main image right */}
-          <div className="flex flex-col-reverse md:flex-row gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-6 md:gap-8">
+          {/* Image Gallery - Vertical thumbnails left + main image */}
+          <div className="flex flex-col-reverse md:flex-row gap-3 lg:col-span-1">
             {/* Thumbnails - vertical on desktop, horizontal on mobile */}
             {images.length > 1 && (
               <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-y-auto md:overflow-x-hidden md:max-h-[500px] pb-2 md:pb-0 md:pr-1 scrollbar-thin">
@@ -201,7 +201,7 @@ const ProductDetail = () => {
               </div>
             )}
             {/* Main Image */}
-            <div className="flex-1 aspect-square rounded-xl overflow-hidden bg-secondary border border-border cursor-pointer relative group" onClick={() => setLightboxOpen(true)}>
+            <div className="flex-1 aspect-square rounded-xl overflow-hidden bg-secondary border border-border relative group">
               {mainImage ? (
                 <ImageZoom src={mainImage} alt={product.name} className="w-full h-full" />
               ) : (
@@ -209,16 +209,20 @@ const ProductDetail = () => {
                   <ImageOff className="h-16 w-16 text-muted-foreground/30" />
                 </div>
               )}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-foreground/10">
+              <button onClick={() => setLightboxOpen(true)} className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-foreground/5 md:hidden">
                 <span className="bg-card/90 text-foreground text-xs px-3 py-1.5 rounded-full shadow">🔍 বড় করে দেখুন</span>
-              </div>
-              {/* Image counter badge */}
+              </button>
               {images.length > 1 && (
                 <div className="absolute bottom-3 right-3 bg-card/80 backdrop-blur-sm text-foreground text-xs px-2.5 py-1 rounded-full shadow border border-border/50">
                   {selectedImage + 1} / {images.length}
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Zoom Result Panel - only visible on lg+ when hovering */}
+          <div className="hidden lg:block">
+            <div id="image-zoom-result" className="aspect-square rounded-xl overflow-hidden sticky top-24" />
           </div>
 
           <div className="space-y-5">
