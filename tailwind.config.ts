@@ -132,6 +132,11 @@ export default {
           "0%": { transform: "scale(0)", opacity: "0.5" },
           "100%": { transform: "scale(4)", opacity: "0" },
         },
+        wiggle: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "25%": { transform: "translateY(-3px)" },
+          "75%": { transform: "translateY(2px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -145,6 +150,7 @@ export default {
         "scale-up": "scale-up 0.4s ease-out forwards",
         "glow": "glow 2s ease-in-out infinite",
         ripple: "ripple 0.6s linear",
+        wiggle: "wiggle 0.5s ease-in-out",
       },
     },
   },
