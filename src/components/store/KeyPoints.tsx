@@ -53,7 +53,7 @@ const KeyPoints = () => {
     return (
       <section className="py-10 md:py-14">
         <div className="container">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
             {staticPoints.map(({ icon: Icon, title, desc }, idx) => (
               <KeyPointCard key={title} icon={<Icon className="h-6 w-6 text-primary-foreground" />} title={title} desc={desc} index={idx} />
             ))}
