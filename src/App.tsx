@@ -70,6 +70,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <SiteSettingsProvider>
           <CartProvider>
             <DynamicMeta />
             <TrackingProvider />
