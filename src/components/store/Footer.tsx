@@ -47,7 +47,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="text-center sm:text-left">
-            <img src={displayLogo} alt={storeName} className="h-20 sm:h-24 md:h-28 w-auto mb-3 sm:mb-4 mx-auto sm:mx-0" />
+            <div className="bg-white rounded-lg p-3 inline-block mb-3 sm:mb-4 mx-auto sm:mx-0">
+              <img src={displayLogo} alt={storeName} className="h-20 sm:h-24 md:h-28 w-auto" />
+            </div>
             <p className="text-sm opacity-80 leading-relaxed max-w-xs mx-auto sm:mx-0">
               {settings.about || "আপনার পছন্দের পণ্য সেরা মূল্যে — সারাদেশে দ্রুত ডেলিভারি।"}
             </p>
