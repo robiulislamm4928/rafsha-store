@@ -140,6 +140,16 @@ const AdminOrders = () => {
     return map[s] || "bg-gray-100 text-gray-600";
   };
 
+  const paymentStatusColor = (s: string) => {
+    const map: Record<string, string> = {
+      Pending: "bg-red-100 text-red-700 border-red-200",
+      Partial: "bg-orange-100 text-orange-700 border-orange-200",
+      Paid: "bg-emerald-100 text-emerald-700 border-emerald-200",
+      Refunded: "bg-purple-100 text-purple-700 border-purple-200",
+    };
+    return map[s] || "bg-gray-100 text-gray-600 border-gray-200";
+  };
+
   const exportCSV = () => {
     const headers = ["Order Number","Customer","Phone","Email","District","Total","Delivery","Discount","Payment Method","Payment Status","Order Status","Date"];
     const rows = filtered.map(o => [o.order_number, o.customer_name, o.customer_phone, o.customer_email || "", o.district, o.total_amount, o.delivery_charge, o.discount_amount, o.payment_method, o.payment_status, o.order_status, new Date(o.created_at).toLocaleDateString("en-GB")]);
