@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Search, Eye, Trash2, Download, Inbox, FileDown } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { openInvoice } from "@/lib/generateInvoice";
 
 interface Order {
   id: string; order_number: string; customer_name: string; customer_phone: string;
@@ -89,95 +90,41 @@ const AdminOrders = () => {
   };
 
   const downloadInvoice = async (order: Order) => {
-    const { default: jsPDF } = await import("jspdf");
-    const doc = new jsPDF();
-
-    // Fetch site settings + order items
     const [settingsRes, itemsRes] = await Promise.all([
-      supabase.from("site_settings").select("key, value").in("key", ["store_name", "store_phone", "store_email", "store_address"]),
+      supabase.from("site_settings").select("key, value").in("key", ["store_name", "address"]),
       supabase.from("order_items").select("*").eq("order_id", order.id),
     ]);
     const s: Record<string, string> = {};
     settingsRes.data?.forEach((r) => { s[r.key] = r.value; });
-    const storeName = s.store_name || "Rafcha Store";
     const items = (itemsRes.data as OrderItem[]) || [];
 
-    // Header
-    doc.setFontSize(22);
-    doc.setFont("helvetica", "bold");
-    doc.text(storeName, 20, 22);
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(100);
-    doc.text("INVOICE", 170, 22, { align: "right" });
-
-    let y = 30;
-    if (s.store_phone) { doc.text(`Phone: ${s.store_phone}`, 20, y); y += 5; }
-    if (s.store_email) { doc.text(`Email: ${s.store_email}`, 20, y); y += 5; }
-    if (s.store_address) { doc.text(`Address: ${s.store_address}`, 20, y); y += 5; }
-
-    y += 3;
-    doc.setDrawColor(200);
-    doc.line(20, y, 190, y);
-    y += 8;
-
-    // Order info
-    doc.setTextColor(0);
-    doc.setFont("helvetica", "bold");
-    doc.text("Order Details", 20, y); y += 6;
-    doc.setFont("helvetica", "normal");
-    doc.text(`Order: ${order.order_number}`, 20, y);
-    doc.text(`Date: ${new Date(order.created_at).toLocaleDateString("en-GB")}`, 140, y); y += 6;
-    doc.text(`Customer: ${order.customer_name}`, 20, y); y += 5;
-    doc.text(`Phone: ${order.customer_phone}`, 20, y); y += 5;
-    if (order.customer_email) { doc.text(`Email: ${order.customer_email}`, 20, y); y += 5; }
-    doc.text(`District: ${order.district}`, 20, y); y += 5;
-    doc.text(`Address: ${order.delivery_address.substring(0, 80)}`, 20, y); y += 5;
-    doc.text(`Payment: ${order.payment_method}`, 20, y);
-    doc.text(`Status: ${order.order_status}`, 140, y); y += 5;
-    doc.text(`Payment Status: ${order.payment_status}`, 20, y); y += 8;
-
-    // Items table
-    doc.setFillColor(245, 245, 245);
-    doc.rect(20, y - 1, 170, 8, "F");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-    doc.text("Product", 22, y + 4);
-    doc.text("Qty", 125, y + 4, { align: "center" });
-    doc.text("Price", 150, y + 4, { align: "right" });
-    doc.text("Total", 188, y + 4, { align: "right" });
-    y += 10;
-
-    doc.setFont("helvetica", "normal");
-    items.forEach((item) => {
-      const name = `${item.product_name_snapshot}${item.variant_label_snapshot ? ` (${item.variant_label_snapshot})` : ""}`.substring(0, 50);
-      doc.text(name, 22, y + 4);
-      doc.text(String(item.quantity), 125, y + 4, { align: "center" });
-      doc.text(`${item.unit_price_snapshot}`, 150, y + 4, { align: "right" });
-      doc.text(`${item.item_total}`, 188, y + 4, { align: "right" });
-      y += 7;
+    openInvoice({
+      storeName: s.store_name || "রাফছা স্টোর",
+      storeAddress: s.address,
+      orderNumber: order.order_number,
+      date: new Date(order.created_at).toLocaleDateString("bn-BD"),
+      customerName: order.customer_name,
+      customerPhone: order.customer_phone,
+      customerEmail: order.customer_email || undefined,
+      district: order.district,
+      address: order.delivery_address,
+      paymentMethod: order.payment_method,
+      paymentStatus: order.payment_status,
+      orderStatus: order.order_status,
+      items: items.map(item => ({
+        name: item.product_name_snapshot,
+        variant: item.variant_label_snapshot,
+        quantity: item.quantity,
+        unitPrice: item.unit_price_snapshot,
+        total: item.item_total,
+      })),
+      subtotal: order.subtotal,
+      deliveryCharge: order.delivery_charge,
+      discount: order.discount_amount,
+      total: order.total_amount,
+      advancePaid: order.advance_paid,
+      due: order.due_on_delivery,
     });
-
-    y += 3;
-    doc.line(120, y, 190, y); y += 7;
-    doc.setFontSize(10);
-    doc.text("Subtotal:", 140, y); doc.text(`${order.subtotal} BDT`, 188, y, { align: "right" }); y += 6;
-    doc.text("Delivery:", 140, y); doc.text(`${order.delivery_charge} BDT`, 188, y, { align: "right" }); y += 6;
-    if (order.discount_amount > 0) { doc.text("Discount:", 140, y); doc.text(`-${order.discount_amount} BDT`, 188, y, { align: "right" }); y += 6; }
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.text("Total:", 140, y); doc.text(`${order.total_amount} BDT`, 188, y, { align: "right" }); y += 6;
-    doc.setFontSize(10);
-    doc.text("Advance:", 140, y); doc.text(`${order.advance_paid} BDT`, 188, y, { align: "right" }); y += 6;
-    doc.text("Due:", 140, y); doc.text(`${order.due_on_delivery} BDT`, 188, y, { align: "right" });
-
-    y += 15;
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.setTextColor(130);
-    doc.text("Thank you for your order!", 105, y, { align: "center" });
-
-    doc.save(`invoice-${order.order_number}.pdf`);
   };
 
   const statusColor = (s: string) => {
