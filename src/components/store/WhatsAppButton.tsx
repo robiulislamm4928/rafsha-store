@@ -26,7 +26,7 @@ const WhatsAppButton = () => {
       href={`https://wa.me/${intlNumber}?text=${encodeURIComponent("আসসালামু আলাইকুম, আমি আপনাদের স্টোর থেকে অর্ডার করতে চাই।")}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-[4.5rem] right-4 z-40 h-14 w-14 rounded-full bg-[#25D366] text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center md:bottom-20"
+      className="fixed bottom-[8.5rem] right-4 z-40 h-14 w-14 rounded-full bg-[#25D366] text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center md:bottom-20"
       aria-label="WhatsApp এ মেসেজ করুন"
     >
       <svg viewBox="0 0 24 24" className="h-7 w-7 fill-current">
