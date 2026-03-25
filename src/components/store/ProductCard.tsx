@@ -3,7 +3,7 @@ import { ShoppingCart, ImageOff, Zap, Heart, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/hooks/useWishlist";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import QuickViewModal from "./QuickViewModal";
 
 interface ProductCardProps {
