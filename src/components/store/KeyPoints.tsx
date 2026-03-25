@@ -12,6 +12,23 @@ interface KeyPoint {
 
 const fallbackIcons = [Award, Truck, Shield, Headphones];
 
+const KeyPointCard = ({ icon, title, desc, index }: { icon: React.ReactNode; title: string; desc: string; index: number }) => (
+  <div className="bg-card rounded-xl border border-border p-5 md:p-6 text-center shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group gradient-border-hover">
+    <div className="relative mx-auto w-14 h-14 rounded-full flex items-center justify-center mb-3 overflow-hidden">
+      <div className="absolute inset-0 brand-gradient opacity-100 group-hover:opacity-0 transition-opacity duration-300" />
+      <div className="absolute inset-0 rose-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="relative z-10 group-hover:scale-110 transition-transform duration-300">
+        {icon}
+      </div>
+    </div>
+    <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold mb-2">
+      {index + 1}
+    </div>
+    <h3 className="font-semibold text-foreground text-sm md:text-base">{title}</h3>
+    <p className="text-xs text-muted-foreground mt-1">{desc}</p>
+  </div>
+);
+
 const KeyPoints = () => {
   const [points, setPoints] = useState<KeyPoint[]>([]);
 
@@ -26,7 +43,6 @@ const KeyPoints = () => {
       });
   }, []);
 
-  // Fallback to static if no DB data yet
   if (points.length === 0) {
     const staticPoints = [
       { icon: Award, title: "অথেনটিক পণ্য", desc: "মানসম্মত ও আসল পণ্য" },
@@ -38,14 +54,8 @@ const KeyPoints = () => {
       <section className="py-10 md:py-14">
         <div className="container">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {staticPoints.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="bg-card rounded-xl border border-border p-5 md:p-6 text-center shadow-sm hover:shadow-md transition-shadow group">
-                <div className="mx-auto w-12 h-12 rounded-full brand-gradient flex items-center justify-center mb-3 group-hover:animate-float">
-                  <Icon className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <h3 className="font-semibold text-foreground text-sm md:text-base">{title}</h3>
-                <p className="text-xs text-muted-foreground mt-1">{desc}</p>
-              </div>
+            {staticPoints.map(({ icon: Icon, title, desc }, idx) => (
+              <KeyPointCard key={title} icon={<Icon className="h-6 w-6 text-primary-foreground" />} title={title} desc={desc} index={idx} />
             ))}
           </div>
         </div>
@@ -60,17 +70,17 @@ const KeyPoints = () => {
           {points.map((point, idx) => {
             const FallbackIcon = fallbackIcons[idx % fallbackIcons.length];
             return (
-              <div key={point.id} className="bg-card rounded-xl border border-border p-5 md:p-6 text-center shadow-sm hover:shadow-md transition-shadow group">
-                <div className="mx-auto w-12 h-12 rounded-full brand-gradient flex items-center justify-center mb-3 group-hover:animate-float">
-                  {point.icon_url ? (
-                    <img src={point.icon_url} alt={point.title} className="h-6 w-6 object-contain filter brightness-0 invert" />
-                  ) : (
-                    <FallbackIcon className="h-6 w-6 text-primary-foreground" />
-                  )}
-                </div>
-                <h3 className="font-semibold text-foreground text-sm md:text-base">{point.title}</h3>
-                <p className="text-xs text-muted-foreground mt-1">{point.description}</p>
-              </div>
+              <KeyPointCard
+                key={point.id}
+                icon={
+                  point.icon_url
+                    ? <img src={point.icon_url} alt={point.title} className="h-6 w-6 object-contain filter brightness-0 invert" />
+                    : <FallbackIcon className="h-6 w-6 text-primary-foreground" />
+                }
+                title={point.title}
+                desc={point.description}
+                index={idx}
+              />
             );
           })}
         </div>
