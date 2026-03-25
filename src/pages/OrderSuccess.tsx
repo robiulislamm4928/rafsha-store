@@ -198,10 +198,6 @@ const OrderSuccess = () => {
             <Link to="/"><Home className="h-4 w-4 mr-2" /> হোমে ফিরুন</Link>
           </Button>
         </div>
-
-        <div className="text-center mt-6">
-          <Link to="/track-order" className="text-sm text-primary underline">অর্ডার ট্র্যাক করুন →</Link>
-        </div>
       </div>
 
       <Footer />
