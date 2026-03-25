@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,8 +6,12 @@ import TopBar from "@/components/store/TopBar";
 import Header from "@/components/store/Header";
 import Footer from "@/components/store/Footer";
 import ProductCard from "@/components/store/ProductCard";
-import { Package, ChevronLeft, ChevronRight } from "lucide-react";
+import { Package, ChevronLeft, ChevronRight, Filter, X, ArrowUpDown, LayoutGrid, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { useRef } from "react";
 
 interface Category {
@@ -15,6 +19,7 @@ interface Category {
   name: string;
   slug: string;
   image_url: string | null;
+  parent_id: string | null;
 }
 
 interface Product {
@@ -28,13 +33,23 @@ interface Product {
   product_images: { image_url: string }[];
 }
 
+type SortOption = "newest" | "price_low" | "price_high" | "popularity";
+const PRODUCTS_PER_PAGE = 12;
+
 const CategoryPage = () => {
   const { categorySlug } = useParams<{ categorySlug: string }>();
   const [category, setCategory] = useState<Category | null>(null);
+  const [allCategories, setAllCategories] = useState<Category[]>([]);
   const [subCategories, setSubCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [sortBy, setSortBy] = useState<SortOption>("popularity");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
+  const [maxPrice, setMaxPrice] = useState(50000);
+  const [visibleCount, setVisibleCount] = useState(PRODUCTS_PER_PAGE);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -43,34 +58,28 @@ const CategoryPage = () => {
     setNotFound(false);
 
     const fetchData = async () => {
-      const { data: cat } = await supabase
-        .from("categories")
-        .select("id, name, slug, image_url")
-        .eq("slug", categorySlug)
-        .eq("is_active", true)
-        .maybeSingle();
+      // Fetch all categories + current category
+      const [catRes, allCatRes] = await Promise.all([
+        supabase.from("categories").select("id, name, slug, image_url, parent_id").eq("slug", categorySlug).eq("is_active", true).maybeSingle(),
+        supabase.from("categories").select("id, name, slug, image_url, parent_id").eq("is_active", true).order("display_order"),
+      ]);
 
-      if (!cat) {
+      if (!catRes.data) {
         setNotFound(true);
         setLoading(false);
         return;
       }
 
+      const cat = catRes.data as Category;
       setCategory(cat);
+      setAllCategories((allCatRes.data as Category[]) || []);
 
-      // Fetch sub-categories
-      const { data: subCats } = await supabase
-        .from("categories")
-        .select("id, name, slug, image_url")
-        .eq("parent_id", cat.id)
-        .eq("is_active", true)
-        .order("display_order");
+      // Sub-categories
+      const subCats = (allCatRes.data as Category[])?.filter(c => c.parent_id === cat.id) || [];
+      setSubCategories(subCats);
 
-      setSubCategories((subCats as Category[]) || []);
-
-      // Fetch products from this category AND its sub-categories
-      const categoryIds = [cat.id, ...(subCats || []).map((sc) => sc.id)];
-
+      // Products from this category AND sub-categories
+      const categoryIds = [cat.id, ...subCats.map(sc => sc.id)];
       const { data: prods } = await supabase
         .from("products")
         .select("id, name, slug, regular_price, sale_price, short_description, stock_quantity, product_images(image_url)")
@@ -78,18 +87,124 @@ const CategoryPage = () => {
         .in("category_id", categoryIds)
         .order("created_at", { ascending: false });
 
-      setProducts((prods as unknown as Product[]) || []);
+      const productList = (prods as unknown as Product[]) || [];
+      setProducts(productList);
+
+      if (productList.length > 0) {
+        const highest = Math.max(...productList.map(p => p.sale_price ?? p.regular_price), 1000);
+        const roundedMax = Math.ceil(highest / 500) * 500;
+        setMaxPrice(roundedMax);
+        setPriceRange([0, roundedMax]);
+      }
       setLoading(false);
     };
 
     fetchData();
   }, [categorySlug]);
 
+  const filtered = useMemo(() => {
+    let result = [...products];
+    result = result.filter(p => {
+      const price = p.sale_price ?? p.regular_price;
+      return price >= priceRange[0] && price <= priceRange[1];
+    });
+    switch (sortBy) {
+      case "price_low": result.sort((a, b) => (a.sale_price ?? a.regular_price) - (b.sale_price ?? b.regular_price)); break;
+      case "price_high": result.sort((a, b) => (b.sale_price ?? b.regular_price) - (a.sale_price ?? a.regular_price)); break;
+      case "newest": result.sort((a, b) => 0); break; // already sorted by created_at
+    }
+    return result;
+  }, [products, sortBy, priceRange]);
+
+  const visibleProducts = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
+  const hasMore = visibleCount < filtered.length;
+  const isPriceFiltered = priceRange[0] > 0 || priceRange[1] < maxPrice;
+
+  useEffect(() => { setVisibleCount(PRODUCTS_PER_PAGE); }, [sortBy, priceRange]);
+
+  // Get sibling categories (same parent) for the BROWSE sidebar
+  const browseCategories = useMemo(() => {
+    if (!category) return [];
+    // If this is a parent category, show its children + itself
+    if (!category.parent_id) {
+      return allCategories.filter(c => c.parent_id === category.id || c.id === category.id);
+    }
+    // If this is a child category, show siblings + parent
+    return allCategories.filter(c => c.parent_id === category.parent_id || c.id === category.parent_id);
+  }, [category, allCategories]);
+
+  // Get top-level categories for browsing
+  const topCategories = useMemo(() => {
+    return allCategories.filter(c => !c.parent_id);
+  }, [allCategories]);
+
   const scrollSlider = (dir: "left" | "right") => {
     if (!sliderRef.current) return;
-    const amount = 200;
-    sliderRef.current.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
+    sliderRef.current.scrollBy({ left: dir === "left" ? -200 : 200, behavior: "smooth" });
   };
+
+  const BrowseSidebar = ({ className }: { className?: string }) => (
+    <div className={cn("space-y-6", className)}>
+      {/* BROWSE section */}
+      <div>
+        <h3 className="text-sm font-bold text-foreground uppercase tracking-wide mb-1">ব্রাউজ</h3>
+        <div className="w-8 h-0.5 bg-primary mb-4" />
+        <div className="space-y-0.5">
+          <Link
+            to="/products"
+            className="block px-2 py-2 text-sm text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
+          >
+            সকল পণ্য
+          </Link>
+          {topCategories.map(cat => (
+            <Link
+              key={cat.id}
+              to={`/${cat.slug}`}
+              className={cn(
+                "block px-2 py-2 text-sm rounded-md transition-colors",
+                category?.id === cat.id || category?.parent_id === cat.id
+                  ? "font-bold text-foreground"
+                  : "text-foreground/70 hover:text-primary hover:bg-primary/5"
+              )}
+            >
+              {cat.name}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* FILTER BY PRICE */}
+      <div>
+        <h3 className="text-sm font-bold text-foreground uppercase tracking-wide mb-1">মূল্য অনুযায়ী ফিল্টার</h3>
+        <div className="w-8 h-0.5 bg-primary mb-4" />
+        <div className="px-1">
+          <Slider
+            min={0}
+            max={maxPrice}
+            step={50}
+            value={priceRange}
+            onValueChange={(v) => setPriceRange(v as [number, number])}
+            className="mb-3"
+          />
+          <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
+            <span>৳{priceRange[0].toLocaleString()}</span>
+            <span>—</span>
+            <span>৳{priceRange[1].toLocaleString()}</span>
+          </div>
+          {isPriceFiltered && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="w-full text-xs h-8"
+              onClick={() => setPriceRange([0, maxPrice])}
+            >
+              ফিল্টার রিসেট
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 
   if (notFound) {
     return (
@@ -116,109 +231,178 @@ const CategoryPage = () => {
       <TopBar /><Header />
 
       <main>
-        {/* Category Header */}
-        <div className="bg-primary/5 border-b border-border">
-          <div className="container px-4 py-5 sm:py-6 md:py-8">
-            <Link to="/products" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-2">
-              <ChevronLeft className="h-4 w-4 mr-0.5" /> সকল পণ্য
-            </Link>
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-foreground flex items-center gap-2">
-              <Package className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 text-primary" />
-              {loading ? "লোড হচ্ছে..." : category?.name}
-            </h1>
-            {!loading && (
-              <p className="text-xs sm:text-sm text-muted-foreground mt-1">{products.length}টি পণ্য পাওয়া গেছে</p>
-            )}
+        {/* Breadcrumb + Sort bar */}
+        <div className="bg-primary/10 border-b border-border">
+          <div className="container px-4 py-4 sm:py-5 flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-2 text-sm">
+              <Link to="/" className="text-foreground/60 hover:text-primary font-medium uppercase text-xs sm:text-sm">HOME</Link>
+              <span className="text-foreground/40">/</span>
+              <span className="font-bold text-foreground uppercase text-xs sm:text-sm">{category?.name || "..."}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {/* View mode toggle */}
+              <div className="hidden sm:flex border border-border rounded-lg overflow-hidden">
+                <button onClick={() => setViewMode("grid")} className={cn("p-2 transition-colors", viewMode === "grid" ? "bg-primary text-primary-foreground" : "bg-card hover:bg-secondary")}>
+                  <LayoutGrid className="h-4 w-4" />
+                </button>
+                <button onClick={() => setViewMode("list")} className={cn("p-2 transition-colors", viewMode === "list" ? "bg-primary text-primary-foreground" : "bg-card hover:bg-secondary")}>
+                  <List className="h-4 w-4" />
+                </button>
+              </div>
+              <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
+                <SelectTrigger className="w-[160px] sm:w-[180px] h-9 text-xs sm:text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="popularity">Sort by popularity</SelectItem>
+                  <SelectItem value="newest">নতুন আগে</SelectItem>
+                  <SelectItem value="price_low">দাম: কম → বেশি</SelectItem>
+                  <SelectItem value="price_high">দাম: বেশি → কম</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button variant="outline" size="sm" className="md:hidden h-9" onClick={() => setMobileFilterOpen(!mobileFilterOpen)}>
+                <Filter className="h-4 w-4 mr-1.5" /> ফিল্টার
+              </Button>
+            </div>
           </div>
         </div>
 
-        {/* Sub-categories slider */}
-        {!loading && subCategories.length > 0 && (
-          <div className="container px-4 py-4 sm:py-6">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-base sm:text-lg font-semibold text-foreground">সাব-ক্যাটাগরি</h2>
-              <div className="hidden sm:flex gap-1">
-                <button onClick={() => scrollSlider("left")} className="p-1.5 rounded-full bg-secondary hover:bg-secondary/80 transition-colors">
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                <button onClick={() => scrollSlider("right")} className="p-1.5 rounded-full bg-secondary hover:bg-secondary/80 transition-colors">
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-            <div ref={sliderRef} className="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar pb-2">
-              {subCategories.map((sub) => (
-                <Link
-                  key={sub.id}
-                  to={`/${sub.slug}`}
-                  className="group shrink-0 w-28 sm:w-36 md:w-44"
-                >
-                  <div className="relative rounded-xl overflow-hidden border border-border bg-card shadow-sm hover:shadow-md transition-all duration-300 group-hover:border-primary/30">
-                    <div className="aspect-square bg-secondary/30 overflow-hidden">
-                      {sub.image_url ? (
-                        <img
-                          src={sub.image_url}
-                          alt={sub.name}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Package className="h-8 w-8 text-muted-foreground/30" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-2 text-center">
-                      <p className="text-xs sm:text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
-                        {sub.name}
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              ))}
+        {/* Active filter chips */}
+        {isPriceFiltered && (
+          <div className="container px-4 py-2">
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="secondary" className="gap-1 cursor-pointer hover:bg-destructive/10" onClick={() => setPriceRange([0, maxPrice])}>
+                ৳{priceRange[0]} - ৳{priceRange[1]} <X className="h-3 w-3" />
+              </Badge>
             </div>
           </div>
         )}
 
-        {/* Products grid */}
-        <div className="container px-4 py-4 sm:py-6 md:py-8">
-          {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="bg-card rounded-xl border border-border animate-pulse">
-                  <div className="aspect-square bg-secondary rounded-t-xl" />
-                  <div className="p-3 sm:p-4 space-y-2">
-                    <div className="h-4 bg-secondary rounded w-3/4" />
-                    <div className="h-3 bg-secondary rounded w-1/2" />
-                    <div className="h-8 bg-secondary rounded mt-3" />
+        <div className="container px-4 py-6 md:py-8">
+          <div className="flex gap-6 md:gap-8">
+            {/* Desktop Sidebar */}
+            <aside className="hidden md:block w-56 lg:w-64 shrink-0">
+              <div className="sticky top-20">
+                <BrowseSidebar />
+              </div>
+            </aside>
+
+            {/* Mobile Filter Bottom Sheet */}
+            {mobileFilterOpen && (
+              <div className="fixed inset-0 z-50 md:hidden">
+                <div className="absolute inset-0 bg-foreground/50" onClick={() => setMobileFilterOpen(false)} />
+                <div className="absolute bottom-0 left-0 right-0 bg-card rounded-t-2xl border-t border-border p-5 max-h-[70vh] overflow-y-auto animate-slide-up">
+                  <div className="w-10 h-1 rounded-full bg-border mx-auto mb-4" />
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-foreground">ফিল্টার</h3>
+                    <button onClick={() => setMobileFilterOpen(false)} className="p-1 rounded-lg hover:bg-secondary"><X className="h-5 w-5" /></button>
+                  </div>
+                  <BrowseSidebar />
+                </div>
+              </div>
+            )}
+
+            {/* Products */}
+            <div className="flex-1 min-w-0">
+              {/* Sub-categories slider */}
+              {!loading && subCategories.length > 0 && (
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <h2 className="text-base sm:text-lg font-semibold text-foreground">সাব-ক্যাটাগরি</h2>
+                    <div className="hidden sm:flex gap-1">
+                      <button onClick={() => scrollSlider("left")} className="p-1.5 rounded-full bg-secondary hover:bg-secondary/80 transition-colors">
+                        <ChevronLeft className="h-4 w-4" />
+                      </button>
+                      <button onClick={() => scrollSlider("right")} className="p-1.5 rounded-full bg-secondary hover:bg-secondary/80 transition-colors">
+                        <ChevronRight className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <div ref={sliderRef} className="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar pb-2">
+                    {subCategories.map(sub => (
+                      <Link key={sub.id} to={`/${sub.slug}`} className="group shrink-0 w-24 sm:w-32 md:w-36">
+                        <div className="relative rounded-xl overflow-hidden border border-border bg-card shadow-sm hover:shadow-md transition-all duration-300 group-hover:border-primary/30">
+                          <div className="aspect-square bg-secondary/30 overflow-hidden">
+                            {sub.image_url ? (
+                              <img src={sub.image_url} alt={sub.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center"><Package className="h-8 w-8 text-muted-foreground/30" /></div>
+                            )}
+                          </div>
+                          <div className="p-2 text-center">
+                            <p className="text-xs sm:text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">{sub.name}</p>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
                   </div>
                 </div>
-              ))}
+              )}
+
+              {loading ? (
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <div key={i} className="bg-card rounded-xl border border-border overflow-hidden">
+                      <div className="aspect-square skeleton-shimmer" />
+                      <div className="p-4 space-y-2">
+                        <div className="h-4 skeleton-shimmer rounded w-3/4" />
+                        <div className="h-3 skeleton-shimmer rounded w-1/2" />
+                        <div className="h-8 skeleton-shimmer rounded mt-3" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : filtered.length === 0 ? (
+                <div className="text-center py-16">
+                  <Package className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
+                  <p className="text-muted-foreground">এই ক্যাটাগরিতে কোনো পণ্য পাওয়া যায়নি</p>
+                  {isPriceFiltered && (
+                    <Button variant="outline" size="sm" className="mt-4" onClick={() => setPriceRange([0, maxPrice])}>
+                      ফিল্টার রিসেট করুন
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                <>
+                  {viewMode === "grid" ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                      {visibleProducts.map(p => (
+                        <ProductCard key={p.id} id={p.id} name={p.name} slug={p.slug} regularPrice={p.regular_price} salePrice={p.sale_price} imageUrl={p.product_images?.[0]?.image_url || null} shortDescription={p.short_description} stockQuantity={p.stock_quantity} />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {visibleProducts.map(p => (
+                        <Link key={p.id} to={`/product/${p.slug}`} className="flex bg-card rounded-xl border border-border overflow-hidden hover:shadow-md transition-shadow group">
+                          <div className="w-28 sm:w-36 shrink-0 bg-secondary">
+                            {p.product_images?.[0]?.image_url ? (
+                              <img src={p.product_images[0].image_url} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                            ) : <div className="w-full h-full flex items-center justify-center"><Package className="h-8 w-8 text-muted-foreground/30" /></div>}
+                          </div>
+                          <div className="p-3 sm:p-4 flex-1 min-w-0 flex flex-col justify-center">
+                            <h3 className="font-semibold text-foreground text-sm sm:text-base line-clamp-1 group-hover:text-primary transition-colors">{p.name}</h3>
+                            {p.short_description && <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{p.short_description}</p>}
+                            <div className="flex items-baseline gap-2 mt-2">
+                              <span className="text-sm sm:text-lg font-bold text-primary">৳{p.sale_price ?? p.regular_price}</span>
+                              {p.sale_price && p.sale_price < p.regular_price && <span className="text-xs text-muted-foreground line-through">৳{p.regular_price}</span>}
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+
+                  {hasMore && (
+                    <div className="text-center mt-8">
+                      <Button variant="outline" size="lg" onClick={() => setVisibleCount(c => c + PRODUCTS_PER_PAGE)} className="px-8">
+                        আরো দেখুন ({filtered.length - visibleCount}টি বাকি)
+                      </Button>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
-          ) : products.length === 0 ? (
-            <div className="text-center py-16">
-              <Package className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
-              <p className="text-muted-foreground">এই ক্যাটাগরিতে কোনো পণ্য পাওয়া যায়নি</p>
-              <Button asChild variant="outline" size="sm" className="mt-4">
-                <Link to="/products">সকল পণ্য দেখুন</Link>
-              </Button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-              {products.map((p) => (
-                <ProductCard
-                  key={p.id}
-                  id={p.id}
-                  name={p.name}
-                  slug={p.slug}
-                  regularPrice={p.regular_price}
-                  salePrice={p.sale_price}
-                  imageUrl={p.product_images?.[0]?.image_url || null}
-                  shortDescription={p.short_description}
-                  stockQuantity={p.stock_quantity}
-                />
-              ))}
-            </div>
-          )}
+          </div>
         </div>
       </main>
 

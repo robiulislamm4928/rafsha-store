@@ -107,20 +107,42 @@ const Products = () => {
   const selectedCategoryName = categories.find((c) => c.id === selectedCategory)?.name;
   const isPriceFiltered = priceRange[0] > 0 || priceRange[1] < maxPrice;
 
-  const CategorySidebar = ({ className }: { className?: string }) => (
-    <div className={cn("space-y-1", className)}>
-      <button onClick={() => handleCategoryClick(null)} className={cn("w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium transition-colors", selectedCategory === null ? "bg-primary text-primary-foreground" : "text-foreground/80 hover:bg-secondary")}>
-        সকল পণ্য ({products.length})
-      </button>
-      {categories.map((cat) => {
-        const count = products.filter((p) => p.category_id === cat.id).length;
-        return (
-          <button key={cat.id} onClick={() => handleCategoryClick(cat.id)} className={cn("w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-between", selectedCategory === cat.id ? "bg-primary text-primary-foreground" : "text-foreground/80 hover:bg-secondary")}>
-            <span className="truncate">{cat.name}</span>
-            <span className={cn("text-xs ml-2 shrink-0", selectedCategory === cat.id ? "opacity-80" : "text-muted-foreground")}>{count}</span>
+  const BrowseSidebar = ({ className }: { className?: string }) => (
+    <div className={cn("space-y-6", className)}>
+      {/* BROWSE section */}
+      <div>
+        <h3 className="text-sm font-bold text-foreground uppercase tracking-wide mb-1">ব্রাউজ</h3>
+        <div className="w-8 h-0.5 bg-primary mb-4" />
+        <div className="space-y-0.5">
+          <button onClick={() => handleCategoryClick(null)} className={cn("w-full text-left px-2 py-2 text-sm rounded-md transition-colors", selectedCategory === null ? "font-bold text-foreground" : "text-foreground/70 hover:text-primary hover:bg-primary/5")}>
+            সকল পণ্য
           </button>
-        );
-      })}
+          {categories.map((cat) => (
+            <button key={cat.id} onClick={() => handleCategoryClick(cat.id)} className={cn("w-full text-left px-2 py-2 text-sm rounded-md transition-colors", selectedCategory === cat.id ? "font-bold text-foreground" : "text-foreground/70 hover:text-primary hover:bg-primary/5")}>
+              {cat.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* FILTER BY PRICE */}
+      <div>
+        <h3 className="text-sm font-bold text-foreground uppercase tracking-wide mb-1">মূল্য অনুযায়ী ফিল্টার</h3>
+        <div className="w-8 h-0.5 bg-primary mb-4" />
+        <div className="px-1">
+          <Slider min={0} max={maxPrice} step={50} value={priceRange} onValueChange={(v) => setPriceRange(v as [number, number])} className="mb-3" />
+          <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
+            <span>৳{priceRange[0].toLocaleString()}</span>
+            <span>—</span>
+            <span>৳{priceRange[1].toLocaleString()}</span>
+          </div>
+          {isPriceFiltered && (
+            <Button size="sm" variant="outline" className="w-full text-xs h-8" onClick={() => setPriceRange([0, maxPrice])}>
+              ফিল্টার রিসেট
+            </Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 
@@ -196,21 +218,8 @@ const Products = () => {
           <div className="flex gap-6 md:gap-8">
             {/* Desktop Sidebar */}
             <aside className="hidden md:block w-56 lg:w-64 shrink-0">
-              <div className="sticky top-20 space-y-6">
-                <div className="bg-card rounded-xl border border-border p-4">
-                  <h3 className="font-semibold text-foreground mb-3 text-sm">ক্যাটাগরি</h3>
-                  <CategorySidebar />
-                </div>
-                <div className="bg-card rounded-xl border border-border p-4">
-                  <h3 className="font-semibold text-foreground mb-3 text-sm">মূল্য পরিসীমা</h3>
-                  <div className="px-1">
-                    <Slider min={0} max={maxPrice} step={50} value={priceRange} onValueChange={(v) => setPriceRange(v as [number, number])} className="mb-3" />
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <span>৳{priceRange[0].toLocaleString()}</span>
-                      <span>৳{priceRange[1].toLocaleString()}</span>
-                    </div>
-                  </div>
-                </div>
+              <div className="sticky top-20">
+                <BrowseSidebar />
               </div>
             </aside>
 
@@ -224,18 +233,7 @@ const Products = () => {
                     <h3 className="font-semibold text-foreground">ফিল্টার</h3>
                     <button onClick={() => setMobileFilterOpen(false)} className="p-1 rounded-lg hover:bg-secondary"><X className="h-5 w-5" /></button>
                   </div>
-                  <div className="mb-5">
-                    <h4 className="text-sm font-medium text-foreground mb-3">মূল্য পরিসীমা</h4>
-                    <div className="px-1">
-                      <Slider min={0} max={maxPrice} step={50} value={priceRange} onValueChange={(v) => setPriceRange(v as [number, number])} className="mb-3" />
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>৳{priceRange[0].toLocaleString()}</span>
-                        <span>৳{priceRange[1].toLocaleString()}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <h4 className="text-sm font-medium text-foreground mb-3">ক্যাটাগরি</h4>
-                  <CategorySidebar />
+                  <BrowseSidebar />
                 </div>
               </div>
             )}
