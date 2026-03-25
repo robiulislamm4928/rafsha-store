@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 import { MapPin, Facebook, Youtube, Instagram, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
