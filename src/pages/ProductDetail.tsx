@@ -170,7 +170,7 @@ const ProductDetail = () => {
     <div className="min-h-screen bg-background">
       <TopBar /><Header />
       <main className="container py-6 md:py-10">
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "Product", "name": product.name, "description": product.short_description || product.full_description || "", "image": mainImage || "", "sku": product.sku || undefined, "offers": { "@type": "Offer", "price": finalPrice, "priceCurrency": "BDT", "availability": (product.stock_quantity === -1 || product.stock_quantity > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" }, ...(reviews.length > 0 ? { "aggregateRating": { "@type": "AggregateRating", "ratingValue": avgRating.toFixed(1), "reviewCount": reviews.length } } : {}) }) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "Product", "name": product.name, "description": product.short_description || product.full_description || "", "image": mainImage || "", "sku": product.sku || undefined, "offers": { "@type": "Offer", "price": finalPrice, "priceCurrency": "BDT", "availability": (product.stock_quantity === -1 || product.stock_quantity > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" } }) }} />
 
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6 flex-wrap">
