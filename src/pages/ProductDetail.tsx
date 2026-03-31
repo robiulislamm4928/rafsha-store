@@ -8,8 +8,7 @@ import { useRecentlyViewed } from "@/hooks/useRecentlyViewed";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ShoppingCart, Minus, Plus, Star, ChevronLeft, ChevronRight, ImageOff, AlertTriangle, Zap, Package, Share2, Copy, Check, Heart, Shield, Truck, RotateCcw, X } from "lucide-react";
 import Header from "@/components/store/Header";
