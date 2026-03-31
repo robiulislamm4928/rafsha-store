@@ -354,44 +354,6 @@ const ProductDetail = () => {
           </section>
         )}
 
-        <section className="mt-12">
-          <h2 className="text-xl font-display font-bold text-foreground mb-6">গ্রাহক রিভিউ ({reviews.length})</h2>
-          <div className="bg-card rounded-xl border border-border p-6 mb-8">
-            <h3 className="font-semibold text-foreground mb-4">আপনার মতামত দিন</h3>
-            <form onSubmit={handleReviewSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2"><Label htmlFor="rname">আপনার নাম *</Label><Input id="rname" value={reviewName} onChange={(e) => setReviewName(e.target.value)} required maxLength={100} placeholder="নাম লিখুন" /></div>
-                <div className="space-y-2"><Label htmlFor="rloc">অবস্থান</Label><Input id="rloc" value={reviewLocation} onChange={(e) => setReviewLocation(e.target.value)} maxLength={100} placeholder="যেমন: ঢাকা" /></div>
-              </div>
-              <div className="space-y-2">
-                <Label>রেটিং *</Label>
-                <div className="flex gap-1">{[1,2,3,4,5].map((star) => <button key={star} type="button" onClick={() => setReviewRating(star)} className="p-0.5"><Star className={`h-6 w-6 transition-colors ${star <= reviewRating ? "text-accent fill-accent" : "text-border"}`} /></button>)}</div>
-              </div>
-              <div className="space-y-2"><Label htmlFor="rtext">রিভিউ</Label><Textarea id="rtext" value={reviewText} onChange={(e) => setReviewText(e.target.value)} maxLength={1000} placeholder="আপনার অভিজ্ঞতা শেয়ার করুন..." rows={3} /></div>
-              <Button type="submit" disabled={submitting} className="brand-gradient text-primary-foreground hover:opacity-90">{submitting ? "জমা হচ্ছে..." : "রিভিউ জমা দিন"}</Button>
-            </form>
-          </div>
-
-          {reviews.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {reviews.map((r) => (
-                <div key={r.id} className="bg-card rounded-xl border border-border p-5 gradient-border-hover">
-                  <div className="flex gap-1 mb-2">{[...Array(5)].map((_, i) => <Star key={i} className={`h-4 w-4 ${i < r.rating ? "text-accent fill-accent" : "text-border"}`} />)}</div>
-                  {r.review_text && <p className="text-sm text-foreground/80 mb-3">"{r.review_text}"</p>}
-                  <div className="flex items-center justify-between border-t border-border pt-3">
-                    <div><p className="font-semibold text-sm text-foreground">{r.reviewer_name}</p>{r.reviewer_location && <p className="text-xs text-muted-foreground">{r.reviewer_location}</p>}</div>
-                    <p className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString("bn-BD")}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8"><MessageSquare className="h-10 w-10 mx-auto text-muted-foreground/30 mb-2" /><p className="text-muted-foreground">এখনো কোনো রিভিউ নেই। প্রথম রিভিউ দিন!</p></div>
-          )}
-        </section>
-
-        <section className="mt-12 bg-card rounded-xl border border-border p-6 md:p-8"><ProductQA productId={product.id} /></section>
-        <section className="mt-12 bg-card rounded-xl border border-border p-6 md:p-8"><ComparisonTable currentProductId={product.id} categoryId={product.category_id} /></section>
 
         {relatedProducts.length > 0 && (
           <section className="mt-12">
