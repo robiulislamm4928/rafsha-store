@@ -32,8 +32,12 @@ const platformIcons: Record<string, string> = {
 
 const CustomerReviews = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
+  const { settings } = useSiteSettings();
+
+  const reviewsEnabled = settings.reviews_enabled !== "false";
 
   useEffect(() => {
+    if (!reviewsEnabled) return;
     supabase
       .from("reviews")
       .select("id, reviewer_name, reviewer_location, rating, review_text, reviewer_image_url, social_link, social_platform, user_id")
