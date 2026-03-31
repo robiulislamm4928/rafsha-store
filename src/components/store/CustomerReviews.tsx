@@ -49,6 +49,8 @@ const CustomerReviews = () => {
       });
   }, []);
 
+  if (!reviewsEnabled) return null;
+
   return (
     <section className="py-10 md:py-14 brand-gradient-subtle">
       <div className="container">
