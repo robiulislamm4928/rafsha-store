@@ -99,14 +99,12 @@ const ProductDetail = () => {
       const { data: prod } = await supabase.from("products").select("id, name, slug, short_description, full_description, regular_price, sale_price, stock_quantity, sku, category_id").eq("slug", slug).eq("is_active", true).single();
       if (!prod) { setLoading(false); return; }
       setProduct(prod);
-      const [imgRes, varRes, revRes] = await Promise.all([
+      const [imgRes, varRes] = await Promise.all([
         supabase.from("product_images").select("*").eq("product_id", prod.id).order("display_order"),
         supabase.from("product_variants").select("*").eq("product_id", prod.id).eq("is_active", true),
-        supabase.from("reviews").select("*").eq("product_id", prod.id).eq("is_approved", true).order("created_at", { ascending: false }).limit(50),
       ]);
       setImages((imgRes.data as ProductImage[]) || []);
       setVariants((varRes.data as Variant[]) || []);
-      setReviews((revRes.data as Review[]) || []);
 
       // Category name for breadcrumb
       if (prod.category_id) {
