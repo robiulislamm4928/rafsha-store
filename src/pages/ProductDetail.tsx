@@ -165,17 +165,6 @@ const ProductDetail = () => {
   const handleAddToCart = () => { addItem({ productId: product.id, productName: product.name, variantLabel: activeVariant?.variant_label, price: finalPrice, image: images[0]?.image_url }, quantity); toast.success(`${product.name} কার্টে যোগ করা হয়েছে`); };
   const handleBuyNow = () => { addItem({ productId: product.id, productName: product.name, variantLabel: activeVariant?.variant_label, price: finalPrice, image: images[0]?.image_url }, quantity); navigate("/checkout"); };
 
-  const handleReviewSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const parsed = reviewSchema.safeParse({ reviewer_name: reviewName, reviewer_location: reviewLocation || undefined, rating: reviewRating, review_text: reviewText || undefined });
-    if (!parsed.success) { toast.error(parsed.error.errors[0]?.message); return; }
-    setSubmitting(true);
-    const { error } = await supabase.from("reviews").insert({ product_id: product.id, user_id: user?.id || null, reviewer_name: parsed.data.reviewer_name, reviewer_location: parsed.data.reviewer_location || null, rating: parsed.data.rating, review_text: parsed.data.review_text || null, reviewer_image_url: userProfileImage || null });
-    setSubmitting(false);
-    if (error) { toast.error("রিভিউ জমা দিতে সমস্যা হয়েছে"); } else { toast.success("আপনার রিভিউ অনুমোদনের পর প্রকাশিত হবে"); setReviewName(""); setReviewLocation(""); setReviewRating(5); setReviewText(""); }
-  };
-
-  const avgRating = reviews.length > 0 ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0;
 
   return (
     <div className="min-h-screen bg-background">
