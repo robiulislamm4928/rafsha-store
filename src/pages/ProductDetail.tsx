@@ -70,7 +70,7 @@ const ProductDetail = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [images, setImages] = useState<ProductImage[]>([]);
   const [variants, setVariants] = useState<Variant[]>([]);
-  const [reviews, setReviews] = useState<Review[]>([]);
+  
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState<string>("");
   const [quantity, setQuantity] = useState(1);
