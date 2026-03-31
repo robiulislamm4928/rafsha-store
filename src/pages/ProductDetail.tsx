@@ -11,8 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, Minus, Plus, Star, ChevronLeft, ChevronRight, MessageSquare, ImageOff, AlertTriangle, Zap, Package, Share2, Copy, Check, Heart, Shield, Truck, RotateCcw, X } from "lucide-react";
-import { z } from "zod";
+import { ShoppingCart, Minus, Plus, Star, ChevronLeft, ChevronRight, ImageOff, AlertTriangle, Zap, Package, Share2, Copy, Check, Heart, Shield, Truck, RotateCcw, X } from "lucide-react";
 import Header from "@/components/store/Header";
 import TopBar from "@/components/store/TopBar";
 import Footer from "@/components/store/Footer";
