@@ -58,9 +58,6 @@ interface Product { id: string; name: string; slug: string; short_description: s
 interface RelatedProduct { id: string; name: string; slug: string; regular_price: number; sale_price: number | null; stock_quantity: number; short_description: string | null; product_images: { image_url: string }[]; }
 interface Variant { id: string; variant_label: string; variant_type: string; price_adjustment: number; stock_quantity: number; }
 interface ProductImage { id: string; image_url: string; display_order: number; }
-interface Review { id: string; reviewer_name: string; reviewer_location: string | null; rating: number; review_text: string | null; created_at: string; }
-
-const reviewSchema = z.object({ reviewer_name: z.string().trim().min(1, "নাম প্রয়োজন").max(100), reviewer_location: z.string().trim().max(100).optional(), rating: z.number().min(1).max(5), review_text: z.string().trim().max(1000).optional() });
 
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
