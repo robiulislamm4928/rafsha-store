@@ -237,12 +237,6 @@ const ProductDetail = () => {
                 <Heart className={`h-5 w-5 ${isWishlisted(product.id) ? "fill-current" : ""}`} />
               </button>
             </div>
-            {reviews.length > 0 && (
-              <div className="flex items-center gap-2">
-                <div className="flex gap-0.5">{[...Array(5)].map((_, i) => <Star key={i} className={`h-4 w-4 ${i < Math.round(avgRating) ? "text-accent fill-accent" : "text-border"}`} />)}</div>
-                <span className="text-sm text-muted-foreground">({reviews.length} রিভিউ)</span>
-              </div>
-            )}
             <div className="flex items-baseline gap-3">
               <span className="text-3xl font-bold text-primary">৳{finalPrice}</span>
               {hasDiscount && <span className="text-lg text-muted-foreground line-through">৳{product.regular_price + (activeVariant?.price_adjustment ?? 0)}</span>}
