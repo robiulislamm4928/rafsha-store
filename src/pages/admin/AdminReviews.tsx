@@ -40,6 +40,28 @@ const AdminReviews = () => {
   const [editing, setEditing] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({ ...emptyForm });
+  const [reviewsEnabled, setReviewsEnabled] = useState(true);
+  const [togglingReviews, setTogglingReviews] = useState(false);
+
+  useEffect(() => {
+    supabase.from("site_settings").select("value").eq("key", "reviews_enabled").single().then(({ data }) => {
+      if (data) setReviewsEnabled(data.value !== "false");
+    });
+  }, []);
+
+  const toggleReviews = async () => {
+    setTogglingReviews(true);
+    const newVal = !reviewsEnabled;
+    const { data } = await supabase.from("site_settings").select("id").eq("key", "reviews_enabled").single();
+    if (data) {
+      await supabase.from("site_settings").update({ value: String(newVal) }).eq("key", "reviews_enabled");
+    } else {
+      await supabase.from("site_settings").insert({ key: "reviews_enabled", value: String(newVal) });
+    }
+    setReviewsEnabled(newVal);
+    setTogglingReviews(false);
+    toast.success(newVal ? "রিভিউ সেকশন চালু হয়েছে" : "রিভিউ সেকশন বন্ধ হয়েছে");
+  };
 
   const fetchData = async () => {
     const [rRes, pRes] = await Promise.all([
