@@ -90,7 +90,7 @@ const ProductDetail = () => {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => { if (!user) { setUserProfileImage(null); return; } supabase.from("users").select("profile_image_url").eq("id", user.id).single().then(({ data }) => { setUserProfileImage(data?.profile_image_url || null); }); }, [user]);
+  
 
   useEffect(() => {
     if (!slug) return;
