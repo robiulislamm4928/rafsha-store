@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 import { Star, MessageCircle, Globe, ExternalLink } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -31,8 +32,12 @@ const platformIcons: Record<string, string> = {
 
 const CustomerReviews = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
+  const { settings } = useSiteSettings();
+
+  const reviewsEnabled = settings.reviews_enabled !== "false";
 
   useEffect(() => {
+    if (!reviewsEnabled) return;
     supabase
       .from("reviews")
       .select("id, reviewer_name, reviewer_location, rating, review_text, reviewer_image_url, social_link, social_platform, user_id")
@@ -43,6 +48,8 @@ const CustomerReviews = () => {
         if (data) setReviews(data as Review[]);
       });
   }, []);
+
+  if (!reviewsEnabled) return null;
 
   return (
     <section className="py-10 md:py-14 brand-gradient-subtle">

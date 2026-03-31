@@ -40,6 +40,28 @@ const AdminReviews = () => {
   const [editing, setEditing] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({ ...emptyForm });
+  const [reviewsEnabled, setReviewsEnabled] = useState(true);
+  const [togglingReviews, setTogglingReviews] = useState(false);
+
+  useEffect(() => {
+    supabase.from("site_settings").select("value").eq("key", "reviews_enabled").single().then(({ data }) => {
+      if (data) setReviewsEnabled(data.value !== "false");
+    });
+  }, []);
+
+  const toggleReviews = async () => {
+    setTogglingReviews(true);
+    const newVal = !reviewsEnabled;
+    const { data } = await supabase.from("site_settings").select("id").eq("key", "reviews_enabled").single();
+    if (data) {
+      await supabase.from("site_settings").update({ value: String(newVal) }).eq("key", "reviews_enabled");
+    } else {
+      await supabase.from("site_settings").insert({ key: "reviews_enabled", value: String(newVal) });
+    }
+    setReviewsEnabled(newVal);
+    setTogglingReviews(false);
+    toast.success(newVal ? "রিভিউ সেকশন চালু হয়েছে" : "রিভিউ সেকশন বন্ধ হয়েছে");
+  };
 
   const fetchData = async () => {
     const [rRes, pRes] = await Promise.all([
@@ -129,12 +151,28 @@ const AdminReviews = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <h1 className="text-2xl font-display font-bold text-foreground">রিভিউ ম্যানেজমেন্ট</h1>
-        <Button onClick={openAdd} className="brand-gradient text-primary-foreground hover:opacity-90">
-          <Plus className="h-4 w-4 mr-1" /> রিভিউ যোগ করুন
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button
+            variant={reviewsEnabled ? "destructive" : "default"}
+            size="sm"
+            onClick={toggleReviews}
+            disabled={togglingReviews}
+            className={reviewsEnabled ? "" : "bg-emerald-600 hover:bg-emerald-700 text-white"}
+          >
+            {reviewsEnabled ? "রিভিউ বন্ধ করুন" : "রিভিউ চালু করুন"}
+          </Button>
+          <Button onClick={openAdd} className="brand-gradient text-primary-foreground hover:opacity-90">
+            <Plus className="h-4 w-4 mr-1" /> রিভিউ যোগ করুন
+          </Button>
+        </div>
       </div>
+      {!reviewsEnabled && (
+        <div className="bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800 rounded-lg p-3 text-sm text-orange-700 dark:text-orange-300">
+          ⚠️ রিভিউ সেকশন বর্তমানে বন্ধ আছে — ওয়েবসাইটে রিভিউ দেখাচ্ছে না।
+        </div>
+      )}
 
       <div className="grid gap-4">
         {reviews.length === 0 ? (
