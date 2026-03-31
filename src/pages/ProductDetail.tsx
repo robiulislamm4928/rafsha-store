@@ -20,8 +20,6 @@ import Footer from "@/components/store/Footer";
 import ProductCard from "@/components/store/ProductCard";
 import RecentlyViewedProducts from "@/components/store/RecentlyViewedProducts";
 import ImageZoom from "@/components/store/ImageZoom";
-import ProductQA from "@/components/store/ProductQA";
-import ComparisonTable from "@/components/store/ComparisonTable";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 
 // --- WhatsApp & Social Share (same as before, kept compact) ---
