@@ -75,12 +75,6 @@ const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState<string>("");
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [reviewName, setReviewName] = useState("");
-  const [reviewLocation, setReviewLocation] = useState("");
-  const [reviewRating, setReviewRating] = useState(5);
-  const [reviewText, setReviewText] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [userProfileImage, setUserProfileImage] = useState<string | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [categoryName, setCategoryName] = useState<string | null>(null);
