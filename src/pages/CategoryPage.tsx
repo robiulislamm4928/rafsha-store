@@ -246,11 +246,6 @@ const CategoryPage = () => {
                 <div className="text-center py-16">
                   <Package className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
                   <p className="text-muted-foreground">এই ক্যাটাগরিতে কোনো পণ্য পাওয়া যায়নি</p>
-                  {isPriceFiltered && (
-                    <Button variant="outline" size="sm" className="mt-4" onClick={() => setPriceRange([0, maxPrice])}>
-                      ফিল্টার রিসেট করুন
-                    </Button>
-                  )}
                 </div>
               ) : (
                 <>
