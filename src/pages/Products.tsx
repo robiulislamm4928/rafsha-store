@@ -154,31 +154,9 @@ const Products = () => {
         </div>
 
         <div className="container px-4 py-6 md:py-8">
-          <div className="flex gap-6 md:gap-8">
-            {/* Desktop Sidebar */}
-            <aside className="hidden md:block w-56 lg:w-64 shrink-0">
-              <div className="sticky top-20">
-                <BrowseSidebar />
-              </div>
-            </aside>
-
-            {/* Mobile Filter Bottom Sheet */}
-            {mobileFilterOpen && (
-              <div className="fixed inset-0 z-50 md:hidden">
-                <div className="absolute inset-0 bg-foreground/50" onClick={() => setMobileFilterOpen(false)} />
-                <div className="absolute bottom-0 left-0 right-0 bg-card rounded-t-2xl border-t border-border p-5 max-h-[70vh] overflow-y-auto animate-slide-up">
-                  <div className="w-10 h-1 rounded-full bg-border mx-auto mb-4" />
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-foreground">ফিল্টার</h3>
-                    <button onClick={() => setMobileFilterOpen(false)} className="p-1 rounded-lg hover:bg-secondary"><X className="h-5 w-5" /></button>
-                  </div>
-                  <BrowseSidebar />
-                </div>
-              </div>
-            )}
-
+          <div>
             {/* Products */}
-            <div className="flex-1 min-w-0">
+            <div>
               {loading ? (
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                   {Array.from({ length: 8 }).map((_, i) => (
