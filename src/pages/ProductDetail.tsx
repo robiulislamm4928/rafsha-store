@@ -175,7 +175,7 @@ const ProductDetail = () => {
           <Link to="/" className="hover:text-primary transition-colors">হোম</Link>
           <ChevronRight className="h-3 w-3" />
           <Link to="/products" className="hover:text-primary transition-colors">সকল পণ্য</Link>
-          {categoryName && (<><ChevronRight className="h-3 w-3" /><span className="text-foreground/70">{categoryName}</span></>)}
+          {categoryName && (<><ChevronRight className="h-3 w-3" /><Link to={`/${categorySlug}`} className="hover:text-primary transition-colors">{categoryName}</Link></>)}
           <ChevronRight className="h-3 w-3" />
           <span className="text-foreground font-medium truncate max-w-[200px]">{product.name}</span>
         </nav>
