@@ -139,9 +139,6 @@ const Products = () => {
                     <SelectItem value="rating">সেরা রেটিং</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button variant="outline" size="sm" className="md:hidden h-9" onClick={() => setMobileFilterOpen(!mobileFilterOpen)}>
-                  <Filter className="h-4 w-4 mr-1.5" /> ফিল্টার
-                </Button>
               </div>
             </div>
 
