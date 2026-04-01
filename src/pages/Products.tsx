@@ -6,10 +6,9 @@ import TopBar from "@/components/store/TopBar";
 import Header from "@/components/store/Header";
 import Footer from "@/components/store/Footer";
 import ProductCard from "@/components/store/ProductCard";
-import { Package, Filter, X, ArrowUpDown, LayoutGrid, List } from "lucide-react";
+import { Package, X, ArrowUpDown, LayoutGrid, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
@@ -43,10 +42,7 @@ const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(searchParams.get("category"));
   const [loading, setLoading] = useState(true);
-  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("newest");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
-  const [maxPrice, setMaxPrice] = useState(50000);
   const [visibleCount, setVisibleCount] = useState(PRODUCTS_PER_PAGE);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
@@ -72,10 +68,6 @@ const Products = () => {
           ...p, avg_rating: ratingMap[p.id] ? ratingMap[p.id].sum / ratingMap[p.id].count : 0,
         }));
         setProducts(prods);
-        const highest = Math.max(...prods.map((p) => p.sale_price ?? p.regular_price), 1000);
-        const roundedMax = Math.ceil(highest / 500) * 500;
-        setMaxPrice(roundedMax);
-        setPriceRange([0, roundedMax]);
       }
       setLoading(false);
     };
@@ -84,67 +76,25 @@ const Products = () => {
 
   const filtered = useMemo(() => {
     let result = selectedCategory ? products.filter((p) => p.category_id === selectedCategory) : [...products];
-    result = result.filter((p) => { const price = p.sale_price ?? p.regular_price; return price >= priceRange[0] && price <= priceRange[1]; });
     switch (sortBy) {
       case "price_low": result.sort((a, b) => (a.sale_price ?? a.regular_price) - (b.sale_price ?? b.regular_price)); break;
       case "price_high": result.sort((a, b) => (b.sale_price ?? b.regular_price) - (a.sale_price ?? a.regular_price)); break;
       case "rating": result.sort((a, b) => (b.avg_rating || 0) - (a.avg_rating || 0)); break;
     }
     return result;
-  }, [products, selectedCategory, sortBy, priceRange]);
+  }, [products, selectedCategory, sortBy]);
 
   const visibleProducts = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
   const hasMore = visibleCount < filtered.length;
 
-  useEffect(() => { setVisibleCount(PRODUCTS_PER_PAGE); }, [selectedCategory, sortBy, priceRange]);
+  useEffect(() => { setVisibleCount(PRODUCTS_PER_PAGE); }, [selectedCategory, sortBy]);
 
   const handleCategoryClick = (catId: string | null) => {
     setSelectedCategory(catId);
-    setMobileFilterOpen(false);
     if (catId) setSearchParams({ category: catId }); else setSearchParams({});
   };
 
   const selectedCategoryName = categories.find((c) => c.id === selectedCategory)?.name;
-  const isPriceFiltered = priceRange[0] > 0 || priceRange[1] < maxPrice;
-
-  const BrowseSidebar = ({ className }: { className?: string }) => (
-    <div className={cn("space-y-6", className)}>
-      {/* BROWSE section */}
-      <div>
-        <h3 className="text-sm font-bold text-foreground uppercase tracking-wide mb-1">ব্রাউজ</h3>
-        <div className="w-8 h-0.5 bg-primary mb-4" />
-        <div className="space-y-0.5">
-          <button onClick={() => handleCategoryClick(null)} className={cn("w-full text-left px-2 py-2 text-sm rounded-md transition-colors", selectedCategory === null ? "font-bold text-foreground" : "text-foreground/70 hover:text-primary hover:bg-primary/5")}>
-            সকল পণ্য
-          </button>
-          {categories.map((cat) => (
-            <button key={cat.id} onClick={() => handleCategoryClick(cat.id)} className={cn("w-full text-left px-2 py-2 text-sm rounded-md transition-colors", selectedCategory === cat.id ? "font-bold text-foreground" : "text-foreground/70 hover:text-primary hover:bg-primary/5")}>
-              {cat.name}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* FILTER BY PRICE */}
-      <div>
-        <h3 className="text-sm font-bold text-foreground uppercase tracking-wide mb-1">মূল্য অনুযায়ী ফিল্টার</h3>
-        <div className="w-8 h-0.5 bg-primary mb-4" />
-        <div className="px-1">
-          <Slider min={0} max={maxPrice} step={50} value={priceRange} onValueChange={(v) => setPriceRange(v as [number, number])} className="mb-3" />
-          <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-            <span>৳{priceRange[0].toLocaleString()}</span>
-            <span>—</span>
-            <span>৳{priceRange[1].toLocaleString()}</span>
-          </div>
-          {isPriceFiltered && (
-            <Button size="sm" variant="outline" className="w-full text-xs h-8" onClick={() => setPriceRange([0, maxPrice])}>
-              ফিল্টার রিসেট
-            </Button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <>
@@ -187,59 +137,24 @@ const Products = () => {
                     <SelectItem value="rating">সেরা রেটিং</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button variant="outline" size="sm" className="md:hidden h-9" onClick={() => setMobileFilterOpen(!mobileFilterOpen)}>
-                  <Filter className="h-4 w-4 mr-1.5" /> ফিল্টার
-                </Button>
               </div>
             </div>
 
             {/* Active filter chips */}
-            {(selectedCategory || isPriceFiltered) && (
+            {selectedCategory && (
               <div className="flex flex-wrap gap-2 mt-3">
-                {selectedCategoryName && (
-                  <Badge variant="secondary" className="gap-1 cursor-pointer hover:bg-destructive/10" onClick={() => handleCategoryClick(null)}>
-                    {selectedCategoryName} <X className="h-3 w-3" />
-                  </Badge>
-                )}
-                {isPriceFiltered && (
-                  <Badge variant="secondary" className="gap-1 cursor-pointer hover:bg-destructive/10" onClick={() => setPriceRange([0, maxPrice])}>
-                    ৳{priceRange[0]} - ৳{priceRange[1]} <X className="h-3 w-3" />
-                  </Badge>
-                )}
-                <button onClick={() => { handleCategoryClick(null); setPriceRange([0, maxPrice]); }} className="text-xs text-primary hover:underline">
-                  সকল ফিল্টার সরান
-                </button>
+                <Badge variant="secondary" className="gap-1 cursor-pointer hover:bg-destructive/10" onClick={() => handleCategoryClick(null)}>
+                  {selectedCategoryName} <X className="h-3 w-3" />
+                </Badge>
               </div>
             )}
           </div>
         </div>
 
         <div className="container px-4 py-6 md:py-8">
-          <div className="flex gap-6 md:gap-8">
-            {/* Desktop Sidebar */}
-            <aside className="hidden md:block w-56 lg:w-64 shrink-0">
-              <div className="sticky top-20">
-                <BrowseSidebar />
-              </div>
-            </aside>
-
-            {/* Mobile Filter Bottom Sheet */}
-            {mobileFilterOpen && (
-              <div className="fixed inset-0 z-50 md:hidden">
-                <div className="absolute inset-0 bg-foreground/50" onClick={() => setMobileFilterOpen(false)} />
-                <div className="absolute bottom-0 left-0 right-0 bg-card rounded-t-2xl border-t border-border p-5 max-h-[70vh] overflow-y-auto animate-slide-up">
-                  <div className="w-10 h-1 rounded-full bg-border mx-auto mb-4" />
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-foreground">ফিল্টার</h3>
-                    <button onClick={() => setMobileFilterOpen(false)} className="p-1 rounded-lg hover:bg-secondary"><X className="h-5 w-5" /></button>
-                  </div>
-                  <BrowseSidebar />
-                </div>
-              </div>
-            )}
-
+          <div>
             {/* Products */}
-            <div className="flex-1 min-w-0">
+            <div>
               {loading ? (
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                   {Array.from({ length: 8 }).map((_, i) => (
@@ -257,9 +172,6 @@ const Products = () => {
                 <div className="text-center py-16">
                   <Package className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
                   <p className="text-muted-foreground">কোনো পণ্য পাওয়া যায়নি</p>
-                  <Button variant="outline" size="sm" className="mt-4" onClick={() => { setSelectedCategory(null); setPriceRange([0, maxPrice]); }}>
-                    সকল ফিল্টার সরান
-                  </Button>
                 </div>
               ) : (
                 <>

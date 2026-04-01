@@ -6,11 +6,9 @@ import TopBar from "@/components/store/TopBar";
 import Header from "@/components/store/Header";
 import Footer from "@/components/store/Footer";
 import ProductCard from "@/components/store/ProductCard";
-import { Package, ChevronLeft, ChevronRight, Filter, X, ArrowUpDown, LayoutGrid, List } from "lucide-react";
+import { Package, ChevronLeft, ChevronRight, ArrowUpDown, LayoutGrid, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useRef } from "react";
 
@@ -45,11 +43,9 @@ const CategoryPage = () => {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("popularity");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
-  const [maxPrice, setMaxPrice] = useState(50000);
   const [visibleCount, setVisibleCount] = useState(PRODUCTS_PER_PAGE);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  
   const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -90,12 +86,6 @@ const CategoryPage = () => {
       const productList = (prods as unknown as Product[]) || [];
       setProducts(productList);
 
-      if (productList.length > 0) {
-        const highest = Math.max(...productList.map(p => p.sale_price ?? p.regular_price), 1000);
-        const roundedMax = Math.ceil(highest / 500) * 500;
-        setMaxPrice(roundedMax);
-        setPriceRange([0, roundedMax]);
-      }
       setLoading(false);
     };
 
@@ -104,23 +94,18 @@ const CategoryPage = () => {
 
   const filtered = useMemo(() => {
     let result = [...products];
-    result = result.filter(p => {
-      const price = p.sale_price ?? p.regular_price;
-      return price >= priceRange[0] && price <= priceRange[1];
-    });
     switch (sortBy) {
       case "price_low": result.sort((a, b) => (a.sale_price ?? a.regular_price) - (b.sale_price ?? b.regular_price)); break;
       case "price_high": result.sort((a, b) => (b.sale_price ?? b.regular_price) - (a.sale_price ?? a.regular_price)); break;
-      case "newest": result.sort((a, b) => 0); break; // already sorted by created_at
+      case "newest": break; // already sorted by created_at
     }
     return result;
-  }, [products, sortBy, priceRange]);
+  }, [products, sortBy]);
 
   const visibleProducts = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
   const hasMore = visibleCount < filtered.length;
-  const isPriceFiltered = priceRange[0] > 0 || priceRange[1] < maxPrice;
 
-  useEffect(() => { setVisibleCount(PRODUCTS_PER_PAGE); }, [sortBy, priceRange]);
+  useEffect(() => { setVisibleCount(PRODUCTS_PER_PAGE); }, [sortBy]);
 
   // Get sibling categories (same parent) for the BROWSE sidebar
   const browseCategories = useMemo(() => {
@@ -143,68 +128,6 @@ const CategoryPage = () => {
     sliderRef.current.scrollBy({ left: dir === "left" ? -200 : 200, behavior: "smooth" });
   };
 
-  const BrowseSidebar = ({ className }: { className?: string }) => (
-    <div className={cn("space-y-6", className)}>
-      {/* BROWSE section */}
-      <div>
-        <h3 className="text-sm font-bold text-foreground uppercase tracking-wide mb-1">ব্রাউজ</h3>
-        <div className="w-8 h-0.5 bg-primary mb-4" />
-        <div className="space-y-0.5">
-          <Link
-            to="/products"
-            className="block px-2 py-2 text-sm text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-md transition-colors"
-          >
-            সকল পণ্য
-          </Link>
-          {topCategories.map(cat => (
-            <Link
-              key={cat.id}
-              to={`/${cat.slug}`}
-              className={cn(
-                "block px-2 py-2 text-sm rounded-md transition-colors",
-                category?.id === cat.id || category?.parent_id === cat.id
-                  ? "font-bold text-foreground"
-                  : "text-foreground/70 hover:text-primary hover:bg-primary/5"
-              )}
-            >
-              {cat.name}
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* FILTER BY PRICE */}
-      <div>
-        <h3 className="text-sm font-bold text-foreground uppercase tracking-wide mb-1">মূল্য অনুযায়ী ফিল্টার</h3>
-        <div className="w-8 h-0.5 bg-primary mb-4" />
-        <div className="px-1">
-          <Slider
-            min={0}
-            max={maxPrice}
-            step={50}
-            value={priceRange}
-            onValueChange={(v) => setPriceRange(v as [number, number])}
-            className="mb-3"
-          />
-          <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-            <span>৳{priceRange[0].toLocaleString()}</span>
-            <span>—</span>
-            <span>৳{priceRange[1].toLocaleString()}</span>
-          </div>
-          {isPriceFiltered && (
-            <Button
-              size="sm"
-              variant="outline"
-              className="w-full text-xs h-8"
-              onClick={() => setPriceRange([0, maxPrice])}
-            >
-              ফিল্টার রিসেট
-            </Button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
 
   if (notFound) {
     return (
@@ -260,50 +183,15 @@ const CategoryPage = () => {
                   <SelectItem value="price_high">দাম: বেশি → কম</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="outline" size="sm" className="md:hidden h-9" onClick={() => setMobileFilterOpen(!mobileFilterOpen)}>
-                <Filter className="h-4 w-4 mr-1.5" /> ফিল্টার
-              </Button>
             </div>
           </div>
         </div>
 
-        {/* Active filter chips */}
-        {isPriceFiltered && (
-          <div className="container px-4 py-2">
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="secondary" className="gap-1 cursor-pointer hover:bg-destructive/10" onClick={() => setPriceRange([0, maxPrice])}>
-                ৳{priceRange[0]} - ৳{priceRange[1]} <X className="h-3 w-3" />
-              </Badge>
-            </div>
-          </div>
-        )}
 
         <div className="container px-4 py-6 md:py-8">
-          <div className="flex gap-6 md:gap-8">
-            {/* Desktop Sidebar */}
-            <aside className="hidden md:block w-56 lg:w-64 shrink-0">
-              <div className="sticky top-20">
-                <BrowseSidebar />
-              </div>
-            </aside>
-
-            {/* Mobile Filter Bottom Sheet */}
-            {mobileFilterOpen && (
-              <div className="fixed inset-0 z-50 md:hidden">
-                <div className="absolute inset-0 bg-foreground/50" onClick={() => setMobileFilterOpen(false)} />
-                <div className="absolute bottom-0 left-0 right-0 bg-card rounded-t-2xl border-t border-border p-5 max-h-[70vh] overflow-y-auto animate-slide-up">
-                  <div className="w-10 h-1 rounded-full bg-border mx-auto mb-4" />
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-foreground">ফিল্টার</h3>
-                    <button onClick={() => setMobileFilterOpen(false)} className="p-1 rounded-lg hover:bg-secondary"><X className="h-5 w-5" /></button>
-                  </div>
-                  <BrowseSidebar />
-                </div>
-              </div>
-            )}
-
+          <div>
             {/* Products */}
-            <div className="flex-1 min-w-0">
+            <div>
               {/* Sub-categories slider */}
               {!loading && subCategories.length > 0 && (
                 <div className="mb-6">
@@ -356,11 +244,6 @@ const CategoryPage = () => {
                 <div className="text-center py-16">
                   <Package className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
                   <p className="text-muted-foreground">এই ক্যাটাগরিতে কোনো পণ্য পাওয়া যায়নি</p>
-                  {isPriceFiltered && (
-                    <Button variant="outline" size="sm" className="mt-4" onClick={() => setPriceRange([0, maxPrice])}>
-                      ফিল্টার রিসেট করুন
-                    </Button>
-                  )}
                 </div>
               ) : (
                 <>
