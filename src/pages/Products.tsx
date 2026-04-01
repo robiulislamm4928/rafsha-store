@@ -77,14 +77,13 @@ const Products = () => {
 
   const filtered = useMemo(() => {
     let result = selectedCategory ? products.filter((p) => p.category_id === selectedCategory) : [...products];
-    result = result.filter((p) => { const price = p.sale_price ?? p.regular_price; return price >= priceRange[0] && price <= priceRange[1]; });
     switch (sortBy) {
       case "price_low": result.sort((a, b) => (a.sale_price ?? a.regular_price) - (b.sale_price ?? b.regular_price)); break;
       case "price_high": result.sort((a, b) => (b.sale_price ?? b.regular_price) - (a.sale_price ?? a.regular_price)); break;
       case "rating": result.sort((a, b) => (b.avg_rating || 0) - (a.avg_rating || 0)); break;
     }
     return result;
-  }, [products, selectedCategory, sortBy, priceRange]);
+  }, [products, selectedCategory, sortBy]);
 
   const visibleProducts = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
   const hasMore = visibleCount < filtered.length;
