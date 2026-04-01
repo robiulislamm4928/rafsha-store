@@ -13,7 +13,6 @@ const MoneybackBanner = () => (
           <h3 className="text-lg sm:text-2xl md:text-3xl font-display font-bold">
             ১০০% সন্তুষ্টি নিশ্চয়তা
           </h3>
-          </h3>
           <p className="mt-1.5 sm:mt-2 opacity-90 leading-relaxed max-w-xl text-xs sm:text-base">
             আমাদের পণ্য পরীক্ষা করুন — সন্তুষ্ট না হলে সম্পূর্ণ টাকা ফেরত! কোনো প্রশ্ন করা হবে না।
             আমরা আমাদের পণ্যের মান নিয়ে এতটাই আত্মবিশ্বাসী।
