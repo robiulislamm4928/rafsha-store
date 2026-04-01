@@ -30,7 +30,7 @@ const Cart = () => {
           <div className="text-center py-16 sm:py-20">
             <ShoppingCart className="h-12 w-12 sm:h-16 sm:w-16 mx-auto text-muted-foreground/30 mb-4" />
             <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-2">আপনার Cart খালি</h2>
-            <p className="text-sm text-muted-foreground mb-6">আমাদের পণ্যগুলো ব্রাউজ করুন এবং পছন্দের পণ্য কার্টে যোগ করুন।</p>
+            <p className="text-sm text-muted-foreground mb-6">আমাদের পণ্যগুলো ব্রাউজ করুন এবং পছন্দের পণ্য Cart-এ যোগ করুন।</p>
             <Button asChild className="brand-gradient text-primary-foreground hover:opacity-90">
               <Link to="/"><ArrowLeft className="h-4 w-4 mr-2" /> শপিং চালিয়ে যান</Link>
             </Button>

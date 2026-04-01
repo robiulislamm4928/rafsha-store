@@ -127,7 +127,7 @@ const Checkout = () => {
       <div className="min-h-screen bg-background"><TopBar /><Header />
         <div className="container py-20 text-center">
           <ShoppingCart className="h-16 w-16 mx-auto text-muted-foreground/30 mb-4" />
-          <h2 className="text-2xl font-bold text-foreground mb-2">আপনার কার্ট খালি</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-2">আপনার Cart খালি</h2>
           <p className="text-muted-foreground mb-4">শপিং শুরু করতে পণ্য ব্রাউজ করুন</p>
           <Button asChild className="brand-gradient text-primary-foreground hover:opacity-90"><Link to="/"><ArrowLeft className="h-4 w-4 mr-2" /> শপিং করুন</Link></Button>
         </div>

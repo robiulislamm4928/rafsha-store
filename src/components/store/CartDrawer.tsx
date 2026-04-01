@@ -26,7 +26,7 @@ const CartDrawer = () => {
         {items.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center p-6">
             <ShoppingBag className="h-16 w-16 text-muted-foreground/20" />
-            <p className="text-muted-foreground text-sm">আপনার কার্ট খালি</p>
+            <p className="text-muted-foreground text-sm">আপনার Cart খালি</p>
             <Button variant="outline" size="sm" onClick={closeCart}>
               শপিং চালিয়ে যান
             </Button>

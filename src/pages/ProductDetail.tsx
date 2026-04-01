@@ -416,7 +416,7 @@ const ProductDetail = () => {
                 className="brand-gradient text-primary-foreground font-semibold"
                 onClick={handleAddToCart}
               >
-                <ShoppingCart className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">কার্টে যোগ</span><span className="sm:hidden">কার্ট</span>
+                <ShoppingCart className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">Cart-এ যোগ</span><span className="sm:hidden">Cart</span>
               </Button>
               <Button
                 size="sm"
