@@ -75,6 +75,7 @@ const ProductDetail = () => {
   const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [categoryName, setCategoryName] = useState<string | null>(null);
+  const [categorySlug, setCategorySlug] = useState<string | null>(null);
   const [topSellingProducts, setTopSellingProducts] = useState<RelatedProduct[]>([]);
   const [stickyWiggle, setStickyWiggle] = useState(false);
 
@@ -106,7 +107,7 @@ const ProductDetail = () => {
       // Category name for breadcrumb
       if (prod.category_id) {
         supabase.from("categories").select("name, slug").eq("id", prod.category_id).single().then(({ data }) => {
-          if (data) setCategoryName(data.name);
+          if (data) { setCategoryName(data.name); setCategorySlug(data.slug); }
         });
       }
 
@@ -174,7 +175,7 @@ const ProductDetail = () => {
           <Link to="/" className="hover:text-primary transition-colors">হোম</Link>
           <ChevronRight className="h-3 w-3" />
           <Link to="/products" className="hover:text-primary transition-colors">সকল পণ্য</Link>
-          {categoryName && (<><ChevronRight className="h-3 w-3" /><span className="text-foreground/70">{categoryName}</span></>)}
+          {categoryName && (<><ChevronRight className="h-3 w-3" /><Link to={`/${categorySlug}`} className="hover:text-primary transition-colors">{categoryName}</Link></>)}
           <ChevronRight className="h-3 w-3" />
           <span className="text-foreground font-medium truncate max-w-[200px]">{product.name}</span>
         </nav>
