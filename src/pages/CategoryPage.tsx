@@ -45,8 +45,6 @@ const CategoryPage = () => {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("popularity");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
-  const [maxPrice, setMaxPrice] = useState(50000);
   const [visibleCount, setVisibleCount] = useState(PRODUCTS_PER_PAGE);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   
