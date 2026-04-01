@@ -27,7 +27,7 @@ const About = () => {
     <>
       <Helmet>
         <title>আমাদের সম্পর্কে | {storeName}</title>
-        <meta name="description" content={`${storeName} — আপনার পছন্দের পণ্যের জন্য বিশ্বস্ত অনলাইন মার্কেটপ্লেস। গুণমান নিশ্চিত, দ্রুত ডেলিভারি।`} />
+        <meta name="description" content={`${storeName} — আপনার পছন্দের পণ্যের জন্য বিশ্বস্ত অনলাইন মার্কেটপ্লেস। গুণমান নিশ্চিত।`} />
       </Helmet>
       <TopBar />
       <Header />
