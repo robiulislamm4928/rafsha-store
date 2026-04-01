@@ -6,7 +6,7 @@ import TopBar from "@/components/store/TopBar";
 import Header from "@/components/store/Header";
 import Footer from "@/components/store/Footer";
 import ProductCard from "@/components/store/ProductCard";
-import { Package, Filter, X, ArrowUpDown, LayoutGrid, List } from "lucide-react";
+import { Package, X, ArrowUpDown, LayoutGrid, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
