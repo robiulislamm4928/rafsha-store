@@ -88,7 +88,7 @@ const Products = () => {
   const visibleProducts = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
   const hasMore = visibleCount < filtered.length;
 
-  useEffect(() => { setVisibleCount(PRODUCTS_PER_PAGE); }, [selectedCategory, sortBy, priceRange]);
+  useEffect(() => { setVisibleCount(PRODUCTS_PER_PAGE); }, [selectedCategory, sortBy]);
 
   const handleCategoryClick = (catId: string | null) => {
     setSelectedCategory(catId);
