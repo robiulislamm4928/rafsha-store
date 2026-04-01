@@ -17,7 +17,7 @@ const Cart = () => {
       <div className="container py-4 sm:py-6 md:py-10 flex-1">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-foreground flex items-center gap-2">
-            <ShoppingCart className="h-5 w-5 sm:h-7 sm:w-7 text-primary" /> আপনার কার্ট
+            <ShoppingCart className="h-5 w-5 sm:h-7 sm:w-7 text-primary" /> আপনার Cart
           </h1>
           {items.length > 0 && (
             <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive text-xs sm:text-sm" onClick={clearCart}>
