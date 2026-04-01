@@ -96,17 +96,13 @@ const CategoryPage = () => {
 
   const filtered = useMemo(() => {
     let result = [...products];
-    result = result.filter(p => {
-      const price = p.sale_price ?? p.regular_price;
-      return price >= priceRange[0] && price <= priceRange[1];
-    });
     switch (sortBy) {
       case "price_low": result.sort((a, b) => (a.sale_price ?? a.regular_price) - (b.sale_price ?? b.regular_price)); break;
       case "price_high": result.sort((a, b) => (b.sale_price ?? b.regular_price) - (a.sale_price ?? a.regular_price)); break;
-      case "newest": result.sort((a, b) => 0); break; // already sorted by created_at
+      case "newest": break; // already sorted by created_at
     }
     return result;
-  }, [products, sortBy, priceRange]);
+  }, [products, sortBy]);
 
   const visibleProducts = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
   const hasMore = visibleCount < filtered.length;
