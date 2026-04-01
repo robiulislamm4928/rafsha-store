@@ -130,7 +130,7 @@ const ProductDetail = () => {
         }
       }
       setLoading(false);
-      addRecentlyViewed({ id: prod.id, name: prod.name, slug: prod.slug, price: prod.sale_price ?? prod.regular_price, image: undefined });
+      addRecentlyViewed({ id: prod.id, name: prod.name, slug: prod.slug, price: prod.sale_price ?? prod.regular_price, image: imgRes.data?.[0]?.image_url || undefined });
     };
     fetchProduct();
   }, [slug]);
