@@ -174,9 +174,6 @@ const Products = () => {
                 <div className="text-center py-16">
                   <Package className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
                   <p className="text-muted-foreground">কোনো পণ্য পাওয়া যায়নি</p>
-                  <Button variant="outline" size="sm" className="mt-4" onClick={() => { setSelectedCategory(null); setPriceRange([0, maxPrice]); }}>
-                    সকল ফিল্টার সরান
-                  </Button>
                 </div>
               ) : (
                 <>
