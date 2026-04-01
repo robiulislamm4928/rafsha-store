@@ -100,7 +100,7 @@ const QuickViewModal = ({ productId, onClose }: QuickViewModalProps) => {
                     <Button size="sm" className="flex-1 brand-gradient text-primary-foreground" onClick={() => { addItem({ productId: product.id, productName: product.name, slug: product.slug, price: displayPrice, image: imageUrl || undefined }, quantity); toast.success("কার্টে যোগ হয়েছে"); }}>
                       <ShoppingCart className="h-3.5 w-3.5 mr-1" /> কার্ট
                     </Button>
-                    <Button size="sm" variant="outline" className="flex-1" onClick={() => { addItem({ productId: product.id, productName: product.name, price: displayPrice, image: imageUrl || undefined }, quantity); navigate("/checkout"); }}>
+                    <Button size="sm" variant="outline" className="flex-1" onClick={() => { addItem({ productId: product.id, productName: product.name, slug: product.slug, price: displayPrice, image: imageUrl || undefined }, quantity); navigate("/checkout"); }}>
                       <Zap className="h-3.5 w-3.5 mr-1" /> কিনুন
                     </Button>
                   </div>
