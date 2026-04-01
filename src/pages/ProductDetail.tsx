@@ -160,7 +160,7 @@ const ProductDetail = () => {
   const mainImage = images[selectedImage]?.image_url;
   const isOutOfStock = product.stock_quantity !== -1 && product.stock_quantity <= 0;
 
-  const handleAddToCart = () => { addItem({ productId: product.id, productName: product.name, slug: product.slug, variantLabel: activeVariant?.variant_label, price: finalPrice, image: images[0]?.image_url }, quantity); toast.success(`${product.name} কার্টে যোগ করা হয়েছে`); };
+  const handleAddToCart = () => { addItem({ productId: product.id, productName: product.name, slug: product.slug, variantLabel: activeVariant?.variant_label, price: finalPrice, image: images[0]?.image_url }, quantity); toast.success(`${product.name} Cart-এ যোগ করা হয়েছে`); };
   const handleBuyNow = () => { addItem({ productId: product.id, productName: product.name, slug: product.slug, variantLabel: activeVariant?.variant_label, price: finalPrice, image: images[0]?.image_url }, quantity); navigate("/checkout"); };
 
 
