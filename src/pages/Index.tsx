@@ -7,7 +7,7 @@ import KeyPoints from "@/components/store/KeyPoints";
 import PromotionalBanners from "@/components/store/PromotionalBanners";
 import CategoryProducts from "@/components/store/CategoryProducts";
 import CustomerReviews from "@/components/store/CustomerReviews";
-import MoneybackBanner from "@/components/store/MoneybackBanner";
+
 import RecentlyViewedProducts from "@/components/store/RecentlyViewedProducts";
 import Footer from "@/components/store/Footer";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
