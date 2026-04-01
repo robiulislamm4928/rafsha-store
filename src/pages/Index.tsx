@@ -40,7 +40,7 @@ const Index = () => {
       <ScrollSection variant="scale"><RecentlyViewedProducts /></ScrollSection>
       <ScrollSection variant="left"><CustomerReviews /></ScrollSection>
       
-      <ScrollSection variant="scale"><MoneybackBanner /></ScrollSection>
+      
       <Footer />
     </div>
   );
