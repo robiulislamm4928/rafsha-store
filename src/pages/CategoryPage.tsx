@@ -49,7 +49,7 @@ const CategoryPage = () => {
   const [maxPrice, setMaxPrice] = useState(50000);
   const [visibleCount, setVisibleCount] = useState(PRODUCTS_PER_PAGE);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  
   const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
