@@ -19,7 +19,7 @@ const CartDrawer = () => {
         <SheetHeader className="px-5 pt-5 pb-4 border-b border-border">
           <SheetTitle className="flex items-center gap-2 text-lg font-bold text-foreground">
             <ShoppingBag className="h-5 w-5 text-primary" />
-            আপনার কার্ট ({items.length})
+            আপনার Cart ({items.length})
           </SheetTitle>
         </SheetHeader>
 
