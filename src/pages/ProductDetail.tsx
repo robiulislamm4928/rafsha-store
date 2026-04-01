@@ -107,7 +107,7 @@ const ProductDetail = () => {
       // Category name for breadcrumb
       if (prod.category_id) {
         supabase.from("categories").select("name, slug").eq("id", prod.category_id).single().then(({ data }) => {
-          if (data) setCategoryName(data.name);
+          if (data) { setCategoryName(data.name); setCategorySlug(data.slug); }
         });
       }
 
