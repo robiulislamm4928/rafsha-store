@@ -75,6 +75,7 @@ const ProductDetail = () => {
   const [relatedProducts, setRelatedProducts] = useState<RelatedProduct[]>([]);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [categoryName, setCategoryName] = useState<string | null>(null);
+  const [categorySlug, setCategorySlug] = useState<string | null>(null);
   const [topSellingProducts, setTopSellingProducts] = useState<RelatedProduct[]>([]);
   const [stickyWiggle, setStickyWiggle] = useState(false);
 
