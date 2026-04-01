@@ -328,7 +328,7 @@ const ProductDetail = () => {
             ) : (
               <>
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Button size="lg" className="flex-1 brand-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart}><ShoppingCart className="h-5 w-5 mr-2" /> কার্টে যোগ করুন</Button>
+                  <Button size="lg" className="flex-1 brand-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart}><ShoppingCart className="h-5 w-5 mr-2" /> Cart-এ যোগ করুন</Button>
                   <Button size="lg" variant="outline" className="flex-1 border-primary text-primary font-semibold hover:bg-primary/10" onClick={handleBuyNow}><Zap className="h-5 w-5 mr-2" /> সরাসরি কিনুন</Button>
                 </div>
                 <WhatsAppOrderButton product={product} variant={activeVariant} quantity={quantity} finalPrice={finalPrice} />
