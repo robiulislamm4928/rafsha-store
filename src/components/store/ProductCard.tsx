@@ -31,7 +31,7 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
   const handleBuyNow = (e: React.MouseEvent) => {
     e.preventDefault();
     if (isOutOfStock) return;
-    addItem({ productId: id, productName: name, price: displayPrice, image: imageUrl || undefined });
+    addItem({ productId: id, productName: name, slug, price: displayPrice, image: imageUrl || undefined });
     navigate("/checkout");
   };
 
@@ -125,7 +125,7 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
                   className="flex-1 h-9 sm:h-9 text-xs sm:text-xs px-2 sm:px-3"
                   onClick={(e) => {
                     e.preventDefault();
-                    addItem({ productId: id, productName: name, price: displayPrice, image: imageUrl || undefined });
+                    addItem({ productId: id, productName: name, slug, price: displayPrice, image: imageUrl || undefined });
                   }}
                 >
                   <ShoppingCart className="h-3.5 w-3.5 mr-1" /> কার্ট
