@@ -307,6 +307,7 @@ const CategoryPage = () => {
               )}
             </div>
           </div>
+          </div>
         </div>
       </main>
 
