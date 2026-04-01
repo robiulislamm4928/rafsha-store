@@ -106,9 +106,8 @@ const CategoryPage = () => {
 
   const visibleProducts = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
   const hasMore = visibleCount < filtered.length;
-  const isPriceFiltered = priceRange[0] > 0 || priceRange[1] < maxPrice;
 
-  useEffect(() => { setVisibleCount(PRODUCTS_PER_PAGE); }, [sortBy, priceRange]);
+  useEffect(() => { setVisibleCount(PRODUCTS_PER_PAGE); }, [sortBy]);
 
   // Get sibling categories (same parent) for the BROWSE sidebar
   const browseCategories = useMemo(() => {
