@@ -43,10 +43,7 @@ const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(searchParams.get("category"));
   const [loading, setLoading] = useState(true);
-  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("newest");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
-  const [maxPrice, setMaxPrice] = useState(50000);
   const [visibleCount, setVisibleCount] = useState(PRODUCTS_PER_PAGE);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
