@@ -46,8 +46,6 @@ const KeyPoints = () => {
   if (points.length === 0) {
     const staticPoints = [
       { icon: Award, title: "অথেনটিক পণ্য", desc: "মানসম্মত ও আসল পণ্য" },
-      { icon: Truck, title: "দ্রুত ডেলিভারি", desc: "সারাদেশে পৌঁছে যাবে" },
-      { icon: Shield, title: "মানি-ব্যাক গ্যারান্টি", desc: "সন্তুষ্ট না হলে ফেরত" },
       { icon: Headphones, title: "সাপোর্ট", desc: "যেকোনো সময় যোগাযোগ" },
     ];
     return (

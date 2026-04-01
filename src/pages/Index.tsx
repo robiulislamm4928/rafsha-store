@@ -7,7 +7,7 @@ import KeyPoints from "@/components/store/KeyPoints";
 import PromotionalBanners from "@/components/store/PromotionalBanners";
 import CategoryProducts from "@/components/store/CategoryProducts";
 import CustomerReviews from "@/components/store/CustomerReviews";
-import MoneybackBanner from "@/components/store/MoneybackBanner";
+
 import RecentlyViewedProducts from "@/components/store/RecentlyViewedProducts";
 import Footer from "@/components/store/Footer";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
@@ -27,7 +27,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>রাফছা স্টোর — সেরা পণ্য সেরা দামে | বাংলাদেশ</title>
-        <meta name="description" content="রাফছা স্টোরে পাচ্ছেন মানসম্মত পণ্য সেরা মূল্যে। দ্রুত ডেলিভারি, মানি-ব্যাক গ্যারান্টি। সারাদেশে ডেলিভারি।" />
+        <meta name="description" content="রাফছা স্টোরে পাচ্ছেন মানসম্মত পণ্য সেরা মূল্যে। সারাদেশে ডেলিভারি।" />
       </Helmet>
       <TopBar />
       <Header />
@@ -40,7 +40,7 @@ const Index = () => {
       <ScrollSection variant="scale"><RecentlyViewedProducts /></ScrollSection>
       <ScrollSection variant="left"><CustomerReviews /></ScrollSection>
       
-      <ScrollSection variant="scale"><MoneybackBanner /></ScrollSection>
+      
       <Footer />
     </div>
   );
