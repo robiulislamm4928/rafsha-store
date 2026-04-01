@@ -9,8 +9,6 @@ import ProductCard from "@/components/store/ProductCard";
 import { Package, ChevronLeft, ChevronRight, ArrowUpDown, LayoutGrid, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useRef } from "react";
 
