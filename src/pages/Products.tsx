@@ -69,10 +69,6 @@ const Products = () => {
           ...p, avg_rating: ratingMap[p.id] ? ratingMap[p.id].sum / ratingMap[p.id].count : 0,
         }));
         setProducts(prods);
-        const highest = Math.max(...prods.map((p) => p.sale_price ?? p.regular_price), 1000);
-        const roundedMax = Math.ceil(highest / 500) * 500;
-        setMaxPrice(roundedMax);
-        setPriceRange([0, roundedMax]);
       }
       setLoading(false);
     };
