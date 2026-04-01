@@ -27,7 +27,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>রাফছা স্টোর — সেরা পণ্য সেরা দামে | বাংলাদেশ</title>
-        <meta name="description" content="রাফছা স্টোরে পাচ্ছেন মানসম্মত পণ্য সেরা মূল্যে। দ্রুত ডেলিভারি, মানি-ব্যাক গ্যারান্টি। সারাদেশে ডেলিভারি।" />
+        <meta name="description" content="রাফছা স্টোরে পাচ্ছেন মানসম্মত পণ্য সেরা মূল্যে। সারাদেশে ডেলিভারি।" />
       </Helmet>
       <TopBar />
       <Header />

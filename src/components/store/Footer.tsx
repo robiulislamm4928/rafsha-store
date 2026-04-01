@@ -38,7 +38,7 @@ const Footer = () => {
               <img src={displayLogo} alt={storeName} className="h-28 sm:h-32 md:h-40 w-auto" />
             </div>
             <p className="text-sm opacity-80 leading-relaxed max-w-xs mx-auto sm:mx-0">
-              {settings.about || "আপনার পছন্দের পণ্য সেরা মূল্যে — সারাদেশে দ্রুত ডেলিভারি।"}
+              {settings.about || "আপনার পছন্দের পণ্য সেরা মূল্যে — সারাদেশে ডেলিভারি।"}
             </p>
           </div>
 

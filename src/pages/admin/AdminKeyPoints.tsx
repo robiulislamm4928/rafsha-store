@@ -190,7 +190,7 @@ const AdminKeyPoints = () => {
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>টাইটেল</Label>
-                <Input value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} placeholder="যেমন: দ্রুত ডেলিভারি" />
+                <Input value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} placeholder="যেমন: অথেনটিক পণ্য" />
               </div>
               <div className="space-y-2">
                 <Label>সংক্ষিপ্ত বিবরণ</Label>

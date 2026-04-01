@@ -242,19 +242,6 @@ const ProductDetail = () => {
             </div>
             {product.short_description && <p className="text-foreground/80 leading-relaxed">{product.short_description}</p>}
 
-            {/* Trust Badges */}
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { icon: Shield, label: "গ্যারান্টি" },
-                { icon: Truck, label: "দ্রুত ডেলিভারি" },
-                { icon: RotateCcw, label: "সহজ রিটার্ন" },
-              ].map(({ icon: Icon, label }) => (
-                <div key={label} className="flex flex-col items-center gap-1 p-2 rounded-lg bg-primary/5 text-center">
-                  <Icon className="h-4 w-4 text-primary" />
-                  <span className="text-[10px] font-medium text-foreground/70">{label}</span>
-                </div>
-              ))}
-            </div>
 
             {/* Variants grouped by type */}
             {["size", "color", "weight"].map(type => {
