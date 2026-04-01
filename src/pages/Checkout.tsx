@@ -107,7 +107,7 @@ const Checkout = () => {
     e.preventDefault();
     const parsed = checkoutSchema.safeParse(form);
     if (!parsed.success) { const fieldErrors: Record<string, string> = {}; parsed.error.errors.forEach((err) => { if (err.path[0]) fieldErrors[err.path[0] as string] = err.message; }); setErrors(fieldErrors); setCurrentStep(1); return; }
-    if (items.length === 0) { toast.error("আপনার কার্ট খালি"); return; }
+    if (items.length === 0) { toast.error("আপনার Cart খালি"); return; }
     if (form.payment_method === "MOBILE_BANKING" && !mobileBankingMethod) { toast.error("বিকাশ অথবা নগদ সিলেক্ট করুন"); return; }
     setSubmitting(true);
     const orderItems = items.map((item) => ({ product_id: item.productId, variant_label: item.variantLabel || null, quantity: item.quantity }));
