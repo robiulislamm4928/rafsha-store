@@ -31,7 +31,7 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
   const handleBuyNow = (e: React.MouseEvent) => {
     e.preventDefault();
     if (isOutOfStock) return;
-    addItem({ productId: id, productName: name, price: displayPrice, image: imageUrl || undefined });
+    addItem({ productId: id, productName: name, slug, price: displayPrice, image: imageUrl || undefined });
     navigate("/checkout");
   };
 
