@@ -189,16 +189,6 @@ const CategoryPage = () => {
           </div>
         </div>
 
-        {/* Active filter chips */}
-        {isPriceFiltered && (
-          <div className="container px-4 py-2">
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="secondary" className="gap-1 cursor-pointer hover:bg-destructive/10" onClick={() => setPriceRange([0, maxPrice])}>
-                ৳{priceRange[0]} - ৳{priceRange[1]} <X className="h-3 w-3" />
-              </Badge>
-            </div>
-          </div>
-        )}
 
         <div className="container px-4 py-6 md:py-8">
           <div className="flex gap-6 md:gap-8">
