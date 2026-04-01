@@ -143,21 +143,11 @@ const Products = () => {
             </div>
 
             {/* Active filter chips */}
-            {(selectedCategory || isPriceFiltered) && (
+            {selectedCategory && (
               <div className="flex flex-wrap gap-2 mt-3">
-                {selectedCategoryName && (
-                  <Badge variant="secondary" className="gap-1 cursor-pointer hover:bg-destructive/10" onClick={() => handleCategoryClick(null)}>
-                    {selectedCategoryName} <X className="h-3 w-3" />
-                  </Badge>
-                )}
-                {isPriceFiltered && (
-                  <Badge variant="secondary" className="gap-1 cursor-pointer hover:bg-destructive/10" onClick={() => setPriceRange([0, maxPrice])}>
-                    ৳{priceRange[0]} - ৳{priceRange[1]} <X className="h-3 w-3" />
-                  </Badge>
-                )}
-                <button onClick={() => { handleCategoryClick(null); setPriceRange([0, maxPrice]); }} className="text-xs text-primary hover:underline">
-                  সকল ফিল্টার সরান
-                </button>
+                <Badge variant="secondary" className="gap-1 cursor-pointer hover:bg-destructive/10" onClick={() => handleCategoryClick(null)}>
+                  {selectedCategoryName} <X className="h-3 w-3" />
+                </Badge>
               </div>
             )}
           </div>
