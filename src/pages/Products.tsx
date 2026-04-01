@@ -91,7 +91,6 @@ const Products = () => {
 
   const handleCategoryClick = (catId: string | null) => {
     setSelectedCategory(catId);
-    setMobileFilterOpen(false);
     if (catId) setSearchParams({ category: catId }); else setSearchParams({});
   };
 
