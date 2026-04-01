@@ -37,7 +37,7 @@ const CartDrawer = () => {
               {items.map((item) => (
                 <div key={`${item.productId}-${item.variantLabel || ""}`} className="flex gap-3 p-4">
                   {/* Image */}
-                  <div className="w-20 h-20 rounded-lg overflow-hidden bg-secondary border border-border shrink-0">
+                  <Link to={item.slug ? `/product/${item.slug}` : '#'} onClick={closeCart} className="w-20 h-20 rounded-lg overflow-hidden bg-secondary border border-border shrink-0 block">
                     {item.image ? (
                       <img src={item.image} alt={item.productName} className="w-full h-full object-cover" />
                     ) : (
@@ -45,13 +45,13 @@ const CartDrawer = () => {
                         <ImageOff className="h-6 w-6 text-muted-foreground/30" />
                       </div>
                     )}
-                  </div>
+                  </Link>
 
                   {/* Details */}
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug">
+                    <Link to={item.slug ? `/product/${item.slug}` : '#'} onClick={closeCart} className="text-sm font-semibold text-foreground line-clamp-2 leading-snug hover:text-primary transition-colors block">
                       {item.productName}
-                    </h4>
+                    </Link>
                     {item.variantLabel && (
                       <p className="text-xs text-muted-foreground mt-0.5">{item.variantLabel}</p>
                     )}
