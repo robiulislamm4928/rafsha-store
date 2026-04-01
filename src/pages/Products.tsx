@@ -97,46 +97,6 @@ const Products = () => {
   };
 
   const selectedCategoryName = categories.find((c) => c.id === selectedCategory)?.name;
-  const isPriceFiltered = priceRange[0] > 0 || priceRange[1] < maxPrice;
-
-  const BrowseSidebar = ({ className }: { className?: string }) => (
-    <div className={cn("space-y-6", className)}>
-      {/* BROWSE section */}
-      <div>
-        <h3 className="text-sm font-bold text-foreground uppercase tracking-wide mb-1">ব্রাউজ</h3>
-        <div className="w-8 h-0.5 bg-primary mb-4" />
-        <div className="space-y-0.5">
-          <button onClick={() => handleCategoryClick(null)} className={cn("w-full text-left px-2 py-2 text-sm rounded-md transition-colors", selectedCategory === null ? "font-bold text-foreground" : "text-foreground/70 hover:text-primary hover:bg-primary/5")}>
-            সকল পণ্য
-          </button>
-          {categories.map((cat) => (
-            <button key={cat.id} onClick={() => handleCategoryClick(cat.id)} className={cn("w-full text-left px-2 py-2 text-sm rounded-md transition-colors", selectedCategory === cat.id ? "font-bold text-foreground" : "text-foreground/70 hover:text-primary hover:bg-primary/5")}>
-              {cat.name}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* FILTER BY PRICE */}
-      <div>
-        <h3 className="text-sm font-bold text-foreground uppercase tracking-wide mb-1">মূল্য অনুযায়ী ফিল্টার</h3>
-        <div className="w-8 h-0.5 bg-primary mb-4" />
-        <div className="px-1">
-          <Slider min={0} max={maxPrice} step={50} value={priceRange} onValueChange={(v) => setPriceRange(v as [number, number])} className="mb-3" />
-          <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-            <span>৳{priceRange[0].toLocaleString()}</span>
-            <span>—</span>
-            <span>৳{priceRange[1].toLocaleString()}</span>
-          </div>
-          {isPriceFiltered && (
-            <Button size="sm" variant="outline" className="w-full text-xs h-8" onClick={() => setPriceRange([0, maxPrice])}>
-              ফিল্টার রিসেট
-            </Button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <>
