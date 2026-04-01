@@ -189,9 +189,30 @@ const CategoryPage = () => {
 
 
         <div className="container px-4 py-6 md:py-8">
-          <div>
+          <div className="flex gap-6 md:gap-8">
+            {/* Browse Sidebar */}
+            <aside className="hidden md:block w-48 lg:w-56 shrink-0">
+              <h3 className="font-bold text-foreground text-sm uppercase border-b border-border pb-2 mb-3">ব্রাউজ</h3>
+              <nav className="space-y-1">
+                {topCategories.map((cat) => (
+                  <Link
+                    key={cat.id}
+                    to={`/${cat.slug}`}
+                    className={cn(
+                      "block px-2 py-1.5 text-sm rounded-md transition-colors",
+                      category?.id === cat.id || category?.parent_id === cat.id
+                        ? "bg-primary/10 text-primary font-semibold"
+                        : "text-foreground/70 hover:text-primary hover:bg-primary/5"
+                    )}
+                  >
+                    {cat.name}
+                  </Link>
+                ))}
+              </nav>
+            </aside>
+
             {/* Products */}
-            <div>
+            <div className="flex-1 min-w-0">
               {/* Sub-categories slider */}
               {!loading && subCategories.length > 0 && (
                 <div className="mb-6">
