@@ -41,7 +41,7 @@ const AdminIncompleteOrders = () => {
             <tr className="border-b border-border text-left">
               <th className="p-3 font-medium text-muted-foreground">ফোন</th>
               <th className="p-3 font-medium text-muted-foreground">মূল্য</th>
-              <th className="p-3 font-medium text-muted-foreground">কার্ট আইটেম</th>
+              <th className="p-3 font-medium text-muted-foreground">Cart আইটেম</th>
               <th className="p-3 font-medium text-muted-foreground">তারিখ</th>
             </tr>
           </thead>

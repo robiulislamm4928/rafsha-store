@@ -17,7 +17,7 @@ const Cart = () => {
       <div className="container py-4 sm:py-6 md:py-10 flex-1">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-foreground flex items-center gap-2">
-            <ShoppingCart className="h-5 w-5 sm:h-7 sm:w-7 text-primary" /> আপনার কার্ট
+            <ShoppingCart className="h-5 w-5 sm:h-7 sm:w-7 text-primary" /> আপনার Cart
           </h1>
           {items.length > 0 && (
             <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive text-xs sm:text-sm" onClick={clearCart}>
@@ -29,8 +29,8 @@ const Cart = () => {
         {items.length === 0 ? (
           <div className="text-center py-16 sm:py-20">
             <ShoppingCart className="h-12 w-12 sm:h-16 sm:w-16 mx-auto text-muted-foreground/30 mb-4" />
-            <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-2">আপনার কার্ট খালি</h2>
-            <p className="text-sm text-muted-foreground mb-6">আমাদের পণ্যগুলো ব্রাউজ করুন এবং পছন্দের পণ্য কার্টে যোগ করুন।</p>
+            <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-2">আপনার Cart খালি</h2>
+            <p className="text-sm text-muted-foreground mb-6">আমাদের পণ্যগুলো ব্রাউজ করুন এবং পছন্দের পণ্য Cart-এ যোগ করুন।</p>
             <Button asChild className="brand-gradient text-primary-foreground hover:opacity-90">
               <Link to="/"><ArrowLeft className="h-4 w-4 mr-2" /> শপিং চালিয়ে যান</Link>
             </Button>

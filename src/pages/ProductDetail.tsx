@@ -160,7 +160,7 @@ const ProductDetail = () => {
   const mainImage = images[selectedImage]?.image_url;
   const isOutOfStock = product.stock_quantity !== -1 && product.stock_quantity <= 0;
 
-  const handleAddToCart = () => { addItem({ productId: product.id, productName: product.name, slug: product.slug, variantLabel: activeVariant?.variant_label, price: finalPrice, image: images[0]?.image_url }, quantity); toast.success(`${product.name} কার্টে যোগ করা হয়েছে`); };
+  const handleAddToCart = () => { addItem({ productId: product.id, productName: product.name, slug: product.slug, variantLabel: activeVariant?.variant_label, price: finalPrice, image: images[0]?.image_url }, quantity); toast.success(`${product.name} Cart-এ যোগ করা হয়েছে`); };
   const handleBuyNow = () => { addItem({ productId: product.id, productName: product.name, slug: product.slug, variantLabel: activeVariant?.variant_label, price: finalPrice, image: images[0]?.image_url }, quantity); navigate("/checkout"); };
 
 
@@ -328,7 +328,7 @@ const ProductDetail = () => {
             ) : (
               <>
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Button size="lg" className="flex-1 brand-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart}><ShoppingCart className="h-5 w-5 mr-2" /> কার্টে যোগ করুন</Button>
+                  <Button size="lg" className="flex-1 brand-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart}><ShoppingCart className="h-5 w-5 mr-2" /> Cart-এ যোগ করুন</Button>
                   <Button size="lg" variant="outline" className="flex-1 border-primary text-primary font-semibold hover:bg-primary/10" onClick={handleBuyNow}><Zap className="h-5 w-5 mr-2" /> সরাসরি কিনুন</Button>
                 </div>
                 <WhatsAppOrderButton product={product} variant={activeVariant} quantity={quantity} finalPrice={finalPrice} />
@@ -416,7 +416,7 @@ const ProductDetail = () => {
                 className="brand-gradient text-primary-foreground font-semibold"
                 onClick={handleAddToCart}
               >
-                <ShoppingCart className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">কার্টে যোগ</span><span className="sm:hidden">কার্ট</span>
+                <ShoppingCart className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">Cart-এ যোগ</span><span className="sm:hidden">Cart</span>
               </Button>
               <Button
                 size="sm"

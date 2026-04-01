@@ -128,7 +128,7 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
                     addItem({ productId: id, productName: name, slug, price: displayPrice, image: imageUrl || undefined });
                   }}
                 >
-                  <ShoppingCart className="h-3.5 w-3.5 mr-1" /> কার্ট
+                  <ShoppingCart className="h-3.5 w-3.5 mr-1" /> Cart
                 </Button>
                 <Button
                   size="sm"
