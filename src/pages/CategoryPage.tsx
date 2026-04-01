@@ -88,12 +88,6 @@ const CategoryPage = () => {
       const productList = (prods as unknown as Product[]) || [];
       setProducts(productList);
 
-      if (productList.length > 0) {
-        const highest = Math.max(...productList.map(p => p.sale_price ?? p.regular_price), 1000);
-        const roundedMax = Math.ceil(highest / 500) * 500;
-        setMaxPrice(roundedMax);
-        setPriceRange([0, roundedMax]);
-      }
       setLoading(false);
     };
 
