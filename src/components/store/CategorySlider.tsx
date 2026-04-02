@@ -39,36 +39,55 @@ const CategorySlider = () => {
   return (
     <section className="py-6 sm:py-10 md:py-14">
       <div className="container">
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-foreground mb-4 sm:mb-6">
-          ক্যাটাগরি
-        </h2>
-        <ScrollArea className="w-full">
-          <div className="flex gap-3 sm:gap-4 pb-4">
+        <div className="sm:hidden">
+          <h2 className="text-sm font-bold uppercase tracking-wide text-foreground border-b border-border pb-2 mb-3">
+            ব্রাউজ
+          </h2>
+          <nav className="flex gap-2 overflow-x-auto pb-2">
             {categories.map((cat) => (
               <a
                 key={cat.id}
                 href={`/${cat.slug}`}
-                className="group shrink-0 w-28 sm:w-36 md:w-44"
+                className="shrink-0 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
               >
-                <div className="aspect-square rounded-xl overflow-hidden bg-secondary shadow-sm transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1 gradient-border-hover" style={{ perspective: "600px" }}>
-                  <div className="w-full h-full transition-transform duration-300 group-hover:[transform:rotateY(5deg)_rotateX(3deg)]">
-                    {cat.image_url ? (
-                      <ImageWithSkeleton src={cat.image_url} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                    ) : (
-                      <div className="w-full h-full brand-gradient-subtle flex items-center justify-center">
-                        <FolderOpen className="h-10 w-10 text-muted-foreground/30" />
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <p className="mt-2 text-center text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-                  {cat.name}
-                </p>
+                {cat.name}
               </a>
             ))}
-          </div>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+          </nav>
+        </div>
+
+        <div className="hidden sm:block">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-foreground mb-4 sm:mb-6">
+            ক্যাটাগরি
+          </h2>
+          <ScrollArea className="w-full">
+            <div className="flex gap-3 sm:gap-4 pb-4">
+              {categories.map((cat) => (
+                <a
+                  key={cat.id}
+                  href={`/${cat.slug}`}
+                  className="group shrink-0 w-28 sm:w-36 md:w-44"
+                >
+                  <div className="aspect-square rounded-xl overflow-hidden bg-secondary shadow-sm transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1 gradient-border-hover" style={{ perspective: "600px" }}>
+                    <div className="w-full h-full transition-transform duration-300 group-hover:[transform:rotateY(5deg)_rotateX(3deg)]">
+                      {cat.image_url ? (
+                        <ImageWithSkeleton src={cat.image_url} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                      ) : (
+                        <div className="w-full h-full brand-gradient-subtle flex items-center justify-center">
+                          <FolderOpen className="h-10 w-10 text-muted-foreground/30" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <p className="mt-2 text-center text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                    {cat.name}
+                  </p>
+                </a>
+              ))}
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </div>
       </div>
     </section>
   );
