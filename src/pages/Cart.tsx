@@ -56,7 +56,7 @@ const Cart = () => {
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-foreground text-sm line-clamp-2">{item.productName}</h3>
+                      <Link to={item.slug ? `/product/${item.slug}` : '#'} className="font-semibold text-foreground text-sm line-clamp-2 hover:text-primary transition-colors">{item.productName}</Link>
                       {item.variantLabel && (
                         <p className="text-xs text-muted-foreground mt-0.5">{item.variantLabel}</p>
                       )}
