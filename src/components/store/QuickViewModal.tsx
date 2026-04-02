@@ -84,7 +84,7 @@ const QuickViewModal = ({ productId, onClose }: QuickViewModalProps) => {
               <span className="text-2xl font-bold text-primary">৳{displayPrice}</span>
               {hasDiscount && <span className="text-sm text-muted-foreground line-through">৳{product.regular_price}</span>}
             </div>
-            {product.short_description && <p className="text-sm text-muted-foreground line-clamp-3">{product.short_description}</p>}
+            {product.short_description && <div className="text-sm text-muted-foreground line-clamp-3 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: product.short_description.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-primary underline break-all">$1</a>') }} />}
 
             <div className="mt-auto space-y-3 pt-2">
               {isOutOfStock ? (

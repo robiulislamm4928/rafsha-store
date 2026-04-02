@@ -306,7 +306,7 @@ const CategoryPage = () => {
                           </div>
                           <div className="p-3 sm:p-4 flex-1 min-w-0 flex flex-col justify-center">
                             <h3 className="font-semibold text-foreground text-sm sm:text-base line-clamp-1 group-hover:text-primary transition-colors">{p.name}</h3>
-                            {p.short_description && <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{p.short_description}</p>}
+                            {p.short_description && <div className="text-xs text-muted-foreground mt-1 line-clamp-1 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: p.short_description.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-primary underline">$1</a>') }} />}
                             <div className="flex items-baseline gap-2 mt-2">
                               <span className="text-sm sm:text-lg font-bold text-primary">৳{p.sale_price ?? p.regular_price}</span>
                               {p.sale_price && p.sale_price < p.regular_price && <span className="text-xs text-muted-foreground line-through">৳{p.regular_price}</span>}
