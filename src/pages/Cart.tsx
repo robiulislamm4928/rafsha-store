@@ -46,13 +46,13 @@ const Cart = () => {
                 >
                   <div className="flex gap-3 sm:gap-4">
                     {/* Image */}
-                    <div className="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-secondary">
+                    <Link to={item.slug ? `/product/${item.slug}` : '#'} className="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-secondary block">
                       {item.image ? (
                         <img src={item.image} alt={item.productName} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full brand-gradient-subtle flex items-center justify-center"><ImageOff className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground/30" /></div>
                       )}
-                    </div>
+                    </Link>
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
