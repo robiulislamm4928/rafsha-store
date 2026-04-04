@@ -41,7 +41,7 @@ const CategorySlider = () => {
       <div className="container">
         <div className="sm:hidden">
           <h2 className="text-sm font-bold uppercase tracking-wide text-foreground border-b border-border pb-2 mb-3">
-            ব্রাউজ
+            ক্যাটাগরি
           </h2>
           <nav className="flex gap-2 overflow-x-auto pb-2">
             {categories.map((cat) => (
