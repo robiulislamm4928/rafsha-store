@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import logo from "@/assets/logo.png";
+import sundarbanLogo from "@/assets/sundarban-courier.jpeg";
+import steadfastLogo from "@/assets/steadfast-courier.jpeg";
 
 const Footer = () => {
   const { settings } = useSiteSettings();
@@ -110,8 +112,21 @@ const Footer = () => {
                 <Send className="h-4 w-4" />
               </Button>
             </form>
+        </div>
+
+        {/* Delivery Partners */}
+        <div className="mt-8 pt-6 border-t border-primary-foreground/10">
+          <h4 className="font-semibold mb-4 text-lg text-center">আমাদের বিতরণ সহযোগী</h4>
+          <div className="flex items-center justify-center gap-6">
+            <div className="bg-white rounded-xl p-3 flex items-center justify-center">
+              <img src={sundarbanLogo} alt="সুন্দরবন কুরিয়ার" className="h-12 w-auto object-contain" />
+            </div>
+            <div className="bg-white rounded-xl p-3 flex items-center justify-center">
+              <img src={steadfastLogo} alt="স্টেডফাস্ট কুরিয়ার" className="h-12 w-auto object-contain" />
+            </div>
           </div>
         </div>
+      </div>
       </div>
 
       {/* Copyright */}
