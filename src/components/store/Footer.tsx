@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import logo from "@/assets/logo.png";
+import sundarbanLogo from "@/assets/sundarban-courier.jpeg";
+import steadfastLogo from "@/assets/steadfast-courier.jpeg";
 
 const Footer = () => {
   const { settings } = useSiteSettings();
