@@ -43,17 +43,28 @@ const CategorySlider = () => {
           <h2 className="text-sm font-bold uppercase tracking-wide text-foreground border-b border-border pb-2 mb-3">
             ক্যাটাগরি
           </h2>
-          <nav className="flex gap-2 overflow-x-auto pb-2">
+          <div className="flex gap-3 overflow-x-auto pb-2">
             {categories.map((cat) => (
               <a
                 key={cat.id}
                 href={`/${cat.slug}`}
-                className="shrink-0 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
+                className="group shrink-0 w-20"
               >
-                {cat.name}
+                <div className="aspect-square rounded-xl overflow-hidden bg-secondary shadow-sm">
+                  {cat.image_url ? (
+                    <ImageWithSkeleton src={cat.image_url} alt={cat.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                      <FolderOpen className="h-6 w-6 text-muted-foreground/30" />
+                    </div>
+                  )}
+                </div>
+                <p className="mt-1 text-center text-xs font-medium text-foreground line-clamp-2 leading-tight">
+                  {cat.name}
+                </p>
               </a>
             ))}
-          </nav>
+          </div>
         </div>
 
         <div className="hidden sm:block">
