@@ -3,13 +3,13 @@ import { useEffect, useCallback } from "react";
 const COLORS = ["#10b981", "#34d399", "#6ee7b7", "#a7f3d0", "#fbbf24", "#f59e0b"];
 
 const SparkleEffect = () => {
-  const createParticle = useCallback((x: number, y: number) => {
-    const count = 6 + Math.floor(Math.random() * 4);
-    for (let i = 0; i < count; i++) {
+  const createParticle = useCallback((x: number, y: number, count?: number) => {
+    const total = count ?? 6 + Math.floor(Math.random() * 4);
+    for (let i = 0; i < total; i++) {
       const particle = document.createElement("div");
       const size = Math.random() * 8 + 4;
       const color = COLORS[Math.floor(Math.random() * COLORS.length)];
-      const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
+      const angle = (Math.PI * 2 * i) / total + (Math.random() - 0.5) * 0.5;
       const velocity = 30 + Math.random() * 40;
       const dx = Math.cos(angle) * velocity;
       const dy = Math.sin(angle) * velocity;
