@@ -301,9 +301,9 @@ const ProductDetail = () => {
             <div className="space-y-2">
               <Label className="text-sm font-medium">পরিমাণ</Label>
               <div className="flex items-center gap-3">
-                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => setQuantity(Math.max(1, quantity - 1))}><Minus className="h-4 w-4" /></Button>
-                <span className="text-lg font-semibold w-10 text-center">{quantity}</span>
-                <Button variant="outline" size="icon" className="h-9 w-9" onClick={() => setQuantity(quantity + 1)}><Plus className="h-4 w-4" /></Button>
+                <Button variant="outline" size="icon" className="h-12 w-12 md:h-10 md:w-10" onClick={() => setQuantity(Math.max(1, quantity - 1))}><Minus className="h-5 w-5" /></Button>
+                <span className="text-xl md:text-lg font-semibold w-12 text-center">{quantity}</span>
+                <Button variant="outline" size="icon" className="h-12 w-12 md:h-10 md:w-10" onClick={() => setQuantity(quantity + 1)}><Plus className="h-5 w-5" /></Button>
               </div>
             </div>
 
@@ -315,8 +315,8 @@ const ProductDetail = () => {
             ) : (
               <>
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Button size="lg" className="flex-1 brand-gradient text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart}><ShoppingCart className="h-5 w-5 mr-2" /> Cart-এ যোগ করুন</Button>
-                  <Button size="lg" variant="outline" className="flex-1 border-primary text-primary font-semibold hover:bg-primary/10" onClick={handleBuyNow}><Zap className="h-5 w-5 mr-2" /> সরাসরি কিনুন</Button>
+                  <Button size="lg" className="flex-1 h-14 md:h-11 text-base md:text-sm brand-gradient text-primary-foreground font-bold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart}><ShoppingCart className="h-6 w-6 md:h-5 md:w-5 mr-2" /> Cart-এ যোগ করুন</Button>
+                  <Button size="lg" variant="outline" className="flex-1 h-14 md:h-11 text-base md:text-sm border-2 border-primary text-primary font-bold hover:bg-primary/10" onClick={handleBuyNow}><Zap className="h-6 w-6 md:h-5 md:w-5 mr-2" /> সরাসরি কিনুন</Button>
                 </div>
                 <WhatsAppOrderButton product={product} variant={activeVariant} quantity={quantity} finalPrice={finalPrice} />
                 {product.stock_quantity > 0 && product.stock_quantity <= 10 && product.stock_quantity !== -1 && <p className="text-sm text-destructive font-medium flex items-center gap-1"><AlertTriangle className="h-4 w-4" /> মাত্র {product.stock_quantity}টি বাকি আছে!</p>}
