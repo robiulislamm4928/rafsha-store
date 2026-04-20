@@ -104,10 +104,41 @@ const SparkleEffect = () => {
     document.addEventListener("click", handleClick, { passive: true });
     document.addEventListener("touchstart", handleTouchStart, { passive: true });
 
+    // Global cursor/touch movement trail
+    let lastTrailX = 0;
+    let lastTrailY = 0;
+    let lastTrailTime = 0;
+    const TRAIL_DISTANCE = 35; // px between sparkles
+    const TRAIL_THROTTLE = 40; // ms between sparkles
+
+    const handlePointerMove = (x: number, y: number) => {
+      const now = performance.now();
+      const dx = x - lastTrailX;
+      const dy = y - lastTrailY;
+      const dist = Math.hypot(dx, dy);
+      if (dist >= TRAIL_DISTANCE && now - lastTrailTime >= TRAIL_THROTTLE) {
+        lastTrailX = x;
+        lastTrailY = y;
+        lastTrailTime = now;
+        createParticle(x, y, 2);
+      }
+    };
+
+    const handleMouseMove = (e: MouseEvent) => handlePointerMove(e.clientX, e.clientY);
+    const handleTouchMove = (e: TouchEvent) => {
+      const t = e.touches[0];
+      if (t) handlePointerMove(t.clientX, t.clientY);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove, { passive: true });
+    document.addEventListener("touchmove", handleTouchMove, { passive: true });
+
     return () => {
       document.removeEventListener("mouseover", handleMouseOver);
       document.removeEventListener("click", handleClick);
       document.removeEventListener("touchstart", handleTouchStart);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("touchmove", handleTouchMove);
     };
   }, [createParticle]);
 
