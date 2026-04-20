@@ -48,18 +48,18 @@ const CategorySlider = () => {
               <a
                 key={cat.id}
                 href={`/${cat.slug}`}
-                className="group shrink-0 w-20"
+                className="group shrink-0 w-32"
               >
                 <div className="aspect-square rounded-xl overflow-hidden bg-secondary shadow-sm">
                   {cat.image_url ? (
                     <ImageWithSkeleton src={cat.image_url} alt={cat.name} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-muted flex items-center justify-center">
-                      <FolderOpen className="h-6 w-6 text-muted-foreground/30" />
+                      <FolderOpen className="h-10 w-10 text-muted-foreground/30" />
                     </div>
                   )}
                 </div>
-                <p className="mt-1 text-center text-xs font-medium text-foreground line-clamp-2 leading-tight">
+                <p className="mt-2 text-center text-sm font-semibold text-foreground line-clamp-2 leading-tight">
                   {cat.name}
                 </p>
               </a>
