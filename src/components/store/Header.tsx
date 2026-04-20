@@ -132,7 +132,7 @@ const Header = () => {
 
   return (
     <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? "glass-header scrolled" : "bg-card/95 backdrop-blur-md border-b border-border"}`}>
-      <div className="container flex items-center justify-between h-14 sm:h-16 gap-2 sm:gap-4 px-3 sm:px-4">
+      <div className="container flex items-center justify-between h-20 sm:h-20 gap-2 sm:gap-4 px-3 sm:px-4">
         <Link to="/" className="shrink-0 flex items-center gap-2 group">
           <img src={logoUrl} alt="রাফছা স্টোর" className="h-20 sm:h-24 md:h-28 w-auto transition-transform duration-300 group-hover:scale-105" />
         </Link>
