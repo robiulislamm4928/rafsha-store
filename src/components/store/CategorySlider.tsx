@@ -48,7 +48,7 @@ const CategorySlider = () => {
               <a
                 key={cat.id}
                 href={`/${cat.slug}`}
-                className="group shrink-0 w-32"
+                className="group shrink-0 w-40"
               >
                 <div className="aspect-square rounded-xl overflow-hidden bg-secondary shadow-sm">
                   {cat.image_url ? (
@@ -59,7 +59,7 @@ const CategorySlider = () => {
                     </div>
                   )}
                 </div>
-                <p className="mt-2 text-center text-sm font-semibold text-foreground line-clamp-2 leading-tight">
+                <p className="mt-2 text-center text-base font-semibold text-foreground line-clamp-2 leading-tight">
                   {cat.name}
                 </p>
               </a>
