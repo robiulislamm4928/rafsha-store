@@ -407,8 +407,7 @@ const ProductDetail = () => {
               </Button>
               <Button
                 size="sm"
-                variant="outline"
-                className="flex-1 sm:flex-none h-12 sm:h-9 px-4 sm:px-3 text-base sm:text-sm font-bold border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                className="flex-1 sm:flex-none h-12 sm:h-9 px-4 sm:px-3 text-base sm:text-sm font-bold bg-success hover:bg-success/90 text-success-foreground"
                 onClick={handleBuyNow}
               >
                 <Zap className="h-5 w-5 sm:h-4 sm:w-4 mr-1.5" /> <span className="hidden sm:inline">এখনই কিনুন</span><span className="sm:hidden">কিনুন</span>
