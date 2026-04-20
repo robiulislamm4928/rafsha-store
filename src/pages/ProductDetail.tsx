@@ -376,7 +376,7 @@ const ProductDetail = () => {
       {/* Sticky bottom Add to Cart bar — all screens */}
       {!isOutOfStock && (
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
-          <div className="container py-2.5 flex items-center gap-3 md:gap-4">
+          <div className="container py-3 md:py-2.5 flex items-center gap-2 md:gap-4">
             {/* Product thumbnail */}
             <div className="hidden sm:block shrink-0 w-12 h-12 rounded-lg overflow-hidden border border-border">
               {images[0]?.image_url ? (
@@ -386,7 +386,7 @@ const ProductDetail = () => {
               )}
             </div>
             {/* Product name + price */}
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 hidden xs:block sm:block">
               <p className="text-sm font-semibold text-foreground truncate">{product.name}</p>
               <p className="text-xs text-primary font-bold">৳{finalPrice}</p>
             </div>
@@ -397,21 +397,21 @@ const ProductDetail = () => {
               <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setQuantity(quantity + 1)}><Plus className="h-3.5 w-3.5" /></Button>
             </div>
             {/* Action buttons with periodic wiggle */}
-            <div className={`flex items-center gap-2 shrink-0 transition-transform ${stickyWiggle ? "animate-wiggle" : ""}`}>
+            <div className={`flex items-center gap-2 shrink-0 flex-1 sm:flex-none transition-transform ${stickyWiggle ? "animate-wiggle" : ""}`}>
               <Button
                 size="sm"
-                className="brand-gradient text-primary-foreground font-semibold"
+                className="flex-1 sm:flex-none h-12 sm:h-9 px-4 sm:px-3 text-base sm:text-sm brand-gradient text-primary-foreground font-bold"
                 onClick={handleAddToCart}
               >
-                <ShoppingCart className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">Cart-এ যোগ</span><span className="sm:hidden">Cart</span>
+                <ShoppingCart className="h-5 w-5 sm:h-4 sm:w-4 mr-1.5" /> <span className="hidden sm:inline">Cart-এ যোগ</span><span className="sm:hidden">Cart</span>
               </Button>
               <Button
                 size="sm"
                 variant="outline"
-                className="font-semibold border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                className="flex-1 sm:flex-none h-12 sm:h-9 px-4 sm:px-3 text-base sm:text-sm font-bold border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
                 onClick={handleBuyNow}
               >
-                <Zap className="h-4 w-4 mr-1" /> <span className="hidden sm:inline">এখনই কিনুন</span><span className="sm:hidden">কিনুন</span>
+                <Zap className="h-5 w-5 sm:h-4 sm:w-4 mr-1.5" /> <span className="hidden sm:inline">এখনই কিনুন</span><span className="sm:hidden">কিনুন</span>
               </Button>
             </div>
           </div>
