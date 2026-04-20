@@ -59,7 +59,7 @@ const CategorySlider = () => {
                     </div>
                   )}
                 </div>
-                <p className="mt-2 text-center text-base font-semibold text-foreground line-clamp-2 leading-tight">
+                <p className="mt-2 text-center text-lg font-bold text-foreground line-clamp-2 leading-tight">
                   {cat.name}
                 </p>
               </a>
@@ -90,7 +90,7 @@ const CategorySlider = () => {
                       )}
                     </div>
                   </div>
-                  <p className="mt-2 text-center text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                  <p className="mt-2 text-center text-base md:text-lg font-bold text-foreground group-hover:text-primary transition-colors">
                     {cat.name}
                   </p>
                 </a>
