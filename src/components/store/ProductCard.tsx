@@ -72,7 +72,7 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
           {!isOutOfStock && hasDiscount && (
             <div className="absolute top-0 left-0">
               <div className="bg-destructive text-destructive-foreground text-[10px] sm:text-xs font-bold px-3 py-1 rounded-br-lg shadow-md">
-                {Math.round(((regularPrice - salePrice!) / regularPrice) * 100)}% ছাড়
+                ৳{regularPrice - salePrice!} ছাড়
               </div>
             </div>
           )}
