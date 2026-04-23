@@ -1,6 +1,13 @@
 import { useEffect, useCallback } from "react";
 
-const COLORS = ["#10b981", "#34d399", "#6ee7b7", "#a7f3d0", "#fbbf24", "#f59e0b"];
+const COLORS = [
+  "#ec4899", // pink
+  "#f43f5e", // rose
+  "#a855f7", // purple
+  "#3b82f6", // blue
+  "#10b981", // emerald
+  "#fbbf24", // amber
+];
 
 const SparkleEffect = () => {
   const createParticle = useCallback((x: number, y: number, count?: number) => {
@@ -32,7 +39,7 @@ const SparkleEffect = () => {
       document.body.appendChild(particle);
 
       const startTime = performance.now();
-      const duration = 500 + Math.random() * 300;
+      const duration = 1000 + Math.random() * 600;
 
       const animate = (now: number) => {
         const elapsed = now - startTime;
