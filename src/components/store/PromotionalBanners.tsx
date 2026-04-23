@@ -107,12 +107,12 @@ const PromotionalBanners = () => {
           <div className={`absolute inset-0 flex items-center px-6 sm:px-10 md:px-14 transition-opacity duration-300 ${isAnimating ? "opacity-0" : "opacity-100"}`}>
             <div className="max-w-lg text-primary-foreground space-y-2 sm:space-y-3">
               {slide.heading && (
-                <h3 className="text-lg sm:text-2xl md:text-3xl font-display font-bold leading-tight">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold leading-tight">
                   {slide.heading}
                 </h3>
               )}
               {slide.subtext && (
-                <p className="text-xs sm:text-sm md:text-base opacity-90 leading-relaxed line-clamp-2">
+                <p className="text-sm sm:text-base md:text-lg opacity-90 leading-relaxed line-clamp-2">
                   {slide.subtext}
                 </p>
               )}
