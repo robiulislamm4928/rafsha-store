@@ -162,7 +162,7 @@ const Checkout = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">
               {/* Step 1: Delivery info */}
               <div className={cn(currentStep === 1 ? "block" : "hidden")}>
                 <div className="bg-card rounded-xl border border-border p-4 md:p-6 space-y-4">
@@ -246,7 +246,7 @@ const Checkout = () => {
             </div>
 
             {/* Order summary */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 order-1 lg:order-2">
               <div className="bg-card rounded-xl border border-border p-4 md:p-6 sticky top-24 space-y-4">
                 <h3 className="font-display font-bold text-lg text-foreground">অর্ডার সারাংশ</h3>
                 <div className="space-y-3 max-h-60 overflow-y-auto">
