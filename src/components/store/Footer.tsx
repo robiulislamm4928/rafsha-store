@@ -45,7 +45,7 @@ const Footer = () => {
           </div>
 
           {/* Quick Links */}
-          <div>
+          <div className="text-center sm:text-left">
             <h4 className="font-semibold mb-4 text-lg">দ্রুত লিঙ্ক</h4>
             <ul className="space-y-2.5 text-sm">
               {[
@@ -68,11 +68,11 @@ const Footer = () => {
           </div>
 
           {/* Contact */}
-          <div>
+          <div className="text-center sm:text-left">
             <h4 className="font-semibold mb-4 text-lg">যোগাযোগ</h4>
             <ul className="space-y-3 text-sm">
               {settings.address && (
-                <li className="flex items-start gap-2 opacity-80">
+                <li className="flex items-start gap-2 opacity-80 justify-center sm:justify-start">
                   <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
                   {settings.address}
                 </li>
@@ -83,7 +83,7 @@ const Footer = () => {
             {socialLinks.length > 0 && (
               <div className="mt-6">
                 <h4 className="font-semibold mb-3">সোশ্যাল মিডিয়া</h4>
-                <div className="flex gap-3">
+                <div className="flex gap-3 justify-center sm:justify-start">
                   {socialLinks.map((s) => (
                     <a key={s.key} href={settings[s.key]} target="_blank" rel="noopener noreferrer"
                       className={`w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center transition-all duration-300 ${s.hoverColor} hover:scale-110`}
@@ -97,7 +97,7 @@ const Footer = () => {
           </div>
 
           {/* Newsletter */}
-          <div>
+          <div className="text-center sm:text-left">
             <h4 className="font-semibold mb-4 text-lg">নিউজলেটার</h4>
             <p className="text-sm opacity-80 mb-4">নতুন পণ্য ও অফারের আপডেট পেতে সাবস্ক্রাইব করুন</p>
             <form onSubmit={handleNewsletter} className="flex gap-2 pb-16 sm:pb-0">
