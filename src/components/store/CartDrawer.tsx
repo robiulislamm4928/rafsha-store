@@ -2,7 +2,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
-import { Minus, Plus, Trash2, ShoppingBag, ImageOff } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, ImageOff, X } from "lucide-react";
 
 const CartDrawer = () => {
   const { items, total, isCartOpen, closeCart, updateQuantity, removeItem } = useCart();
@@ -15,12 +15,19 @@ const CartDrawer = () => {
 
   return (
     <Sheet open={isCartOpen} onOpenChange={(open) => !open && closeCart()}>
-      <SheetContent className="flex flex-col w-full sm:max-w-md p-0">
-        <SheetHeader className="px-5 pt-5 pb-4 border-b border-border">
+      <SheetContent className="flex flex-col w-full sm:max-w-md p-0 [&>button]:hidden">
+        <SheetHeader className="px-5 pt-5 pb-4 border-b border-border relative">
           <SheetTitle className="flex items-center gap-2 text-lg font-bold text-foreground">
             <ShoppingBag className="h-5 w-5 text-primary" />
             আপনার Cart ({items.length})
           </SheetTitle>
+          <button
+            onClick={closeCart}
+            aria-label="Close cart"
+            className="absolute right-3 top-3 h-10 w-10 flex items-center justify-center rounded-full bg-secondary hover:bg-secondary/80 text-foreground transition-colors"
+          >
+            <X className="h-6 w-6" strokeWidth={2.5} />
+          </button>
         </SheetHeader>
 
         {items.length === 0 ? (
