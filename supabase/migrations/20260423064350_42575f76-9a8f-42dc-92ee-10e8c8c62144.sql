@@ -1,0 +1,1 @@
+UPDATE banners SET cta_link = '/category/fashion' WHERE id = 'b3d007d9-420e-459d-a47f-3ed48d60db56';
