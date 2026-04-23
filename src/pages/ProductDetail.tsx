@@ -315,8 +315,8 @@ const ProductDetail = () => {
             ) : (
               <>
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Button size="lg" className="flex-1 h-16 md:h-14 text-lg md:text-base brand-gradient text-primary-foreground font-extrabold shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart}><ShoppingCart className="h-7 w-7 md:h-6 md:w-6 mr-2" /> Cart-এ যোগ করুন</Button>
-                  <Button size="lg" className="flex-1 h-16 md:h-14 text-lg md:text-base bg-success hover:bg-success/90 text-success-foreground font-extrabold shadow-lg" onClick={handleBuyNow}><Zap className="h-7 w-7 md:h-6 md:w-6 mr-2" /> সরাসরি কিনুন</Button>
+                  <Button size="lg" className="flex-1 h-16 md:h-14 text-xl md:text-lg brand-gradient text-primary-foreground font-black tracking-wide shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart}><ShoppingCart className="!h-8 !w-8 md:!h-7 md:!w-7 mr-2 stroke-[2.5]" /> Cart-এ যোগ করুন</Button>
+                  <Button size="lg" className="flex-1 h-16 md:h-14 text-xl md:text-lg bg-success hover:bg-success/90 text-success-foreground font-black tracking-wide shadow-lg" onClick={handleBuyNow}><Zap className="!h-8 !w-8 md:!h-7 md:!w-7 mr-2 stroke-[2.5]" /> সরাসরি কিনুন</Button>
                 </div>
                 <WhatsAppOrderButton product={product} variant={activeVariant} quantity={quantity} finalPrice={finalPrice} />
                 {product.stock_quantity > 0 && product.stock_quantity <= 10 && product.stock_quantity !== -1 && <p className="text-sm text-destructive font-medium flex items-center gap-1"><AlertTriangle className="h-4 w-4" /> মাত্র {product.stock_quantity}টি বাকি আছে!</p>}
