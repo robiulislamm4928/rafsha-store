@@ -40,7 +40,7 @@ const CategorySlider = () => {
     <section className="py-6 sm:py-10 md:py-14">
       <div className="container">
         <div className="sm:hidden">
-          <h2 className="text-sm font-bold uppercase tracking-wide text-foreground border-b border-border pb-2 mb-3">
+          <h2 className="text-xl font-bold tracking-wide text-foreground border-b border-border pb-2 mb-3">
             ক্যাটাগরি
           </h2>
           <div className="flex gap-3 overflow-x-auto pb-2">
