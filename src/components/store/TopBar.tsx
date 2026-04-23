@@ -23,7 +23,7 @@ const TopBar = () => {
   const isSingle = announcements.length === 1;
 
   return (
-    <div className="bg-primary text-primary-foreground h-7 sm:h-9 flex items-center overflow-hidden text-[10px] sm:text-xs relative">
+    <div className="bg-primary text-primary-foreground h-9 sm:h-10 flex items-center overflow-hidden text-sm sm:text-base relative">
       <div className="marquee whitespace-nowrap font-medium">
         {announcements.map((a) => a.text).join("   •   ")}
         {"   •   "}
