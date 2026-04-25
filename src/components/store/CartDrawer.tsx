@@ -24,9 +24,10 @@ const CartDrawer = () => {
           <button
             onClick={closeCart}
             aria-label="Close cart"
-            className="absolute right-3 top-3 h-10 w-10 flex items-center justify-center rounded-full bg-secondary hover:bg-secondary/80 text-foreground transition-colors"
+            className="absolute right-3 top-3 h-10 px-3 flex items-center gap-1.5 rounded-full bg-secondary hover:bg-secondary/80 text-foreground transition-colors"
           >
             <X className="h-6 w-6" strokeWidth={2.5} />
+            <span className="text-sm font-semibold">Close</span>
           </button>
         </SheetHeader>
 
