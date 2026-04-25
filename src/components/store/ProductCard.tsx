@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, ImageOff, Zap, Heart, Eye } from "lucide-react";
+import { ImageOff, Heart, Eye, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/hooks/useWishlist";
@@ -18,7 +18,6 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortDescription, stockQuantity }: ProductCardProps) => {
-  const { addItem } = useCart();
   const { isWishlisted, toggleWishlist } = useWishlist();
   const navigate = useNavigate();
   const [quickViewId, setQuickViewId] = useState<string | null>(null);
@@ -27,13 +26,6 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
   const hasDiscount = salePrice !== null && salePrice < regularPrice;
   const isOutOfStock = stockQuantity !== undefined && stockQuantity !== -1 && stockQuantity <= 0;
   const wishlisted = isWishlisted(id);
-
-  const handleBuyNow = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (isOutOfStock) return;
-    addItem({ productId: id, productName: name, slug, price: displayPrice, image: imageUrl || undefined });
-    navigate("/checkout");
-  };
 
   return (
     <>
@@ -118,26 +110,16 @@ const ProductCard = ({ id, name, slug, regularPrice, salePrice, imageUrl, shortD
                 স্টক শেষ
               </Button>
             ) : (
-              <div className="flex gap-1.5 sm:gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="flex-1 h-9 sm:h-9 text-xs sm:text-xs px-2 sm:px-3"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    addItem({ productId: id, productName: name, slug, price: displayPrice, image: imageUrl || undefined });
-                  }}
-                >
-                  <ShoppingCart className="h-3.5 w-3.5 mr-1" /> Cart
-                </Button>
-                <Button
-                  size="sm"
-                  className="flex-1 h-9 sm:h-9 text-xs sm:text-xs px-2 sm:px-3 brand-gradient text-primary-foreground hover:opacity-90"
-                  onClick={handleBuyNow}
-                >
-                  <Zap className="h-3.5 w-3.5 mr-1" /> কিনুন
-                </Button>
-              </div>
+              <Button
+                size="sm"
+                className="w-full h-9 sm:h-9 text-xs sm:text-sm brand-gradient text-primary-foreground hover:opacity-90"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/product/${slug}`);
+                }}
+              >
+                <FileText className="h-3.5 w-3.5 mr-1.5" /> বিবরণ
+              </Button>
             )}
           </div>
         </div>
