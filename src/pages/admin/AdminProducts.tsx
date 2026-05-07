@@ -263,17 +263,33 @@ const AdminProducts = () => {
                   return (
                     <div key={type} className="space-y-2">
                       <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{typeLabel}</p>
-                      {typeVariants.map((v) => (
-                        <div key={v.id} className="flex items-center gap-2 bg-secondary/50 rounded-lg p-3">
-                          {v.variant_type === "color" && (
-                            <div className="w-5 h-5 rounded-full border border-border" style={{ backgroundColor: v.variant_label.startsWith("#") ? v.variant_label : undefined }} />
-                          )}
-                          <span className="flex-1 font-medium text-sm">{v.variant_label}</span>
-                          <span className="text-xs text-muted-foreground">মূল্য: {v.price_adjustment >= 0 ? "+" : ""}৳{v.price_adjustment}</span>
-                          <span className="text-xs text-muted-foreground">স্টক: {v.stock_quantity}</span>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => deleteVariant(v.id)}><X className="h-3.5 w-3.5" /></Button>
-                        </div>
-                      ))}
+                       {typeVariants.map((v) => (
+                         <div key={v.id} className="flex items-center gap-2 bg-secondary/50 rounded-lg p-3">
+                           {v.image_url ? (
+                             <img src={v.image_url} alt={v.variant_label} className="w-10 h-10 rounded-md object-cover border border-border" />
+                           ) : v.variant_type === "color" ? (
+                             <div className="w-10 h-10 rounded-md border border-border" style={{ backgroundColor: v.variant_label.startsWith("#") ? v.variant_label : undefined }} />
+                           ) : (
+                             <div className="w-10 h-10 rounded-md border border-dashed border-border" />
+                           )}
+                           <span className="flex-1 font-medium text-sm">{v.variant_label}</span>
+                           <span className="text-xs text-muted-foreground hidden sm:inline">মূল্য: {v.price_adjustment >= 0 ? "+" : ""}৳{v.price_adjustment}</span>
+                           <span className="text-xs text-muted-foreground hidden sm:inline">স্টক: {v.stock_quantity}</span>
+                           <label className="cursor-pointer">
+                             <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                               const file = e.target.files?.[0]; if (!file) return;
+                               const url = await uploadVariantImage(file);
+                               if (url) await updateVariantImage(v.id, url);
+                               e.target.value = "";
+                             }} />
+                             <Button type="button" variant="ghost" size="icon" className="h-7 w-7" asChild><span><Upload className="h-3.5 w-3.5" /></span></Button>
+                           </label>
+                           {v.image_url && (
+                             <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" onClick={() => updateVariantImage(v.id, null)} title="ছবি সরান"><X className="h-3.5 w-3.5" /></Button>
+                           )}
+                           <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => deleteVariant(v.id)}><Trash2 className="h-3.5 w-3.5" /></Button>
+                         </div>
+                       ))}
                     </div>
                   );
                 })}
