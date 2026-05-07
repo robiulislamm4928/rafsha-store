@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ const AdminCategories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [editing, setEditing] = useState<Partial<Category> | null>(null);
   const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchData = async () => {
     const { data } = await supabase.from("categories").select("*").order("display_order");
@@ -27,13 +28,27 @@ const AdminCategories = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const ext = file.name.split(".").pop();
-    const filePath = `${crypto.randomUUID()}.${ext}`;
-    const { error } = await supabase.storage.from("category-images").upload(filePath, file);
-    if (error) { toast.error("আপলোড ব্যর্থ: " + error.message); setUploading(false); return; }
-    const { data } = supabase.storage.from("category-images").getPublicUrl(filePath);
-    setEditing((prev) => prev ? { ...prev, image_url: data.publicUrl } : null);
-    setUploading(false);
+    try {
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const filePath = `${crypto.randomUUID()}.${ext}`;
+      const { error } = await supabase.storage
+        .from("category-images")
+        .upload(filePath, file, { contentType: file.type, upsert: false });
+      if (error) {
+        console.error("Category image upload error:", error);
+        toast.error("আপলোড ব্যর্থ: " + error.message);
+        return;
+      }
+      const { data } = supabase.storage.from("category-images").getPublicUrl(filePath);
+      setEditing((prev) => (prev ? { ...prev, image_url: data.publicUrl } : null));
+      toast.success("ছবি আপলোড হয়েছে");
+    } catch (err: any) {
+      console.error(err);
+      toast.error("আপলোড ব্যর্থ: " + (err?.message || "অজানা ত্রুটি"));
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
   };
 
   const save = async () => {
@@ -107,12 +122,23 @@ const AdminCategories = () => {
               {editing.image_url && (
                 <img src={editing.image_url} alt="Preview" className="h-20 w-20 object-cover rounded-lg border border-border" />
               )}
-              <label className="block">
-                <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-                <Button type="button" variant="outline" className="w-full" disabled={uploading} asChild>
-                  <span><Upload className="h-4 w-4 mr-1" />{uploading ? "আপলোড হচ্ছে..." : "ছবি আপলোড করুন"}</span>
-                </Button>
-              </label>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageUpload}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                disabled={uploading}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="h-4 w-4 mr-1" />
+                {uploading ? "আপলোড হচ্ছে..." : "ছবি আপলোড করুন"}
+              </Button>
             </div>
             <div className="space-y-2"><Label>প্যারেন্ট ক্যাটাগরি</Label>
               <Select value={editing.parent_id || "none"} onValueChange={(v) => setEditing({ ...editing, parent_id: v === "none" ? null : v })}>
