@@ -19,7 +19,7 @@ interface Product {
   stock_quantity: number; is_active: boolean; is_featured: boolean;
 }
 interface Category { id: string; name: string; }
-interface Variant { id: string; variant_label: string; variant_type: string; price_adjustment: number; stock_quantity: number; is_active: boolean; }
+interface Variant { id: string; variant_label: string; variant_type: string; price_adjustment: number; stock_quantity: number; is_active: boolean; image_url: string | null; }
 interface ProductImage { id: string; image_url: string; display_order: number; }
 
 const emptyProduct = (): Partial<Product> => ({
@@ -33,7 +33,7 @@ const AdminProducts = () => {
   const [editing, setEditing] = useState<Partial<Product> | null>(null);
   const [variants, setVariants] = useState<Variant[]>([]);
   const [images, setImages] = useState<ProductImage[]>([]);
-  const [newVariant, setNewVariant] = useState({ variant_label: "", variant_type: "size", price_adjustment: 0, stock_quantity: 0 });
+  const [newVariant, setNewVariant] = useState({ variant_label: "", variant_type: "size", price_adjustment: 0, stock_quantity: 0, image_url: "" as string });
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
 
@@ -93,8 +93,8 @@ const AdminProducts = () => {
 
   const addVariant = async () => {
     if (!editing?.id || !newVariant.variant_label) return;
-    await supabase.from("product_variants").insert({ ...newVariant, product_id: editing.id, id: crypto.randomUUID() });
-    setNewVariant({ variant_label: "", variant_type: "size", price_adjustment: 0, stock_quantity: 0 });
+    await supabase.from("product_variants").insert({ ...newVariant, image_url: newVariant.image_url || null, product_id: editing.id, id: crypto.randomUUID() } as any);
+    setNewVariant({ variant_label: "", variant_type: "size", price_adjustment: 0, stock_quantity: 0, image_url: "" });
     const { data } = await supabase.from("product_variants").select("*").eq("product_id", editing.id);
     setVariants((data as Variant[]) || []);
     toast.success("ভ্যারিয়েন্ট যোগ হয়েছে");
@@ -104,6 +104,22 @@ const AdminProducts = () => {
     await supabase.from("product_variants").delete().eq("id", vId);
     setVariants((prev) => prev.filter((v) => v.id !== vId));
     toast.success("ভ্যারিয়েন্ট মুছে ফেলা হয়েছে");
+  };
+
+  const uploadVariantImage = async (file: File): Promise<string | null> => {
+    if (!editing?.id) return null;
+    const ext = file.name.split(".").pop();
+    const filePath = `${editing.id}/variants/${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from("product-images").upload(filePath, file);
+    if (error) { toast.error("আপলোড ব্যর্থ: " + error.message); return null; }
+    const { data: urlData } = supabase.storage.from("product-images").getPublicUrl(filePath);
+    return urlData.publicUrl;
+  };
+
+  const updateVariantImage = async (variantId: string, imageUrl: string | null) => {
+    await supabase.from("product_variants").update({ image_url: imageUrl } as any).eq("id", variantId);
+    setVariants((prev) => prev.map((v) => v.id === variantId ? { ...v, image_url: imageUrl } : v));
+    toast.success("ভ্যারিয়েন্ট ছবি আপডেট হয়েছে");
   };
 
   const uploadImage = async (file: File) => {
