@@ -89,15 +89,12 @@ const Checkout = () => {
   const applyCoupon = async () => {
     if (!couponCode.trim()) return;
     setCouponLoading(true);
-    const { data, error } = await supabase.from("coupons").select("*").eq("code", couponCode.trim().toUpperCase()).eq("is_active", true).maybeSingle();
+    const { data, error } = await supabase.rpc("validate_coupon", { p_code: couponCode.trim().toUpperCase(), p_order_total: total } as any);
     setCouponLoading(false);
-    if (error || !data) { toast.error("কুপন কোড সঠিক নয়"); return; }
-    const coupon = data as any;
-    if (coupon.expires_at && new Date(coupon.expires_at) < new Date()) { toast.error("কুপনের মেয়াদ শেষ"); return; }
-    if (coupon.max_uses && coupon.used_count >= coupon.max_uses) { toast.error("কুপনের সর্বোচ্চ ব্যবহার সীমা পূর্ণ"); return; }
-    if (total < coupon.min_order_amount) { toast.error(`মিনিমাম অর্ডার ৳${coupon.min_order_amount} হতে হবে`); return; }
-    setAppliedCoupon({ code: coupon.code, discount_type: coupon.discount_type, discount_value: coupon.discount_value });
-    toast.success(`কুপন "${coupon.code}" প্রয়োগ করা হয়েছে!`);
+    const result = data as any;
+    if (error || !result?.success) { toast.error(result?.message || "কুপন কোড সঠিক নয়"); return; }
+    setAppliedCoupon({ code: result.code, discount_type: result.discount_type, discount_value: result.discount_value });
+    toast.success(`কুপন "${result.code}" প্রয়োগ করা হয়েছে!`);
   };
 
   const removeCoupon = () => { setAppliedCoupon(null); setCouponCode(""); setDiscountAmount(0); };
