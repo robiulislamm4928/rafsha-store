@@ -18,6 +18,7 @@ import ProductCard from "@/components/store/ProductCard";
 import RecentlyViewedProducts from "@/components/store/RecentlyViewedProducts";
 import ImageZoom from "@/components/store/ImageZoom";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
+import { linkifyAndSanitize } from "@/lib/sanitizeHtml";
 
 // --- WhatsApp & Social Share (same as before, kept compact) ---
 const WhatsAppOrderButton = ({ product, variant, quantity, finalPrice }: { product: { name: string }; variant?: { variant_label: string } | null; quantity: number; finalPrice: number }) => {
