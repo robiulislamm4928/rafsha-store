@@ -951,6 +951,10 @@ export type Database = {
         Args: { p_order_number: string; p_phone: string }
         Returns: Json
       }
+      validate_coupon: {
+        Args: { p_code: string; p_order_total: number }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "admin" | "user" | "moderator"
