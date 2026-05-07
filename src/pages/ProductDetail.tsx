@@ -264,7 +264,9 @@ const ProductDetail = () => {
                           }`}
                           title={v.variant_label}
                         >
-                          {v.variant_label.startsWith("#") ? (
+                          {v.image_url ? (
+                            <img src={v.image_url} alt={v.variant_label} className="w-10 h-10 rounded-md object-cover border border-border" />
+                          ) : v.variant_label.startsWith("#") ? (
                             <div className="w-8 h-8 rounded-full border border-border shadow-sm" style={{ backgroundColor: v.variant_label }} />
                           ) : (
                             <span className="text-sm font-medium px-2">{v.variant_label}</span>
