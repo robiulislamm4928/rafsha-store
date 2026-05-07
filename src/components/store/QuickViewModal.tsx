@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Zap, Minus, Plus, ImageOff, Star } from "lucide-react";
 import { toast } from "sonner";
+import { linkifyAndSanitize } from "@/lib/sanitizeHtml";
 
 interface QuickViewModalProps {
   productId: string | null;
@@ -84,7 +85,7 @@ const QuickViewModal = ({ productId, onClose }: QuickViewModalProps) => {
               <span className="text-2xl font-bold text-primary">৳{displayPrice}</span>
               {hasDiscount && <span className="text-sm text-muted-foreground line-through">৳{product.regular_price}</span>}
             </div>
-            {product.short_description && <div className="text-sm text-muted-foreground line-clamp-3 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: product.short_description.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-primary underline break-all">$1</a>') }} />}
+            {product.short_description && <div className="text-sm text-muted-foreground line-clamp-3 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: linkifyAndSanitize(product.short_description) }} />}
 
             <div className="mt-auto space-y-3 pt-2">
               {isOutOfStock ? (
