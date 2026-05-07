@@ -241,7 +241,7 @@ const ProductDetail = () => {
               {hasDiscount && <span className="text-2xl md:text-lg text-muted-foreground line-through">৳{product.regular_price + (activeVariant?.price_adjustment ?? 0)}</span>}
               {hasDiscount && <span className="bg-destructive text-destructive-foreground text-sm md:text-xs font-bold px-3 py-1.5 md:px-2 md:py-1 rounded-md">৳{(product.regular_price + (activeVariant?.price_adjustment ?? 0)) - finalPrice} ছাড়</span>}
             </div>
-            {product.short_description && <div className="text-foreground/80 leading-relaxed whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: product.short_description.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-primary underline break-all">$1</a>') }} />}
+            {product.short_description && <div className="text-foreground/80 leading-relaxed whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: linkifyAndSanitize(product.short_description) }} />}
 
 
             {/* Variants grouped by type */}
