@@ -53,7 +53,7 @@ const SocialShareButtons = ({ productName }: { productName: string }) => {
 
 interface Product { id: string; name: string; slug: string; short_description: string | null; full_description: string | null; regular_price: number; sale_price: number | null; stock_quantity: number; sku: string | null; category_id: string | null; }
 interface RelatedProduct { id: string; name: string; slug: string; regular_price: number; sale_price: number | null; stock_quantity: number; short_description: string | null; product_images: { image_url: string }[]; }
-interface Variant { id: string; variant_label: string; variant_type: string; price_adjustment: number; stock_quantity: number; }
+interface Variant { id: string; variant_label: string; variant_type: string; price_adjustment: number; stock_quantity: number; image_url: string | null; }
 interface ProductImage { id: string; image_url: string; display_order: number; }
 
 const ProductDetail = () => {
@@ -157,7 +157,7 @@ const ProductDetail = () => {
   const basePrice = product.sale_price ?? product.regular_price;
   const finalPrice = basePrice + (activeVariant?.price_adjustment ?? 0);
   const hasDiscount = product.sale_price !== null && product.sale_price < product.regular_price;
-  const mainImage = images[selectedImage]?.image_url;
+  const mainImage = activeVariant?.image_url || images[selectedImage]?.image_url;
   const isOutOfStock = product.stock_quantity !== -1 && product.stock_quantity <= 0;
 
   const handleAddToCart = () => { addItem({ productId: product.id, productName: product.name, slug: product.slug, variantLabel: activeVariant?.variant_label, price: finalPrice, image: images[0]?.image_url }, quantity); toast.success(`${product.name} Cart-এ যোগ করা হয়েছে`); };
@@ -264,7 +264,9 @@ const ProductDetail = () => {
                           }`}
                           title={v.variant_label}
                         >
-                          {v.variant_label.startsWith("#") ? (
+                          {v.image_url ? (
+                            <img src={v.image_url} alt={v.variant_label} className="w-10 h-10 rounded-md object-cover border border-border" />
+                          ) : v.variant_label.startsWith("#") ? (
                             <div className="w-8 h-8 rounded-full border border-border shadow-sm" style={{ backgroundColor: v.variant_label }} />
                           ) : (
                             <span className="text-sm font-medium px-2">{v.variant_label}</span>
