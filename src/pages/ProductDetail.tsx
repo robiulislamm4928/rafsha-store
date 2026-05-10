@@ -258,7 +258,7 @@ const ProductDetail = () => {
                         <button
                           key={v.id}
                           onClick={() => setSelectedVariant(v.id)}
-                          className={`relative flex flex-col items-center gap-1 p-2 rounded-lg border-2 transition-all ${
+                          className={`relative flex flex-col items-center gap-1 rounded-lg border-2 overflow-hidden transition-all ${
                             selectedVariant === v.id
                               ? "border-primary ring-2 ring-primary/20 bg-primary/5"
                               : "border-border hover:border-foreground/30"
@@ -266,14 +266,14 @@ const ProductDetail = () => {
                           title={v.variant_label}
                         >
                           {v.image_url ? (
-                            <img src={v.image_url} alt={v.variant_label} className="w-10 h-10 rounded-md object-cover border border-border" />
+                            <img src={v.image_url} alt={v.variant_label} className="w-12 h-12 object-cover" />
                           ) : v.variant_label.startsWith("#") ? (
-                            <div className="w-8 h-8 rounded-full border border-border shadow-sm" style={{ backgroundColor: v.variant_label }} />
+                            <div className="w-12 h-12 m-1 rounded-full border border-border shadow-sm" style={{ backgroundColor: v.variant_label }} />
                           ) : (
-                            <span className="text-sm font-medium px-2">{v.variant_label}</span>
+                            <span className="text-sm font-medium px-2 py-2">{v.variant_label}</span>
                           )}
                           {v.price_adjustment !== 0 && (
-                            <span className="text-[10px] text-muted-foreground">{v.price_adjustment > 0 ? "+" : ""}৳{v.price_adjustment}</span>
+                            <span className="text-[10px] text-muted-foreground px-1 pb-1">{v.price_adjustment > 0 ? "+" : ""}৳{v.price_adjustment}</span>
                           )}
                         </button>
                       ))}
