@@ -266,7 +266,7 @@ const ProductDetail = () => {
                           title={v.variant_label}
                         >
                           {v.image_url ? (
-                            <img src={v.image_url} alt={v.variant_label} className="w-10 h-10 rounded-md object-cover border border-border" />
+                            <img src={v.image_url} alt={v.variant_label} className="w-10 h-10 rounded-md object-contain bg-white border border-border" />
                           ) : v.variant_label.startsWith("#") ? (
                             <div className="w-8 h-8 rounded-full border border-border shadow-sm" style={{ backgroundColor: v.variant_label }} />
                           ) : (
@@ -372,7 +372,7 @@ const ProductDetail = () => {
               <button className="absolute right-4 text-primary-foreground hover:text-accent" onClick={(e) => { e.stopPropagation(); setSelectedImage((prev) => (prev + 1) % images.length); }}><ChevronRight className="h-10 w-10" /></button>
             </>
           )}
-          <img src={images[selectedImage].image_url} alt={product.name} className="max-w-full max-h-[90vh] object-contain rounded-lg" onClick={(e) => e.stopPropagation()} />
+          <img src={mainImage} alt={product.name} className="max-w-full max-h-[90vh] object-contain rounded-lg" onClick={(e) => e.stopPropagation()} />
         </div>
       )}
 
