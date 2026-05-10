@@ -104,7 +104,7 @@ const AdminSettings = () => {
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h1 className="text-2xl font-display font-bold text-foreground">সাইট সেটিংস</h1>
-        <Button onClick={save} disabled={saving} className="brand-gradient text-primary-foreground hover:opacity-90 w-full sm:w-auto"><Save className="h-4 w-4 mr-1" /> {saving ? "সংরক্ষণ হচ্ছে..." : "সংরক্ষণ"}</Button>
+        <Button onClick={save} disabled={saving} className="brand-gradient text-primary-foreground hover:opacity-90 w-full sm:w-auto hidden sm:inline-flex"><Save className="h-4 w-4 mr-1" /> {saving ? "সংরক্ষণ হচ্ছে..." : "সংরক্ষণ"}</Button>
       </div>
 
       <div className="bg-card rounded-xl border border-border p-4 md:p-6 space-y-4">
@@ -192,6 +192,10 @@ const AdminSettings = () => {
             <Input value={settings[key] || ""} onChange={(e) => setSettings({ ...settings, [key]: e.target.value })} placeholder="https://..." />
           </div>
         ))}
+      </div>
+
+      <div className="pt-2">
+        <Button onClick={save} disabled={saving} size="lg" className="brand-gradient text-primary-foreground hover:opacity-90 w-full"><Save className="h-4 w-4 mr-1" /> {saving ? "সংরক্ষণ হচ্ছে..." : "সংরক্ষণ"}</Button>
       </div>
     </div>
   );
