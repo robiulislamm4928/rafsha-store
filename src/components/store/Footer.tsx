@@ -31,7 +31,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-[hsl(140_30%_88%)] text-foreground dark:bg-[hsl(140_20%_18%)] dark:text-foreground relative wave-divider mt-10">
+    <footer className="bg-[hsl(140_30%_88%)] text-foreground dark:bg-[hsl(140_20%_18%)] relative mt-10">
       <div className="container px-4 py-10 sm:py-12 md:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
