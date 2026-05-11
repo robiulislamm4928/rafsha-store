@@ -86,7 +86,7 @@ const Footer = () => {
                 <div className="flex gap-3 justify-center sm:justify-start">
                   {socialLinks.map((s) => (
                     <a key={s.key} href={settings[s.key]} target="_blank" rel="noopener noreferrer"
-                      className={`w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center transition-all duration-300 ${s.hoverColor} hover:scale-110`}
+                      className={`w-9 h-9 rounded-full bg-foreground/10 flex items-center justify-center transition-all duration-300 ${s.hoverColor} hover:scale-110`}
                       title={s.label}>
                       {s.icon ? <s.icon className="h-4 w-4" /> : <span className="text-xs font-bold">{s.label[0]}</span>}
                     </a>
@@ -130,7 +130,7 @@ const Footer = () => {
       </div>
 
       {/* Copyright */}
-      <div className="border-t border-primary-foreground/10">
+      <div className="border-t border-foreground/10">
         <div className="container py-4 text-center text-[10px] sm:text-xs opacity-60 px-4">
           © Copyright {new Date().getFullYear()} <strong>{storeName}</strong>
           <span className="hidden sm:inline"> | </span>
