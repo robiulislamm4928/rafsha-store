@@ -31,7 +31,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-primary text-primary-foreground relative wave-divider mt-10">
+    <footer className="bg-[hsl(140_30%_88%)] text-foreground dark:bg-[hsl(140_20%_18%)] relative mt-10">
       <div className="container px-4 py-10 sm:py-12 md:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
@@ -86,7 +86,7 @@ const Footer = () => {
                 <div className="flex gap-3 justify-center sm:justify-start">
                   {socialLinks.map((s) => (
                     <a key={s.key} href={settings[s.key]} target="_blank" rel="noopener noreferrer"
-                      className={`w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center transition-all duration-300 ${s.hoverColor} hover:scale-110`}
+                      className={`w-9 h-9 rounded-full bg-foreground/10 flex items-center justify-center transition-all duration-300 ${s.hoverColor} hover:scale-110`}
                       title={s.label}>
                       {s.icon ? <s.icon className="h-4 w-4" /> : <span className="text-xs font-bold">{s.label[0]}</span>}
                     </a>
@@ -106,7 +106,7 @@ const Footer = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="আপনার ইমেইল"
-                className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 text-sm h-11"
+                className="bg-foreground/5 border-foreground/20 text-foreground placeholder:text-foreground/50 text-sm h-11"
               />
               <Button type="submit" size="icon" variant="secondary" className="shrink-0 h-11 w-11">
                 <Send className="h-4 w-4" />
@@ -115,7 +115,7 @@ const Footer = () => {
         </div>
 
         {/* Delivery Partners */}
-        <div className="mt-8 pt-6 border-t border-primary-foreground/10">
+        <div className="mt-8 pt-6 border-t border-foreground/10">
           <h4 className="font-semibold mb-4 text-lg text-center">আমাদের বিতরণ সহযোগী</h4>
           <div className="flex items-center justify-center gap-6">
             <div className="bg-white rounded-xl p-3 flex items-center justify-center">
@@ -130,7 +130,7 @@ const Footer = () => {
       </div>
 
       {/* Copyright */}
-      <div className="border-t border-primary-foreground/10">
+      <div className="border-t border-foreground/10">
         <div className="container py-4 text-center text-[10px] sm:text-xs opacity-60 px-4">
           © Copyright {new Date().getFullYear()} <strong>{storeName}</strong>
           <span className="hidden sm:inline"> | </span>
