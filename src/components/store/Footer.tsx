@@ -106,7 +106,7 @@ const Footer = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="আপনার ইমেইল"
-                className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 text-sm h-11"
+                className="bg-foreground/5 border-foreground/20 text-foreground placeholder:text-foreground/50 text-sm h-11"
               />
               <Button type="submit" size="icon" variant="secondary" className="shrink-0 h-11 w-11">
                 <Send className="h-4 w-4" />
@@ -115,7 +115,7 @@ const Footer = () => {
         </div>
 
         {/* Delivery Partners */}
-        <div className="mt-8 pt-6 border-t border-primary-foreground/10">
+        <div className="mt-8 pt-6 border-t border-foreground/10">
           <h4 className="font-semibold mb-4 text-lg text-center">আমাদের বিতরণ সহযোগী</h4>
           <div className="flex items-center justify-center gap-6">
             <div className="bg-white rounded-xl p-3 flex items-center justify-center">
