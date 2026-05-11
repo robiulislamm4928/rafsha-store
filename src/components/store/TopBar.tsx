@@ -24,7 +24,7 @@ const TopBar = () => {
 
   return (
     <div className="bg-primary text-primary-foreground h-8 sm:h-9 flex items-center overflow-hidden text-base sm:text-lg relative">
-      <div className="marquee whitespace-nowrap font-bold tracking-wide">
+      <div className="marquee whitespace-nowrap font-normal tracking-wide">
         {announcements.map((a) => a.text).join("   •   ")}
         {"   •   "}
         {announcements.map((a) => a.text).join("   •   ")}
