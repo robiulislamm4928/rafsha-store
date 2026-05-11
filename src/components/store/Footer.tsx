@@ -36,10 +36,10 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="text-center sm:text-left">
-            <a href="/" aria-label={storeName} className="bg-white rounded-xl p-4 inline-block mb-3 sm:mb-4 mx-auto sm:mx-0 hover:opacity-90 transition-opacity">
-              <img src={displayLogo} alt={storeName} className="h-28 sm:h-32 md:h-40 w-auto" />
+            <a href="/" aria-label={storeName} className="bg-white rounded-xl p-3 inline-block mb-3 mx-auto sm:mx-0 hover:opacity-90 transition-opacity">
+              <img src={displayLogo} alt={storeName} className="h-20 sm:h-24 w-auto" />
             </a>
-            <p className="text-base sm:text-lg opacity-80 leading-relaxed text-justify mx-auto sm:mx-0">
+            <p className="text-sm opacity-80 leading-relaxed mx-auto sm:mx-0">
               {settings.about || "আপনার পছন্দের পণ্য সেরা মূল্যে — সারাদেশে ডেলিভারি।"}
             </p>
           </div>
