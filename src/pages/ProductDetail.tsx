@@ -242,90 +242,6 @@ const ProductDetail = () => {
               {hasDiscount && <span className="bg-destructive text-destructive-foreground text-sm md:text-xs font-bold px-3 py-1.5 md:px-2 md:py-1 rounded-md">৳{(product.regular_price + (activeVariant?.price_adjustment ?? 0)) - finalPrice} ছাড়</span>}
             </div>
             {product.short_description && <div className="text-foreground/80 leading-relaxed whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: linkifyAndSanitize(product.short_description) }} />}
-
-
-            {/* Variants grouped by type */}
-            {["size", "color", "weight"].map(type => {
-              const typeVariants = variants.filter(v => v.variant_type === type);
-              if (typeVariants.length === 0) return null;
-              const typeLabel = type === "size" ? "সাইজ নির্বাচন করুন" : type === "color" ? "কালার নির্বাচন করুন" : "ওজন নির্বাচন করুন";
-              return (
-                <div key={type} className="space-y-2">
-                  <Label className="text-sm font-medium">{typeLabel}</Label>
-                  {type === "color" ? (
-                    <div className="flex flex-wrap gap-2">
-                      {typeVariants.map((v) => (
-                        <button
-                          key={v.id}
-                          onClick={() => setSelectedVariant(v.id)}
-                          className={`relative flex flex-col items-center gap-1 rounded-lg border-2 overflow-hidden transition-all ${
-                            selectedVariant === v.id
-                              ? "border-primary ring-2 ring-primary/20 bg-primary/5"
-                              : "border-border hover:border-foreground/30"
-                          }`}
-                          title={v.variant_label}
-                        >
-                          {v.image_url ? (
-                            <img src={v.image_url} alt={v.variant_label} className="w-12 h-12 object-cover" />
-                          ) : v.variant_label.startsWith("#") ? (
-                            <div className="w-12 h-12 m-1 rounded-full border border-border shadow-sm" style={{ backgroundColor: v.variant_label }} />
-                          ) : (
-                            <span className="text-sm font-medium px-2 py-2">{v.variant_label}</span>
-                          )}
-                          {v.price_adjustment !== 0 && (
-                            <span className="text-[10px] text-muted-foreground px-1 pb-1">{v.price_adjustment > 0 ? "+" : ""}৳{v.price_adjustment}</span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="flex flex-wrap gap-2">
-                      {typeVariants.map((v) => (
-                        <button
-                          key={v.id}
-                          onClick={() => setSelectedVariant(v.id)}
-                          className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all ${
-                            selectedVariant === v.id
-                              ? "border-primary bg-primary text-primary-foreground"
-                              : "border-border hover:border-foreground/30 text-foreground"
-                          }`}
-                        >
-                          {v.variant_label}
-                          {v.price_adjustment !== 0 && (
-                            <span className="text-xs ml-1 opacity-70">({v.price_adjustment > 0 ? "+" : ""}৳{v.price_adjustment})</span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">পরিমাণ</Label>
-              <div className="flex items-center gap-3">
-                <Button variant="outline" size="icon" className="h-12 w-12 md:h-10 md:w-10" onClick={() => setQuantity(Math.max(1, quantity - 1))}><Minus className="h-5 w-5" /></Button>
-                <span className="text-xl md:text-lg font-semibold w-12 text-center">{quantity}</span>
-                <Button variant="outline" size="icon" className="h-12 w-12 md:h-10 md:w-10" onClick={() => setQuantity(quantity + 1)}><Plus className="h-5 w-5" /></Button>
-              </div>
-            </div>
-
-            {isOutOfStock ? (
-              <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 text-center">
-                <p className="text-destructive font-bold text-lg">স্টক শেষ</p>
-                <p className="text-sm text-muted-foreground mt-1">এই পণ্যটি বর্তমানে স্টকে নেই</p>
-              </div>
-            ) : (
-              <>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button size="lg" className="flex-1 h-16 md:h-14 text-xl md:text-lg brand-gradient text-primary-foreground font-black tracking-wide shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart}><ShoppingCart className="!h-8 !w-8 md:!h-7 md:!w-7 mr-2 stroke-[2.5]" /> Cart-এ যোগ করুন</Button>
-                  <Button size="lg" className="flex-1 h-16 md:h-14 text-xl md:text-lg bg-success hover:bg-success/90 text-success-foreground font-black tracking-wide shadow-lg" onClick={handleBuyNow}><Zap className="!h-8 !w-8 md:!h-7 md:!w-7 mr-2 stroke-[2.5]" /> সরাসরি কিনুন</Button>
-                </div>
-                <WhatsAppOrderButton product={product} variant={activeVariant} quantity={quantity} finalPrice={finalPrice} />
-                {product.stock_quantity > 0 && product.stock_quantity <= 10 && product.stock_quantity !== -1 && <p className="text-sm text-destructive font-medium flex items-center gap-1"><AlertTriangle className="h-4 w-4" /> মাত্র {product.stock_quantity}টি বাকি আছে!</p>}
-              </>
-            )}
-            <SocialShareButtons productName={product.name} />
           </div>
         </div>
 
@@ -335,6 +251,91 @@ const ProductDetail = () => {
             <div className="prose prose-sm max-w-none text-foreground/80 whitespace-pre-wrap">{product.full_description}</div>
           </section>
         )}
+
+        {/* Purchase actions — shown below detailed description */}
+        <section className="mt-8 bg-card rounded-xl border border-border p-5 md:p-6 space-y-5">
+          {["size", "color", "weight"].map(type => {
+            const typeVariants = variants.filter(v => v.variant_type === type);
+            if (typeVariants.length === 0) return null;
+            const typeLabel = type === "size" ? "সাইজ নির্বাচন করুন" : type === "color" ? "কালার নির্বাচন করুন" : "ওজন নির্বাচন করুন";
+            return (
+              <div key={type} className="space-y-2">
+                <Label className="text-sm font-medium">{typeLabel}</Label>
+                {type === "color" ? (
+                  <div className="flex flex-wrap gap-2">
+                    {typeVariants.map((v) => (
+                      <button
+                        key={v.id}
+                        onClick={() => setSelectedVariant(v.id)}
+                        className={`relative flex flex-col items-center gap-1 rounded-lg border-2 overflow-hidden transition-all ${
+                          selectedVariant === v.id
+                            ? "border-primary ring-2 ring-primary/20 bg-primary/5"
+                            : "border-border hover:border-foreground/30"
+                        }`}
+                        title={v.variant_label}
+                      >
+                        {v.image_url ? (
+                          <img src={v.image_url} alt={v.variant_label} className="w-12 h-12 object-cover" />
+                        ) : v.variant_label.startsWith("#") ? (
+                          <div className="w-12 h-12 m-1 rounded-full border border-border shadow-sm" style={{ backgroundColor: v.variant_label }} />
+                        ) : (
+                          <span className="text-sm font-medium px-2 py-2">{v.variant_label}</span>
+                        )}
+                        {v.price_adjustment !== 0 && (
+                          <span className="text-[10px] text-muted-foreground px-1 pb-1">{v.price_adjustment > 0 ? "+" : ""}৳{v.price_adjustment}</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {typeVariants.map((v) => (
+                      <button
+                        key={v.id}
+                        onClick={() => setSelectedVariant(v.id)}
+                        className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all ${
+                          selectedVariant === v.id
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-border hover:border-foreground/30 text-foreground"
+                        }`}
+                      >
+                        {v.variant_label}
+                        {v.price_adjustment !== 0 && (
+                          <span className="text-xs ml-1 opacity-70">({v.price_adjustment > 0 ? "+" : ""}৳{v.price_adjustment})</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">পরিমাণ</Label>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="icon" className="h-12 w-12 md:h-10 md:w-10" onClick={() => setQuantity(Math.max(1, quantity - 1))}><Minus className="h-5 w-5" /></Button>
+              <span className="text-xl md:text-lg font-semibold w-12 text-center">{quantity}</span>
+              <Button variant="outline" size="icon" className="h-12 w-12 md:h-10 md:w-10" onClick={() => setQuantity(quantity + 1)}><Plus className="h-5 w-5" /></Button>
+            </div>
+          </div>
+
+          {isOutOfStock ? (
+            <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 text-center">
+              <p className="text-destructive font-bold text-lg">স্টক শেষ</p>
+              <p className="text-sm text-muted-foreground mt-1">এই পণ্যটি বর্তমানে স্টকে নেই</p>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button size="lg" className="flex-1 h-16 md:h-14 text-xl md:text-lg brand-gradient text-primary-foreground font-black tracking-wide shadow-lg hover:opacity-90 transition-opacity" onClick={handleAddToCart}><ShoppingCart className="!h-8 !w-8 md:!h-7 md:!w-7 mr-2 stroke-[2.5]" /> Cart-এ যোগ করুন</Button>
+                <Button size="lg" className="flex-1 h-16 md:h-14 text-xl md:text-lg bg-success hover:bg-success/90 text-success-foreground font-black tracking-wide shadow-lg" onClick={handleBuyNow}><Zap className="!h-8 !w-8 md:!h-7 md:!w-7 mr-2 stroke-[2.5]" /> সরাসরি কিনুন</Button>
+              </div>
+              <WhatsAppOrderButton product={product} variant={activeVariant} quantity={quantity} finalPrice={finalPrice} />
+              {product.stock_quantity > 0 && product.stock_quantity <= 10 && product.stock_quantity !== -1 && <p className="text-sm text-destructive font-medium flex items-center gap-1"><AlertTriangle className="h-4 w-4" /> মাত্র {product.stock_quantity}টি বাকি আছে!</p>}
+            </>
+          )}
+          <SocialShareButtons productName={product.name} />
+        </section>
 
 
         {relatedProducts.length > 0 && (
