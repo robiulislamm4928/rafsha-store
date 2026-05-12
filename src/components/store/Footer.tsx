@@ -39,7 +39,7 @@ const Footer = () => {
             <a href="/" aria-label={storeName} className="bg-white rounded-xl p-3 inline-block mb-3 mx-auto sm:mx-0 hover:opacity-90 transition-opacity">
               <img src={displayLogo} alt={storeName} className="h-20 sm:h-24 w-auto" />
             </a>
-            <p className="text-sm opacity-80 leading-relaxed mx-auto sm:mx-0">
+            <p className="text-base opacity-80 leading-relaxed mx-auto sm:mx-0 text-justify">
               {settings.about || "আপনার পছন্দের পণ্য সেরা মূল্যে — সারাদেশে ডেলিভারি।"}
             </p>
           </div>
