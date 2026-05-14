@@ -55,7 +55,7 @@ const About = () => {
         {/* Hero */}
         <div className="bg-primary text-primary-foreground py-12 md:py-20">
           <div className="container px-4">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4">{storeName} সম্পর্কে</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4">আমাদের সম্পর্কে</h1>
             <p className="text-base sm:text-lg opacity-90 max-w-2xl">
               {settings.about || "আপনার পছন্দের পণ্য সেরা মূল্যে — সারাদেশে ডেলিভারি।"}
             </p>

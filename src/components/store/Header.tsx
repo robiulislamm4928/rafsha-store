@@ -63,7 +63,6 @@ const Header = ({ sticky = true }: HeaderProps) => {
 
   const navLinks = [
     { label: "হোম", href: "/" },
-    { label: "সকল পণ্য", href: "/products" },
     { label: "About Us", href: "/about" },
   ];
 

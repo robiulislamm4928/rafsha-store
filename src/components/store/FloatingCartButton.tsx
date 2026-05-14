@@ -1,13 +1,24 @@
+import { useEffect, useState } from "react";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 
 interface Props {
-  show: boolean;
+  /** When provided, overrides the internal scroll-based visibility. */
+  show?: boolean;
 }
 
 const FloatingCartButton = ({ show }: Props) => {
   const { itemCount, openCart } = useCart();
-  if (!show) return null;
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    if (show !== undefined) return;
+    const onScroll = () => setScrolled(window.scrollY > 200);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [show]);
+  const visible = show !== undefined ? show : scrolled;
+  if (!visible) return null;
   return (
     <button
       onClick={openCart}

@@ -129,7 +129,9 @@
   }
 
   .marquee {
-    animation: marquee 45s linear infinite;
+    animation: marquee 35s linear infinite;
+    display: inline-block;
+    will-change: transform;
   }
 
   .marquee:hover {
@@ -231,8 +233,8 @@
 
 @layer utilities {
   @keyframes marquee {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 
   @keyframes float {
