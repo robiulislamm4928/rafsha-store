@@ -4,7 +4,6 @@ import Header from "@/components/store/Header";
 import CategorySlider from "@/components/store/CategorySlider";
 import FeaturedProducts from "@/components/store/FeaturedProducts";
 import KeyPoints from "@/components/store/KeyPoints";
-import PromotionalBanners from "@/components/store/PromotionalBanners";
 import CategoryProducts from "@/components/store/CategoryProducts";
 import CustomerReviews from "@/components/store/CustomerReviews";
 
@@ -51,7 +50,6 @@ const Index = () => {
 
       <main>
         <h1 className="sr-only">রাফছা স্টোর — বাংলাদেশের বিশ্বস্ত অনলাইন শপ</h1>
-        <PromotionalBanners />
         <CategorySlider />
         <ScrollSection variant="scale"><KeyPoints /></ScrollSection>
         <ScrollSection variant="left"><FeaturedProducts /></ScrollSection>
