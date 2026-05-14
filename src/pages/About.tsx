@@ -28,6 +28,25 @@ const About = () => {
       <Helmet>
         <title>আমাদের সম্পর্কে | {storeName}</title>
         <meta name="description" content={`${storeName} — আপনার পছন্দের পণ্যের জন্য বিশ্বস্ত অনলাইন মার্কেটপ্লেস। গুণমান নিশ্চিত।`} />
+        <meta property="og:title" content={`আমাদের সম্পর্কে | ${storeName}`} />
+        <meta property="og:description" content={`${storeName} — আপনার পছন্দের পণ্যের জন্য বিশ্বস্ত অনলাইন মার্কেটপ্লেস।`} />
+        <meta property="og:url" content="https://rafsha-store.lovable.app/about" />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://rafsha-store.lovable.app/about" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: storeName,
+          url: "https://rafsha-store.lovable.app/",
+          logo: settings.store_logo_url || "https://rafsha-store.lovable.app/pwa-512x512.png",
+          description: settings.about || `${storeName} — আপনার পছন্দের পণ্য সেরা মূল্যে।`,
+          address: {
+            "@type": "PostalAddress",
+            addressCountry: "BD",
+            streetAddress: settings.address || "Bangladesh"
+          },
+          areaServed: "BD"
+        })}</script>
       </Helmet>
       <TopBar />
       <Header />

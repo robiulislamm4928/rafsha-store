@@ -1,0 +1,19 @@
+# রাফছা স্টোর (Rafsha Store)
+
+> বাংলাদেশের বিশ্বস্ত অনলাইন শপ — মানসম্মত পণ্য সেরা মূল্যে, সারাদেশে ডেলিভারি, ক্যাশ অন ডেলিভারি ও বিকাশ পেমেন্ট সাপোর্ট।
+
+## Pages
+
+- [Home](/): Featured products, categories, promotional banners.
+- [All Products](/products): Browse the full product catalog.
+- [About](/about): Mission, vision, and contact information.
+- [FAQ](/faq): Common questions about ordering, delivery, payment, and returns.
+- [Return Policy](/return-policy): Return and refund terms.
+- [Privacy Policy](/privacy): How customer data is handled.
+- [Terms & Conditions](/terms): Site usage terms.
+
+## Optional
+
+- [Cart](/cart): Shopping cart.
+- [Checkout](/checkout): Order placement.
+- [Install](/install): PWA install instructions.

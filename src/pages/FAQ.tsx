@@ -45,6 +45,20 @@ const FAQ = () => (
     <Helmet>
       <title>সাধারণ জিজ্ঞাসা (FAQ) | রাফছা স্টোর</title>
       <meta name="description" content="রাফছা স্টোর সম্পর্কে সাধারণ প্রশ্ন ও উত্তর — অর্ডার, ডেলিভারি, পেমেন্ট, রিটার্ন এবং আরও অনেক কিছু।" />
+      <meta property="og:title" content="সাধারণ জিজ্ঞাসা (FAQ) | রাফছা স্টোর" />
+      <meta property="og:description" content="রাফছা স্টোর সম্পর্কে সাধারণ প্রশ্ন ও উত্তর — অর্ডার, ডেলিভারি, পেমেন্ট, রিটার্ন।" />
+      <meta property="og:url" content="https://rafsha-store.lovable.app/faq" />
+      <meta property="og:type" content="website" />
+      <link rel="canonical" href="https://rafsha-store.lovable.app/faq" />
+      <script type="application/ld+json">{JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqs.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a }
+        }))
+      })}</script>
     </Helmet>
     <TopBar /><Header />
     <main className="container max-w-3xl mx-auto px-4 py-8 md:py-12">

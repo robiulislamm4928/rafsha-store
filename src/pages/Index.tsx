@@ -28,19 +28,38 @@ const Index = () => {
       <Helmet>
         <title>রাফছা স্টোর — সেরা পণ্য সেরা দামে | বাংলাদেশ</title>
         <meta name="description" content="রাফছা স্টোরে পাচ্ছেন মানসম্মত পণ্য সেরা মূল্যে। সারাদেশে ডেলিভারি।" />
+        <meta property="og:title" content="রাফছা স্টোর — সেরা পণ্য সেরা দামে" />
+        <meta property="og:description" content="মানসম্মত পণ্য সেরা মূল্যে। সারাদেশে ডেলিভারি।" />
+        <meta property="og:url" content="https://rafsha-store.lovable.app/" />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://rafsha-store.lovable.app/" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "রাফছা স্টোর",
+          url: "https://rafsha-store.lovable.app/",
+          inLanguage: "bn-BD",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "https://rafsha-store.lovable.app/products?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        })}</script>
       </Helmet>
       <TopBar />
       <Header />
-      
-      <PromotionalBanners />
-      <CategorySlider />
-      <ScrollSection variant="scale"><KeyPoints /></ScrollSection>
-      <ScrollSection variant="left"><FeaturedProducts /></ScrollSection>
-      <ScrollSection variant="up"><CategoryProducts /></ScrollSection>
-      <ScrollSection variant="scale"><RecentlyViewedProducts /></ScrollSection>
-      <ScrollSection variant="left"><CustomerReviews /></ScrollSection>
-      
-      
+
+      <main>
+        <h1 className="sr-only">রাফছা স্টোর — বাংলাদেশের বিশ্বস্ত অনলাইন শপ</h1>
+        <PromotionalBanners />
+        <CategorySlider />
+        <ScrollSection variant="scale"><KeyPoints /></ScrollSection>
+        <ScrollSection variant="left"><FeaturedProducts /></ScrollSection>
+        <ScrollSection variant="up"><CategoryProducts /></ScrollSection>
+        <ScrollSection variant="scale"><RecentlyViewedProducts /></ScrollSection>
+        <ScrollSection variant="left"><CustomerReviews /></ScrollSection>
+      </main>
+
       <Footer />
     </div>
   );
