@@ -15,6 +15,7 @@ import PWAInstallPrompt from "@/components/store/PWAInstallPrompt";
 import SparkleEffect from "@/components/store/SparkleEffect";
 import FloatingCartButton from "@/components/store/FloatingCartButton";
 import DynamicMeta from "@/components/DynamicMeta";
+import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -71,6 +72,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <AuthProvider>
           <SiteSettingsProvider>
           <CartProvider>
