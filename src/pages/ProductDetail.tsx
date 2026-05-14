@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
@@ -17,6 +17,8 @@ import Footer from "@/components/store/Footer";
 import ProductCard from "@/components/store/ProductCard";
 import RecentlyViewedProducts from "@/components/store/RecentlyViewedProducts";
 import ImageZoom from "@/components/store/ImageZoom";
+import FloatingCartButton from "@/components/store/FloatingCartButton";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 import { linkifyAndSanitize } from "@/lib/sanitizeHtml";
 
@@ -79,6 +81,25 @@ const ProductDetail = () => {
   const [categorySlug, setCategorySlug] = useState<string | null>(null);
   const [topSellingProducts, setTopSellingProducts] = useState<RelatedProduct[]>([]);
   const [stickyWiggle, setStickyWiggle] = useState(false);
+  const [showFloatingCart, setShowFloatingCart] = useState(false);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+
+  // Show floating cart once user scrolls past ~ header height
+  useEffect(() => {
+    const onScroll = () => setShowFloatingCart(window.scrollY > 200);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const handleVariantSelect = (id: string) => {
+    setSelectedVariant(id);
+    if (isMobile && imageRef.current) {
+      const top = imageRef.current.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+  };
 
   // Periodic wiggle for sticky bar buttons
   useEffect(() => {
@@ -139,7 +160,7 @@ const ProductDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background"><TopBar /><Header />
+      <div className="min-h-screen bg-background"><TopBar /><Header sticky={false} />
         <div className="container py-6 md:py-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="aspect-square rounded-xl skeleton-shimmer" />
@@ -151,7 +172,7 @@ const ProductDetail = () => {
   }
 
   if (!product) {
-    return (<div className="min-h-screen bg-background"><TopBar /><Header /><div className="container py-20 text-center"><h2 className="text-2xl font-bold text-foreground">পণ্য পাওয়া যায়নি</h2><Link to="/" className="text-primary underline mt-4 inline-block">হোমে ফিরে যান</Link></div><Footer /></div>);
+    return (<div className="min-h-screen bg-background"><TopBar /><Header sticky={false} /><div className="container py-20 text-center"><h2 className="text-2xl font-bold text-foreground">পণ্য পাওয়া যায়নি</h2><Link to="/" className="text-primary underline mt-4 inline-block">হোমে ফিরে যান</Link></div><Footer /></div>);
   }
 
   const activeVariant = variants.find((v) => v.id === selectedVariant);
@@ -167,7 +188,7 @@ const ProductDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <TopBar /><Header />
+      <TopBar /><Header sticky={false} />
       <main className="container py-6 md:py-10">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "Product", "name": product.name, "description": product.short_description || product.full_description || "", "image": mainImage || "", "sku": product.sku || undefined, "offers": { "@type": "Offer", "price": finalPrice, "priceCurrency": "BDT", "availability": (product.stock_quantity === -1 || product.stock_quantity > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" } }) }} />
 
@@ -183,7 +204,7 @@ const ProductDetail = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
           {/* Image Gallery - Vertical thumbnails left + main image */}
-          <div className="relative">
+          <div className="relative" ref={imageRef}>
             <div className="flex flex-col-reverse md:flex-row gap-3">
               {/* Thumbnails */}
               {images.length > 1 && (
@@ -266,7 +287,7 @@ const ProductDetail = () => {
                     {typeVariants.map((v) => (
                       <button
                         key={v.id}
-                        onClick={() => setSelectedVariant(v.id)}
+                        onClick={() => handleVariantSelect(v.id)}
                         className={`relative flex flex-col items-center gap-1 rounded-lg border-2 overflow-hidden transition-all ${
                           selectedVariant === v.id
                             ? "border-primary ring-2 ring-primary/20 bg-primary/5"
@@ -292,7 +313,7 @@ const ProductDetail = () => {
                     {typeVariants.map((v) => (
                       <button
                         key={v.id}
-                        onClick={() => setSelectedVariant(v.id)}
+                        onClick={() => handleVariantSelect(v.id)}
                         className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all ${
                           selectedVariant === v.id
                             ? "border-primary bg-primary text-primary-foreground"
@@ -378,6 +399,7 @@ const ProductDetail = () => {
       )}
 
       <Footer />
+      <FloatingCartButton show={showFloatingCart} />
     </div>
   );
 };
