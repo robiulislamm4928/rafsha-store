@@ -17,7 +17,6 @@ import Footer from "@/components/store/Footer";
 import ProductCard from "@/components/store/ProductCard";
 import RecentlyViewedProducts from "@/components/store/RecentlyViewedProducts";
 import ImageZoom from "@/components/store/ImageZoom";
-import FloatingCartButton from "@/components/store/FloatingCartButton";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 import { linkifyAndSanitize } from "@/lib/sanitizeHtml";
@@ -81,17 +80,8 @@ const ProductDetail = () => {
   const [categorySlug, setCategorySlug] = useState<string | null>(null);
   const [topSellingProducts, setTopSellingProducts] = useState<RelatedProduct[]>([]);
   const [stickyWiggle, setStickyWiggle] = useState(false);
-  const [showFloatingCart, setShowFloatingCart] = useState(false);
   const imageRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
-
-  // Show floating cart once user scrolls past ~ header height
-  useEffect(() => {
-    const onScroll = () => setShowFloatingCart(window.scrollY > 200);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   const handleVariantSelect = (id: string) => {
     setSelectedVariant(id);
@@ -376,7 +366,6 @@ const ProductDetail = () => {
       )}
 
       <Footer />
-      <FloatingCartButton show={showFloatingCart} />
     </div>
   );
 };
