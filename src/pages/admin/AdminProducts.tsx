@@ -275,15 +275,26 @@ const AdminProducts = () => {
                            <span className="flex-1 font-medium text-sm">{v.variant_label}</span>
                            <span className="text-xs text-muted-foreground hidden sm:inline">মূল্য: {v.price_adjustment >= 0 ? "+" : ""}৳{v.price_adjustment}</span>
                            <span className="text-xs text-muted-foreground hidden sm:inline">স্টক: {v.stock_quantity}</span>
-                           <label className="cursor-pointer">
-                             <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
-                               const file = e.target.files?.[0]; if (!file) return;
-                               const url = await uploadVariantImage(file);
-                               if (url) await updateVariantImage(v.id, url);
-                               e.target.value = "";
-                             }} />
-                             <Button type="button" variant="ghost" size="icon" className="h-7 w-7" asChild><span><Upload className="h-3.5 w-3.5" /></span></Button>
-                           </label>
+                           <Button
+                             type="button"
+                             variant="ghost"
+                             size="icon"
+                             className="h-7 w-7"
+                             onClick={() => {
+                               const input = document.createElement("input");
+                               input.type = "file";
+                               input.accept = "image/*";
+                               input.onchange = async (ev) => {
+                                 const file = (ev.target as HTMLInputElement).files?.[0];
+                                 if (!file) return;
+                                 const url = await uploadVariantImage(file);
+                                 if (url) await updateVariantImage(v.id, url);
+                               };
+                               input.click();
+                             }}
+                           >
+                             <Upload className="h-3.5 w-3.5" />
+                           </Button>
                            {v.image_url && (
                              <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" onClick={() => updateVariantImage(v.id, null)} title="ছবি সরান"><X className="h-3.5 w-3.5" /></Button>
                            )}
