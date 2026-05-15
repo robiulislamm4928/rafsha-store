@@ -256,12 +256,12 @@ const ProductDetail = () => {
             <div className="flex flex-col-reverse md:flex-row gap-3">
               {/* Thumbnails */}
               {images.length > 1 && (
-                <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-y-auto md:overflow-x-hidden md:max-h-[500px] pb-2 md:pb-0 md:pr-1 scrollbar-thin">
+                <div className="grid grid-cols-4 md:flex md:flex-col gap-2 md:overflow-y-auto md:max-h-[500px] md:pr-1 scrollbar-thin">
                   {images.map((img, i) => (
                     <button
                       key={img.id}
                       onClick={() => setSelectedImage(i)}
-                      className={`shrink-0 w-16 h-16 md:w-[72px] md:h-[72px] rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                      className={`w-full aspect-square md:w-[72px] md:h-[72px] rounded-lg overflow-hidden border-2 transition-all duration-200 ${
                         i === selectedImage
                           ? "border-primary shadow-md ring-1 ring-primary/30"
                           : "border-border/50 opacity-60 hover:opacity-100 hover:border-border"
