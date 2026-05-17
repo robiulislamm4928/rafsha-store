@@ -77,6 +77,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://rafsha-store.lovable.app/product/-T105</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://rafsha-store.lovable.app/product/-T139</loc>
     <lastmod>2026-04-20</lastmod>
     <changefreq>weekly</changefreq>
@@ -125,18 +131,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://rafsha-store.lovable.app/product/-T105</loc>
-    <lastmod>2026-05-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://rafsha-store.lovable.app/product/-T83</loc>
-    <lastmod>2026-05-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://rafsha-store.lovable.app/product/-T85</loc>
     <lastmod>2026-05-07</lastmod>
     <changefreq>weekly</changefreq>
@@ -145,6 +139,12 @@
   <url>
     <loc>https://rafsha-store.lovable.app/product/-T82</loc>
     <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rafsha-store.lovable.app/product/-T83</loc>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
