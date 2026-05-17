@@ -20,6 +20,7 @@ import ImageZoom from "@/components/store/ImageZoom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSiteSettings } from "@/contexts/SiteSettingsContext";
 import { linkifyAndSanitize } from "@/lib/sanitizeHtml";
+import { Helmet } from "react-helmet-async";
 
 // --- WhatsApp & Social Share (same as before, kept compact) ---
 const WhatsAppOrderButton = ({ product, variant, quantity, finalPrice }: { product: { name: string }; variant?: { variant_label: string } | null; quantity: number; finalPrice: number }) => {
