@@ -101,6 +101,11 @@ const Products = () => {
       <Helmet>
         <title>সকল পণ্য | রাফছা স্টোর</title>
         <meta name="description" content="রাফছা স্টোরের সকল পণ্য দেখুন। ক্যাটাগরি অনুযায়ী পণ্য ব্রাউজ করুন।" />
+        <link rel="canonical" href="https://rafsha-store.lovable.app/products" />
+        <meta property="og:title" content="সকল পণ্য | রাফছা স্টোর" />
+        <meta property="og:description" content="রাফছা স্টোরের সকল পণ্য দেখুন। ক্যাটাগরি অনুযায়ী পণ্য ব্রাউজ করুন।" />
+        <meta property="og:url" content="https://rafsha-store.lovable.app/products" />
+        <meta property="og:type" content="website" />
       </Helmet>
       <TopBar />
       <Header />
