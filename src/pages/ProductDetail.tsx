@@ -239,6 +239,16 @@ const ProductDetail = () => {
     <div className="min-h-screen bg-background">
       <TopBar /><Header sticky={false} />
       <main className="container py-6 md:py-10">
+        <Helmet>
+          <title>{`${product.name} | রাফছা স্টোর`.slice(0, 60)}</title>
+          <meta name="description" content={(product.short_description || product.full_description || `${product.name} - রাফছা স্টোরে কিনুন। মূল্য ৳${finalPrice}।`).replace(/<[^>]+>/g, "").slice(0, 160)} />
+          <link rel="canonical" href={`https://rafsha-store.lovable.app/product/${product.slug}`} />
+          <meta property="og:title" content={product.name} />
+          <meta property="og:description" content={(product.short_description || `${product.name} - মূল্য ৳${finalPrice}`).replace(/<[^>]+>/g, "").slice(0, 160)} />
+          <meta property="og:url" content={`https://rafsha-store.lovable.app/product/${product.slug}`} />
+          <meta property="og:type" content="product" />
+          {mainImage && <meta property="og:image" content={mainImage} />}
+        </Helmet>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "Product", "name": product.name, "description": product.short_description || product.full_description || "", "image": mainImage || "", "sku": product.sku || undefined, "offers": { "@type": "Offer", "price": finalPrice, "priceCurrency": "BDT", "availability": (product.stock_quantity === -1 || product.stock_quantity > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" } }) }} />
 
         {/* Breadcrumb */}
