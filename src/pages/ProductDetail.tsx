@@ -319,7 +319,7 @@ const ProductDetail = () => {
         {product.full_description && (
           <section className="mt-12 bg-card rounded-xl border border-border p-6 md:p-8">
             <h2 className="text-xl font-display font-bold text-foreground mb-4">বিস্তারিত বিবরণ</h2>
-            <div className="prose prose-sm max-w-none text-foreground/80 whitespace-pre-wrap">{product.full_description}</div>
+            <div className="prose prose-sm max-w-none text-foreground/80 whitespace-pre-wrap break-words" dangerouslySetInnerHTML={{ __html: linkifyAndSanitize(product.full_description) }} />
           </section>
         )}
 
