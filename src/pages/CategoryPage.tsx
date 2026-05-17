@@ -151,6 +151,12 @@ const CategoryPage = () => {
       <Helmet>
         <title>{category?.name || "ক্যাটাগরি"} | রাফছা স্টোর</title>
         <meta name="description" content={`রাফছা স্টোরে ${category?.name || ""} ক্যাটাগরির সকল পণ্য দেখুন।`} />
+        <link rel="canonical" href={`https://rafsha-store.lovable.app/${categorySlug}`} />
+        <meta property="og:title" content={`${category?.name || "ক্যাটাগরি"} | রাফছা স্টোর`} />
+        <meta property="og:description" content={`রাফছা স্টোরে ${category?.name || ""} ক্যাটাগরির সকল পণ্য দেখুন।`} />
+        <meta property="og:url" content={`https://rafsha-store.lovable.app/${categorySlug}`} />
+        <meta property="og:type" content="website" />
+        {category?.image_url && <meta property="og:image" content={category.image_url} />}
       </Helmet>
       <TopBar /><Header />
 
