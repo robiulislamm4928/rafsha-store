@@ -1,9 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import TopBar from "@/components/store/TopBar";
 import Header from "@/components/store/Header";
-import CategorySlider from "@/components/store/CategorySlider";
 import FeaturedProducts from "@/components/store/FeaturedProducts";
-import KeyPoints from "@/components/store/KeyPoints";
 import CategoryProducts from "@/components/store/CategoryProducts";
 import CustomerReviews from "@/components/store/CustomerReviews";
 
