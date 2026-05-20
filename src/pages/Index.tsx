@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import TopBar from "@/components/store/TopBar";
 import Header from "@/components/store/Header";
+import CategorySlider from "@/components/store/CategorySlider";
 import FeaturedProducts from "@/components/store/FeaturedProducts";
 import CategoryProducts from "@/components/store/CategoryProducts";
 import CustomerReviews from "@/components/store/CustomerReviews";
@@ -49,7 +50,6 @@ const Index = () => {
       <main>
         <h1 className="sr-only">রাফছা স্টোর — বাংলাদেশের বিশ্বস্ত অনলাইন শপ</h1>
         <CategorySlider />
-        <ScrollSection variant="scale"><KeyPoints /></ScrollSection>
         <ScrollSection variant="left"><FeaturedProducts /></ScrollSection>
         <ScrollSection variant="up"><CategoryProducts /></ScrollSection>
         <ScrollSection variant="scale"><RecentlyViewedProducts /></ScrollSection>
