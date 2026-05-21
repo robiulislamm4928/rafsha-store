@@ -101,7 +101,26 @@ const ProductDetail = () => {
     return () => clearInterval(interval);
   }, []);
 
-  
+  // Auto-advance product image gallery every 4s (pauses if user hovers main image)
+  useEffect(() => {
+    if (images.length <= 1) return;
+    if (lightboxOpen) return;
+    const el = imageRef.current;
+    let paused = false;
+    const onEnter = () => { paused = true; };
+    const onLeave = () => { paused = false; };
+    el?.addEventListener("mouseenter", onEnter);
+    el?.addEventListener("mouseleave", onLeave);
+    const interval = setInterval(() => {
+      if (paused) return;
+      setSelectedImage((prev) => (prev + 1) % images.length);
+    }, 4000);
+    return () => {
+      clearInterval(interval);
+      el?.removeEventListener("mouseenter", onEnter);
+      el?.removeEventListener("mouseleave", onLeave);
+    };
+  }, [images.length, lightboxOpen]);
 
   useEffect(() => {
     if (!slug) return;
