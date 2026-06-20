@@ -22,7 +22,7 @@ const TopBar = () => {
   // Keep marquee speed constant (pixels per second) regardless of text length
   useEffect(() => {
     if (!marqueeRef.current || announcements.length === 0) return;
-    const PIXELS_PER_SECOND = 80; // constant scroll speed
+    const PIXELS_PER_SECOND = 35; // constant scroll speed (lower = slower)
     const calc = () => {
       const el = marqueeRef.current;
       if (!el) return;
