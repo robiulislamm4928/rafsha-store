@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -16,12 +16,43 @@ const AdminCategories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [editing, setEditing] = useState<Partial<Category> | null>(null);
   const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchData = async () => {
     const { data } = await supabase.from("categories").select("*").order("display_order");
     setCategories((data as Category[]) || []);
   };
   useEffect(() => { fetchData(); }, []);
+
+  // Resize/compress large images in the browser so uploads never fail on size.
+  const compressImage = (file: File): Promise<Blob> =>
+    new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        const maxDim = 1000;
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          const scale = Math.min(maxDim / width, maxDim / height);
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) { reject(new Error("canvas unavailable")); return; }
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => (blob ? resolve(blob) : reject(new Error("compression failed"))),
+          "image/jpeg",
+          0.8
+        );
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("invalid image")); };
+      img.src = url;
+    });
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -32,15 +63,20 @@ const AdminCategories = () => {
         toast.error("শুধু ছবি আপলোড করুন");
         return;
       }
-      if (file.size > 2 * 1024 * 1024) {
-        toast.error("ফাইল সাইজ ২MB এর কম হতে হবে");
-        return;
+      let uploadBody: Blob = file;
+      let contentType = file.type;
+      try {
+        uploadBody = await compressImage(file);
+        contentType = "image/jpeg";
+      } catch {
+        // Fall back to the original file if compression is not possible.
+        uploadBody = file;
+        contentType = file.type;
       }
-      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
-      const filePath = `categories/${crypto.randomUUID()}.${ext}`;
+      const filePath = `categories/${crypto.randomUUID()}.jpg`;
       const { error } = await supabase.storage
         .from("category-images")
-        .upload(filePath, file, { contentType: file.type, upsert: false });
+        .upload(filePath, uploadBody, { contentType, upsert: false });
       if (error) {
         console.error("Category image upload error:", error);
         toast.error("আপলোড ব্যর্থ: " + error.message);
