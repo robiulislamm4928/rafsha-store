@@ -165,26 +165,23 @@ const AdminCategories = () => {
               {editing.image_url && (
                 <img src={editing.image_url} alt="Preview" className="h-20 w-20 object-cover rounded-lg border border-border" />
               )}
-              <label className="block">
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageUpload}
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full"
-                  disabled={uploading}
-                  asChild
-                >
-                  <span>
-                    <Upload className="h-4 w-4 mr-1" />
-                    {uploading ? "আপলোড হচ্ছে..." : "ছবি আপলোড করুন"}
-                  </span>
-                </Button>
-              </label>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageUpload}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                disabled={uploading}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="h-4 w-4 mr-1" />
+                {uploading ? "আপলোড হচ্ছে..." : "ছবি আপলোড করুন"}
+              </Button>
             </div>
             <div className="space-y-2"><Label>প্যারেন্ট ক্যাটাগরি</Label>
               <Select value={editing.parent_id || "none"} onValueChange={(v) => setEditing({ ...editing, parent_id: v === "none" ? null : v })}>
