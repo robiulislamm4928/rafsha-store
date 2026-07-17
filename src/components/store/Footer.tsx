@@ -69,7 +69,7 @@ const Footer = () => {
 
           {/* Contact */}
           <div className="text-center sm:text-left">
-            <h4 className="font-semibold mb-4 text-lg">যোগাযোগ</h4>
+            <h4 className="font-semibold mb-4 text-lg">ঠিকানা</h4>
             <ul className="space-y-3 text-sm">
               {settings.address && (
                 <li className="flex items-start gap-2 opacity-80 justify-center sm:justify-start">
