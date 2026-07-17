@@ -161,27 +161,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://rafsha-store.lovable.app/skincare</loc>
+    <loc>https://rafsha-store.lovable.app/BedSheet</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://rafsha-store.lovable.app/home-products</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://rafsha-store.lovable.app/baby-products</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://rafsha-store.lovable.app/fashion</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://rafsha-store.lovable.app/organic-food</loc>
+    <loc>https://rafsha-store.lovable.app/Three.Piece</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
