@@ -125,10 +125,8 @@ const App = () => (
               <Route path="/:categorySlug" element={<CategoryPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-            <ChatWidget />
             <WhatsAppButton />
             <CartDrawer />
-            <FloatingCartButton />
             <PWAInstallPrompt />
             <SparkleEffect />
           </CartProvider>
